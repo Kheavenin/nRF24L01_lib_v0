@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "controleModule.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
