@@ -24,3 +24,27 @@ void writeRegister(uint8_t addr, uint8_t val) {
 
 }
 
+uint8_t readBit(uint8_t addr, uint8_t bit) {
+	uint8_t reg = readRegister(addr);
+	return (reg >> bit) & 0x01;
+}
+
+void setBit(uint8_t addr, uint8_t bit) {
+	uint8_t tmp = readRegister(addr);
+	tmp |= 1 << bit;
+	writeRegister(addr, tmp);
+}
+
+void resetBit(uint8_t addr, uint8_t bit) {
+	uint8_t tmp = readRegister(addr);
+	tmp |= 0 << bit;
+	writeRegister(addr, tmp);
+}
+
+void powerUp() {
+	setBit( CONFIG, PWR_UP);
+}
+void powerDown() {
+	resetBit(CONFIG, PWR_UP);
+
+}

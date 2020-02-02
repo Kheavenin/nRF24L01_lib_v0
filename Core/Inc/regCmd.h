@@ -51,14 +51,14 @@
 
 #define DF_CONFIG 0x08
 #define DF_EN_AA 0x3F //DEX - 63
-#define DF_RXADDR 0x03
-#define DF_SETUP_AW 0x03
+#define DF_RXADDR 	0x03
+#define DF_SETUP_AW		 0x03
 #define DF_SETUP_RETR 0x03
-#define DF_RF_CH 0x02
-#define DF_RF_SETUP 0x0E
-#define DF_STATUS 0x0E     // B - 3:0 - read only
+#define DF_RF_CH      0x02
+#define DF_RF_SETUP   0x0E
+#define DF_STATUS 	  0x0E     // B - 3:0 - read only
 #define DF_OBSERVE_TX 0x00 //read only
-#define DF_RPD 0x00        //read only
+#define DF_RPD 		  0x00        //read only
 
 #define DF_RX_ADDR_P0 0xE7E7E7E7E7
 #define DF_RX_ADDR_P1 0xC2C2C2C2C2
@@ -79,6 +79,19 @@
 #define DF_FIFO_STATUS 0x11 // B - 6:4, 1:0 - read only
 #define DF_DYNPD 0x00
 #define DF_FEATURE 0x00
+
+/* Bit definitions */
+
+/* Config register */
+#define MASK_RX_DR		6
+#define MASK_TX_DS		5
+#define MASK_MAX_RT		4
+#define EN_CRC			3
+#define CRCO			2
+#define PWR_UP			1
+#define NPRIM_RX		0
+
+
 
 /**
  * nRF24L01+ internal commands
