@@ -35,6 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -45,7 +46,14 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+uint32_t thr1 = 1000;
+uint32_t thr2 = 2000;
+uint32_t thr3 = 3000;
+uint32_t thr4 = 3000;
 
+uint32_t testCounter = 0;
+uint8_t setup = 0;
+uint8_t rpd = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -99,6 +107,25 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  powerUp();
+	  testCounter++;
+	  if (testCounter == thr1) {
+		 writeRegister(RF_SETUP, 0x8A);
+		 writeRegister(CONFIG, 0x0B);
+	  }
+	  if(testCounter == thr2) {
+		  setup = readRegister(RF_SETUP);
+		  rpd = readRegister(CONFIG);
+	  }
+	  if (testCounter == thr3) {
+		  writeRegister(RF_SETUP, 0x00);
+		  writeRegister(CONFIG, 0x02);
+	  }
+	  if(testCounter == thr4) {
+	  		  setup = readRegister(RF_SETUP);
+	  		  rpd = readRegister(CONFIG);
+	  		  testCounter = 0;
+	  	  }
 
 
     /* USER CODE END WHILE */

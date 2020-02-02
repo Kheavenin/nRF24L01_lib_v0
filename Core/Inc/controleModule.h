@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define SPI_TIMEOUT 5
+#define SPI_TIMEOUT 10
 
 extern SPI_HandleTypeDef hspi2;
 
