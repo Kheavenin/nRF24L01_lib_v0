@@ -1,0 +1,2 @@
+controleModule.c:5:9:readRegister	40	static
+controleModule.c:18:6:writeRegister	32	static
