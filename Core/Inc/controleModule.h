@@ -6,17 +6,22 @@
 #define SPI_TIMEOUT 50
 
 extern SPI_HandleTypeDef hspi1;
-SPI_HandleTypeDef *phspi = &hspi1;
+
+void csnLow();	//TODO: in future create macro
+void csnHigh();	//TODO: in future create macro
+void ceLow();	//TODO: in future create macro
+void ceHigh();	//TODO: in future create macro
 
 /* Elementary functions */
-
 uint8_t readRegister(uint8_t addr);
 void writeRegister(uint8_t addr, uint8_t val);
-uint8_t readBit(uint8_t addr, uint8_t bit);
+
+
+uint8_t readBit(uint8_t addr, uint8_t bit);	//TODO:  to refactoring
 void setBit(uint8_t addr, uint8_t bit);
 void resetBit(uint8_t addr, uint8_t bit);
 
-void powerUp();
+void powerUp();		//TODO:  to refactoring
 void powerDown();
 
 

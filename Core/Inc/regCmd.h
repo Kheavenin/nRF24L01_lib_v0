@@ -91,8 +91,6 @@
 #define PWR_UP			1
 #define NPRIM_RX		0
 
-
-
 /**
  * nRF24L01+ internal commands
  */
