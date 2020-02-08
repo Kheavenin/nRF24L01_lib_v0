@@ -3,9 +3,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define SPI_TIMEOUT 10
+#define SPI_TIMEOUT 50
 
-extern SPI_HandleTypeDef hspi2;
+extern SPI_HandleTypeDef hspi1;
+SPI_HandleTypeDef *phspi = &hspi1;
 
 /* Elementary functions */
 

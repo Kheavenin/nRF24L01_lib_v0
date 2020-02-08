@@ -52,14 +52,14 @@ uint32_t thr3 = 3000;
 uint32_t thr4 = 3000;
 
 uint32_t testCounter = 0;
-uint8_t setup = 0;
-uint8_t rpd = 0;
+uint8_t testVar = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void writeReg(uint8_t addr, uint8_t val);
+uint8_t getStatus();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -96,42 +96,56 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_SPI2_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
+ // HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
   /* USER CODE END 2 */
  
  
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  writeReg(0x00, 0x02);
+  testVar = getStatus();
   while (1)
   {
-	  powerUp();
+	  //writeRegister(OBSERVE_TX, 0xFA);
+	  writeReg(SETUP_RETR, 0x02);
+	  testVar = getStatus();
+	  /*
 	  testCounter++;
 	  if (testCounter == thr1) {
-		 writeRegister(RF_SETUP, 0x8A);
-		 writeRegister(CONFIG, 0x0B);
+		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+		 writeRegister(OBSERVE_TX, 0xFA);
+		 writeRegister(SETUP_RETR, 0xFA);
+		 HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 	  }
 	  if(testCounter == thr2) {
-		  setup = readRegister(RF_SETUP);
+		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+		  setup = readRegister(OBSERVE_TX);
 		  rpd = readRegister(CONFIG);
+		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 	  }
 	  if (testCounter == thr3) {
-		  writeRegister(RF_SETUP, 0x00);
-		  writeRegister(CONFIG, 0x02);
+		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+		  writeRegister(RF_SETUP, 0xAF);
+		  writeRegister(SETUP_RETR, 0xAF);
+		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 	  }
 	  if(testCounter == thr4) {
+		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 	  		  setup = readRegister(RF_SETUP);
 	  		  rpd = readRegister(CONFIG);
 	  		  testCounter = 0;
+	  		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 	  	  }
 
-
+	*/
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
+  /* End of main() */
   /* USER CODE END 3 */
 }
 
@@ -172,7 +186,38 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void writeReg(uint8_t addr, uint8_t val){
+	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+	uint8_t write = W_REGISTER & addr;
+	uint8_t *pWrite = &write;
+	size_t writeSize = sizeof(write);
+	HAL_StatusTypeDef statusCmd;
+	HAL_StatusTypeDef statusVal;
+	statusCmd = HAL_SPI_Transmit(&hspi1, pWrite, writeSize, SPI_TIMEOUT);
+	statusVal = HAL_SPI_Transmit(&hspi1, &val, sizeof(val), SPI_TIMEOUT);
+	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
 
+}
+
+uint8_t getStatus(){
+	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+
+	uint8_t write = NOP;
+	uint8_t *pWrite = &write;
+	size_t writeSize = sizeof(write);
+
+	uint8_t data = 0;
+	uint8_t *pData = &data;
+	size_t dataSize = sizeof(data);
+	HAL_StatusTypeDef statusCmd;
+	HAL_StatusTypeDef statusRead;
+
+	statusCmd = HAL_SPI_Transmit(&hspi1, pWrite, writeSize, 32);
+	statusRead = HAL_SPI_Receive(&hspi1, pData, dataSize, 32);
+
+	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
+	return data;
+}
 /* USER CODE END 4 */
 
 /**

@@ -1,7 +1,7 @@
-controleModule.c:5:9:readRegister	40	static
-controleModule.c:18:6:writeRegister	32	static
-controleModule.c:27:9:readBit	24	static
-controleModule.c:32:6:setBit	24	static
-controleModule.c:38:6:resetBit	24	static
-controleModule.c:44:6:powerUp	8	static
-controleModule.c:47:6:powerDown	8	static
+controleModule.c:5:9:readRegister	48	static
+controleModule.c:21:6:writeRegister	32	static
+controleModule.c:31:9:readBit	24	static
+controleModule.c:36:6:setBit	24	static
+controleModule.c:42:6:resetBit	24	static
+controleModule.c:48:6:powerUp	8	static
+controleModule.c:51:6:powerDown	8	static
