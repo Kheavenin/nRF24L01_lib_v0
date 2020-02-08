@@ -4,61 +4,52 @@
  * #if and #endif preproccessor directive used to test code variants.
  */
 
-
-
-
 /**
  * @Brief	Read register function
  * @Param	addr - address of register to read.
  * @Ratval	return read register content.
  */
 uint8_t readRegister(uint8_t addr) {
-        uint8_t cmd = R_REGISTER & addr;
-        uint8_t reg;
-        uint8_t *pCmd = &cmd;
-        uint8_t *pReg = &reg;
-        size_t cmdSize = sizeof(cmd);
-        size_t regSize = sizeof(reg);
-        //HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
-        csnLow();
+	uint8_t cmd = R_REGISTER | addr;
+	uint8_t reg;
+	uint8_t *pCmd = &cmd;
+	uint8_t *pReg = &reg;
+	size_t cmdSize = sizeof(cmd);
+	size_t regSize = sizeof(reg);
+	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+	csnLow();
 #if 0
-        HAL_StatusTypeDef status;
+        HAL_StatusTypeDef statusRead;
         statusRead = HAL_SPI_TransmitReceive(&hspi1, pCmd, pData, 1, SPI_TIMEOUT);
 #endif
-#if 0
+#if 0	//this don't work
         HAL_StatusTypeDef statusCmd;
         HAL_StatusTypeDef statusReg;
         statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
         statusReg = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT );
 #endif
 #if 1
-        if ( HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT))
-        	HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT );
+	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT))
+		HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
 #endif
-        //HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
-        csnHigh();
-        return reg;
-
+	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
+	csnHigh();
+	return reg;
 }
+
 /**
  * @Brief	Write register funtion.
  * @Param	addr - address of register to write
  * @Param	val - value to write into register.
  */
 void writeRegister(uint8_t addr, uint8_t val) {
-	uint8_t cmd = W_REGISTER & addr;
+	uint8_t cmd = W_REGISTER | addr;
 	uint8_t *pCmd = &cmd;
 	size_t cmdSize = sizeof(cmd);
 	size_t valSize = sizeof(val);
 
 	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
 	csnLow();
-#if 0
-	HAL_StatusTypeDef statusCmd;
-	HAL_StatusTypeDef statusVal;
-	statusCmd = HAL_SPI_Transmit(&hspi1, pWrite, writeSize, SPI_TIMEOUT);
-	statusVal = HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
-#endif
 #if 1
 	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT)) {
 		HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
@@ -68,13 +59,26 @@ void writeRegister(uint8_t addr, uint8_t val) {
 #endif
 }
 
+/**
+ * @Brief	Get Status Register.
+ * @Retval	Return value of Status Register
+ */
+uint8_t getStatus() {
+	uint8_t cmd = NOP;
+	uint8_t *pCmd = &cmd;
+	size_t cmdSize = sizeof(cmd);
 
+	uint8_t reg = 0;
+	uint8_t *pReg = &reg;
+	size_t regSize = sizeof(reg);
 
+	csnLow();
+	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT))
+		HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+	csnHigh();
 
-
-
-
-
+	return reg;
+}
 
 uint8_t readBit(uint8_t addr, uint8_t bit) {
 	uint8_t reg = readRegister(addr);
@@ -104,7 +108,7 @@ void powerDown() {
 /**
  * @Brief	Set low level on CSN line
  */
-void csnLow(){
+void csnLow() {
 	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
 }
 
@@ -125,6 +129,6 @@ void ceLow() {
 /**
  * @Brief	Set high level on CE line
  */
-void ceHigh(){
+void ceHigh() {
 	HAL_GPIO_WritePin(CE_GPIO_Port, CE_Pin, GPIO_PIN_SET);
 }

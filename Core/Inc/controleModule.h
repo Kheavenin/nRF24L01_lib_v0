@@ -3,10 +3,11 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define SPI_TIMEOUT 50
+#define SPI_TIMEOUT 10
 
 extern SPI_HandleTypeDef hspi1;
 
+/* CSN, CE lines drive functions */
 void csnLow();	//TODO: in future create macro
 void csnHigh();	//TODO: in future create macro
 void ceLow();	//TODO: in future create macro
@@ -25,12 +26,12 @@ void powerUp();		//TODO:  to refactoring
 void powerDown();
 
 
-/*
+/* Additional feature functions */
 uint8_t getStatus();
 
-
+/*
 void modeRX();
 void modeTX();
 
-uint8_t getStatus();
+
 */

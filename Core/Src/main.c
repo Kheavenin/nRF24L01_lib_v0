@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
@@ -35,7 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define TEST 1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -52,7 +52,11 @@ uint32_t thr3 = 3000;
 uint32_t thr4 = 3000;
 
 uint32_t testCounter = 0;
-uint8_t testVar = 0;
+uint8_t statRegTmp = 0;
+uint8_t confRegTmp = 0;
+uint8_t obrvRegTmp = 0;
+uint8_t retrRegTmp = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,54 +102,66 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
- // HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+	// HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
   /* USER CODE END 2 */
  
  
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  writeReg(0x00, 0x02);
-  testVar = getStatus();
-  while (1)
-  {
-	  //writeRegister(OBSERVE_TX, 0xFA);
-	  writeReg(SETUP_RETR, 0x02);
-	  testVar = getStatus();
-	  /*
-	  testCounter++;
-	  if (testCounter == thr1) {
-		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-		 writeRegister(OBSERVE_TX, 0xFA);
-		 writeRegister(SETUP_RETR, 0xFA);
-		 HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-	  }
-	  if(testCounter == thr2) {
-		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-		  setup = readRegister(OBSERVE_TX);
-		  rpd = readRegister(CONFIG);
-		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-	  }
-	  if (testCounter == thr3) {
-		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-		  writeRegister(RF_SETUP, 0xAF);
-		  writeRegister(SETUP_RETR, 0xAF);
-		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-	  }
-	  if(testCounter == thr4) {
-		  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-	  		  setup = readRegister(RF_SETUP);
-	  		  rpd = readRegister(CONFIG);
-	  		  testCounter = 0;
-	  		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-	  	  }
+#if TEST
+	writeRegister(CONFIG, 0x02);
+	confRegTmp = readRegister(CONFIG);
+	statRegTmp = getStatus();
+#endif
 
-	*/
+	while (1) {
+
+#if TEST
+		testCounter++;
+		if (testCounter == thr1) {
+			confRegTmp = 0;
+			obrvRegTmp = 0;
+			retrRegTmp = 0;
+			statRegTmp = 0;
+
+			writeRegister(CONFIG, 0x07);
+			writeRegister(OBSERVE_TX, 0x1F);
+			writeRegister(SETUP_RETR, 0xA3);
+
+			confRegTmp = readRegister(CONFIG);
+			obrvRegTmp = readRegister(OBSERVE_TX);
+			retrRegTmp = readRegister(SETUP_RETR);
+			statRegTmp = getStatus();
+		}
+		if (testCounter == thr2) {
+			confRegTmp = 0;
+			obrvRegTmp = 0;
+			retrRegTmp = 0;
+			statRegTmp = 0;
+
+			writeRegister(CONFIG, 0x02);
+			writeRegister(OBSERVE_TX, 0xF1);
+			writeRegister(SETUP_RETR, 0x2B);
+
+			confRegTmp = readRegister(CONFIG);
+			obrvRegTmp = readRegister(OBSERVE_TX);
+			retrRegTmp = readRegister(SETUP_RETR);
+			statRegTmp = getStatus();
+		}
+		if (testCounter == thr3) {
+
+		}
+		if (testCounter == thr4) {
+			testCounter = 0;
+		}
+#endif
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
-  /* End of main() */
+	}
+	/* End of main() */
   /* USER CODE END 3 */
 }
 
@@ -186,7 +202,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void writeReg(uint8_t addr, uint8_t val){
+void writeReg(uint8_t addr, uint8_t val) {
 	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
 	uint8_t write = W_REGISTER & addr;
 	uint8_t *pWrite = &write;
@@ -196,28 +212,9 @@ void writeReg(uint8_t addr, uint8_t val){
 	statusCmd = HAL_SPI_Transmit(&hspi1, pWrite, writeSize, SPI_TIMEOUT);
 	statusVal = HAL_SPI_Transmit(&hspi1, &val, sizeof(val), SPI_TIMEOUT);
 	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
-
 }
 
-uint8_t getStatus(){
-	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
 
-	uint8_t write = NOP;
-	uint8_t *pWrite = &write;
-	size_t writeSize = sizeof(write);
-
-	uint8_t data = 0;
-	uint8_t *pData = &data;
-	size_t dataSize = sizeof(data);
-	HAL_StatusTypeDef statusCmd;
-	HAL_StatusTypeDef statusRead;
-
-	statusCmd = HAL_SPI_Transmit(&hspi1, pWrite, writeSize, 32);
-	statusRead = HAL_SPI_Receive(&hspi1, pData, dataSize, 32);
-
-	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
-	return data;
-}
 /* USER CODE END 4 */
 
 /**
@@ -227,7 +224,7 @@ uint8_t getStatus(){
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
+	/* User can add his own implementation to report the HAL error return state */
 
   /* USER CODE END Error_Handler_Debug */
 }
