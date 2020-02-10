@@ -35,7 +35,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TEST 1
+#define TEST_0 1
+#define TEST_1 0
+#define TEST_2 0
+#define TEST_3 1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,6 +60,9 @@ uint8_t statRegTmp = 0;
 uint8_t confRegTmp = 0;
 uint8_t obrvRegTmp = 0;
 uint8_t retrRegTmp = 0;
+
+uint16_t regAddrMax = 0x1D;
+uint8_t regTmp = 0;
 
 /* USER CODE END PV */
 
@@ -109,15 +116,22 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-#if TEST
+#if TEST_0
 	writeRegister(CONFIG, 0x02);
 	confRegTmp = readRegister(CONFIG);
 	statRegTmp = getStatus();
 #endif
 
 	while (1) {
+#if TEST_3
+		uint16_t i = 0;
+		for (i = 0; i <= regAddrMax; i++) {
+			regTmp = readRegister(i);
+			//HAL_Delay(10);
+		}
+#endif
 
-#if TEST
+#if TEST_1
 		testCounter++;
 		if (testCounter == thr1) {
 			confRegTmp = 0;
@@ -150,6 +164,72 @@ int main(void)
 			statRegTmp = getStatus();
 		}
 		if (testCounter == thr3) {
+
+		}
+		if (testCounter == thr4) {
+			testCounter = 0;
+		}
+#endif
+
+#if TEST_2
+		testCounter++;
+		if (testCounter == thr1) {
+			confRegTmp = 0;
+			obrvRegTmp = 0;
+			retrRegTmp = 0;
+			statRegTmp = 0;
+
+			writeRegister(CONFIG, 0x07);
+			confRegTmp = readRegister(CONFIG);
+
+			writeRegister(OBSERVE_TX, 0x1F);
+			obrvRegTmp = readRegister(OBSERVE_TX);
+
+			writeRegister(SETUP_RETR, 0xA3);
+			retrRegTmp = readRegister(SETUP_RETR);
+
+			/*	confRegTmp = readRegister(CONFIG);
+			 obrvRegTmp = readRegister(OBSERVE_TX);
+			 retrRegTmp = readRegister(SETUP_RETR);*/
+
+			statRegTmp = getStatus();
+		}
+		if (testCounter == thr2) {
+			confRegTmp = 0;
+			obrvRegTmp = 0;
+			retrRegTmp = 0;
+			statRegTmp = 0;
+
+			writeRegister(CONFIG, 0x02);
+			confRegTmp = readRegister(CONFIG);
+
+			writeRegister(OBSERVE_TX, 0xF1);
+			obrvRegTmp = readRegister(OBSERVE_TX);
+
+			writeRegister(SETUP_RETR, 0x2B);
+			retrRegTmp = readRegister(SETUP_RETR);
+
+			/*	confRegTmp = readRegister(CONFIG);
+			 obrvRegTmp = readRegister(OBSERVE_TX);
+			 retrRegTmp = readRegister(SETUP_RETR);*/
+			statRegTmp = getStatus();
+		}
+		if (testCounter == thr3) {
+			confRegTmp = 0;
+			obrvRegTmp = 0;
+			retrRegTmp = 0;
+			statRegTmp = 0;
+
+			writeRegister(CONFIG, 0x07);
+			retrRegTmp = readRegister(SETUP_RETR);
+
+			writeRegister(OBSERVE_TX, 0xA2);
+			confRegTmp = readRegister(CONFIG);
+
+			writeRegister(SETUP_RETR, 0x3C);
+			obrvRegTmp = readRegister(OBSERVE_TX);
+			writeRegister(CONFIG, 0x02);
+			retrRegTmp = readRegister(SETUP_RETR);
 
 		}
 		if (testCounter == thr4) {
@@ -213,7 +293,6 @@ void writeReg(uint8_t addr, uint8_t val) {
 	statusVal = HAL_SPI_Transmit(&hspi1, &val, sizeof(val), SPI_TIMEOUT);
 	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
 }
-
 
 /* USER CODE END 4 */
 

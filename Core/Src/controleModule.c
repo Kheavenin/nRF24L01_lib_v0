@@ -19,18 +19,31 @@ uint8_t readRegister(uint8_t addr) {
 	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
 	csnLow();
 #if 0
-        HAL_StatusTypeDef statusRead;
-        statusRead = HAL_SPI_TransmitReceive(&hspi1, pCmd, pData, 1, SPI_TIMEOUT);
+	HAL_StatusTypeDef statusSend;
+	HAL_StatusTypeDef statusRead;
+	while (!statusRead) {
+		statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+		if (statusSend) {
+			statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+		}
+	}
 #endif
-#if 0	//this don't work
-        HAL_StatusTypeDef statusCmd;
-        HAL_StatusTypeDef statusReg;
-        statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-        statusReg = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT );
+#if 0
+	HAL_StatusTypeDef statusRead;
+	HAL_StatusTypeDef statusCmd;
+	statusRead = HAL_SPI_TransmitReceive(&hspi1, pCmd, pReg, cmdSize,
+	SPI_TIMEOUT);
 #endif
-#if 1
+#if 0
 	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT))
 		HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+#endif
+#if 1
+	HAL_StatusTypeDef statusRead;
+	HAL_StatusTypeDef statusCmd;
+	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	HAL_Delay(1);
+	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
 #endif
 	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
 	csnHigh();
@@ -51,6 +64,22 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
 	csnLow();
 #if 1
+	HAL_StatusTypeDef statusSend;
+	HAL_StatusTypeDef statusRead;
+	statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	statusRead = HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
+#endif
+#if 0
+	HAL_StatusTypeDef statusSend;
+	HAL_StatusTypeDef statusRead;
+	while (!statusRead) {
+		statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+		if (statusSend) {
+			statusRead = HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
+		}
+	}
+#endif
+#if 0
 	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT)) {
 		HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
 	}
