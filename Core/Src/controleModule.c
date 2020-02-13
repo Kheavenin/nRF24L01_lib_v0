@@ -60,13 +60,13 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	uint8_t *pCmd = &cmd;
 	size_t cmdSize = sizeof(cmd);
 	size_t valSize = sizeof(val);
-
-	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
 	csnLow();
+
 #if 1
 	HAL_StatusTypeDef statusSend;
 	HAL_StatusTypeDef statusRead;
 	statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	HAL_Delay(1);
 	statusRead = HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
 #endif
 #if 0
@@ -83,9 +83,9 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT)) {
 		HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
 	}
-	csnHigh();
-	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
 #endif
+
+	csnHigh();
 }
 
 /**
@@ -132,6 +132,24 @@ void powerUp() {
 void powerDown() {
 	resetBit(CONFIG, PWR_UP);
 
+}
+
+/***
+ * @Brief	This functions provides micro seconds delay
+ * @Param	Delay in micor seconds
+ */
+void microDelay(uint32_t delay) {
+	uint32_t tickstart = HAL_GetTick();
+	uint32_t wait = delay;
+
+	/* Add a freq to guarantee minimum wait */
+	if (wait < HAL_MAX_DELAY) {
+		wait += (uint32_t) (uwTickFreq);
+	}
+
+	while ((HAL_GetTick() - tickstart) < wait) {
+		/*Do Nothing */
+	}
 }
 
 /**

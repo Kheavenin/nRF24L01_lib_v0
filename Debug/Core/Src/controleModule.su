@@ -6,7 +6,8 @@ controleModule.c:117:6:setBit	24	static
 controleModule.c:123:6:resetBit	24	static
 controleModule.c:129:6:powerUp	8	static
 controleModule.c:132:6:powerDown	8	static
-controleModule.c:140:6:csnLow	8	static
-controleModule.c:147:6:csnHigh	8	static
-controleModule.c:154:6:ceLow	8	static
-controleModule.c:161:6:ceHigh	8	static
+controleModule.c:141:6:microDelay	24	static
+controleModule.c:158:6:csnLow	8	static
+controleModule.c:165:6:csnHigh	8	static
+controleModule.c:172:6:ceLow	8	static
+controleModule.c:179:6:ceHigh	8	static

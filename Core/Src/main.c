@@ -36,9 +36,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define TEST_0 1
-#define TEST_1 0
+#define TEST_1 1
 #define TEST_2 0
-#define TEST_3 1
+#define TEST_3 0
 
 /* USER CODE END PD */
 
@@ -69,8 +69,7 @@ uint8_t regTmp = 0;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-void writeReg(uint8_t addr, uint8_t val);
-uint8_t getStatus();
+HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -118,8 +117,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 #if TEST_0
 	writeRegister(CONFIG, 0x02);
-	confRegTmp = readRegister(CONFIG);
-	statRegTmp = getStatus();
+	regTmp = readRegister(CONFIG);
 #endif
 
 	while (1) {
@@ -134,37 +132,23 @@ int main(void)
 #if TEST_1
 		testCounter++;
 		if (testCounter == thr1) {
-			confRegTmp = 0;
-			obrvRegTmp = 0;
-			retrRegTmp = 0;
-			statRegTmp = 0;
-
-			writeRegister(CONFIG, 0x07);
-			writeRegister(OBSERVE_TX, 0x1F);
-			writeRegister(SETUP_RETR, 0xA3);
-
-			confRegTmp = readRegister(CONFIG);
-			obrvRegTmp = readRegister(OBSERVE_TX);
-			retrRegTmp = readRegister(SETUP_RETR);
-			statRegTmp = getStatus();
+			uint8_t i;
+			for (i = 0; i < 0x07; ++i) {
+				writeRegister(i, 0x07);
+			}
 		}
 		if (testCounter == thr2) {
-			confRegTmp = 0;
-			obrvRegTmp = 0;
-			retrRegTmp = 0;
-			statRegTmp = 0;
-
-			writeRegister(CONFIG, 0x02);
-			writeRegister(OBSERVE_TX, 0xF1);
-			writeRegister(SETUP_RETR, 0x2B);
-
-			confRegTmp = readRegister(CONFIG);
-			obrvRegTmp = readRegister(OBSERVE_TX);
-			retrRegTmp = readRegister(SETUP_RETR);
-			statRegTmp = getStatus();
+			uint8_t i;
+			for (i = 0; i < 0x07; ++i) {
+				regTmp = readRegister(i);
+			}
 		}
 		if (testCounter == thr3) {
-
+			uint8_t i;
+			for (i = 0; i < 0x07; ++i) {
+				writeRegister(CONFIG, 0x07);
+			}
+			regTmp = readRegister(CONFIG);
 		}
 		if (testCounter == thr4) {
 			testCounter = 0;
@@ -282,17 +266,8 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void writeReg(uint8_t addr, uint8_t val) {
-	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
-	uint8_t write = W_REGISTER & addr;
-	uint8_t *pWrite = &write;
-	size_t writeSize = sizeof(write);
-	HAL_StatusTypeDef statusCmd;
-	HAL_StatusTypeDef statusVal;
-	statusCmd = HAL_SPI_Transmit(&hspi1, pWrite, writeSize, SPI_TIMEOUT);
-	statusVal = HAL_SPI_Transmit(&hspi1, &val, sizeof(val), SPI_TIMEOUT);
-	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
-}
+
+
 
 /* USER CODE END 4 */
 
