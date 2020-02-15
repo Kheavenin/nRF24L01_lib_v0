@@ -121,13 +121,7 @@ int main(void)
 #endif
 
 	while (1) {
-#if TEST_3
-		uint16_t i = 0;
-		for (i = 0; i <= regAddrMax; i++) {
-			regTmp = readRegister(i);
-			//HAL_Delay(10);
-		}
-#endif
+
 
 #if TEST_1
 		testCounter++;
@@ -156,69 +150,8 @@ int main(void)
 #endif
 
 #if TEST_2
-		testCounter++;
-		if (testCounter == thr1) {
-			confRegTmp = 0;
-			obrvRegTmp = 0;
-			retrRegTmp = 0;
-			statRegTmp = 0;
-
-			writeRegister(CONFIG, 0x07);
-			confRegTmp = readRegister(CONFIG);
-
-			writeRegister(OBSERVE_TX, 0x1F);
-			obrvRegTmp = readRegister(OBSERVE_TX);
-
-			writeRegister(SETUP_RETR, 0xA3);
-			retrRegTmp = readRegister(SETUP_RETR);
-
-			/*	confRegTmp = readRegister(CONFIG);
-			 obrvRegTmp = readRegister(OBSERVE_TX);
-			 retrRegTmp = readRegister(SETUP_RETR);*/
-
-			statRegTmp = getStatus();
-		}
-		if (testCounter == thr2) {
-			confRegTmp = 0;
-			obrvRegTmp = 0;
-			retrRegTmp = 0;
-			statRegTmp = 0;
-
-			writeRegister(CONFIG, 0x02);
-			confRegTmp = readRegister(CONFIG);
-
-			writeRegister(OBSERVE_TX, 0xF1);
-			obrvRegTmp = readRegister(OBSERVE_TX);
-
-			writeRegister(SETUP_RETR, 0x2B);
-			retrRegTmp = readRegister(SETUP_RETR);
-
-			/*	confRegTmp = readRegister(CONFIG);
-			 obrvRegTmp = readRegister(OBSERVE_TX);
-			 retrRegTmp = readRegister(SETUP_RETR);*/
-			statRegTmp = getStatus();
-		}
-		if (testCounter == thr3) {
-			confRegTmp = 0;
-			obrvRegTmp = 0;
-			retrRegTmp = 0;
-			statRegTmp = 0;
-
-			writeRegister(CONFIG, 0x07);
-			retrRegTmp = readRegister(SETUP_RETR);
-
-			writeRegister(OBSERVE_TX, 0xA2);
-			confRegTmp = readRegister(CONFIG);
-
-			writeRegister(SETUP_RETR, 0x3C);
-			obrvRegTmp = readRegister(OBSERVE_TX);
-			writeRegister(CONFIG, 0x02);
-			retrRegTmp = readRegister(SETUP_RETR);
-
-		}
-		if (testCounter == thr4) {
-			testCounter = 0;
-		}
+#endif
+#if TEST_3
 #endif
 
     /* USER CODE END WHILE */

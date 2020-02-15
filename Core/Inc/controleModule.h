@@ -18,11 +18,11 @@ uint8_t readRegister(uint8_t addr);
 void writeRegister(uint8_t addr, uint8_t val);
 
 
-uint8_t readBit(uint8_t addr, uint8_t bit);	//TODO:  to refactoring
-void setBit(uint8_t addr, uint8_t bit);
-void resetBit(uint8_t addr, uint8_t bit);
+uint8_t readBit(uint8_t addr, bitNum_t bit);	//TODO:  to refactoring
+void setBit(uint8_t addr, bitNum_t bit);
+void resetBit(uint8_t addr, bitNum_t bit);
 
-void powerUp();		//TODO:  to refactoring
+void powerUp();		//Fixed
 void powerDown();
 
 

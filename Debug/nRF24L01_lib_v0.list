@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  0002001c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00005e0d  00000000  00000000  00020045  2**0
+ 12 .debug_info   00005e31  00000000  00000000  00020045  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00001476  00000000  00000000  00025e52  2**0
+ 13 .debug_abbrev 00001476  00000000  00000000  00025e76  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000670  00000000  00000000  000272c8  2**3
+ 14 .debug_aranges 00000668  00000000  00000000  000272f0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 000005a8  00000000  00000000  00027938  2**3
+ 15 .debug_ranges 000005a0  00000000  00000000  00027958  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00012efa  00000000  00000000  00027ee0  2**0
+ 16 .debug_macro  00012fa4  00000000  00000000  00027ef8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00005e58  00000000  00000000  0003adda  2**0
+ 17 .debug_line   00005e3a  00000000  00000000  0003ae9c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0006602f  00000000  00000000  00040c32  2**0
+ 18 .debug_str    00066172  00000000  00000000  00040cd6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000a6c61  2**0
+ 19 .comment      0000007b  00000000  00000000  000a6e48  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000017bc  00000000  00000000  000a6cdc  2**2
+ 20 .debug_frame  00001798  00000000  00000000  000a6ec4  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -104,12 +104,9 @@ uint8_t readRegister(uint8_t addr) {
 	size_t regSize = sizeof(reg);
  800016a:	2301      	movs	r3, #1
  800016c:	613b      	str	r3, [r7, #16]
-	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+
 	csnLow();
  800016e:	f000 f853 	bl	8000218 <csnLow>
-		HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
-#endif
-#if 1
 	HAL_StatusTypeDef statusRead;
 	HAL_StatusTypeDef statusCmd;
 	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
@@ -133,8 +130,11 @@ uint8_t readRegister(uint8_t addr) {
  8000194:	f001 fba9 	bl	80018ea <HAL_SPI_Receive>
  8000198:	4603      	mov	r3, r0
  800019a:	73bb      	strb	r3, [r7, #14]
-#endif
-	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
+#if 0
+	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT))
+		HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+	 #endif */
+
 	csnHigh();
  800019c:	f000 f848 	bl	8000230 <csnHigh>
 	return reg;
@@ -179,7 +179,7 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	csnLow();
  80001d8:	f000 f81e 	bl	8000218 <csnLow>
 
-#if 1
+
 	HAL_StatusTypeDef statusSend;
 	HAL_StatusTypeDef statusRead;
 	statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
@@ -207,7 +207,7 @@ void writeRegister(uint8_t addr, uint8_t val) {
 		HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
 	}
 #endif
-
+	 */
 	csnHigh();
  8000206:	f000 f813 	bl	8000230 <csnHigh>
 }
@@ -219,7 +219,7 @@ void writeRegister(uint8_t addr, uint8_t val) {
  8000214:	20000040 	.word	0x20000040
 
 08000218 <csnLow>:
-}
+
 
 /**
  * @Brief	Set low level on CSN line
@@ -227,7 +227,7 @@ void writeRegister(uint8_t addr, uint8_t val) {
 void csnLow() {
  8000218:	b580      	push	{r7, lr}
  800021a:	af00      	add	r7, sp, #0
-	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(CSN_GPIO_Port, CSN_Pin, GPIO_PIN_RESET);
  800021c:	2200      	movs	r2, #0
  800021e:	2140      	movs	r1, #64	; 0x40
  8000220:	4802      	ldr	r0, [pc, #8]	; (800022c <csnLow+0x14>)
@@ -246,7 +246,7 @@ void csnLow() {
 void csnHigh() {
  8000230:	b580      	push	{r7, lr}
  8000232:	af00      	add	r7, sp, #0
-	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(CSN_GPIO_Port, CSN_Pin, GPIO_PIN_SET);
  8000234:	2201      	movs	r2, #1
  8000236:	2140      	movs	r1, #64	; 0x40
  8000238:	4802      	ldr	r0, [pc, #8]	; (8000244 <csnHigh+0x14>)
@@ -325,12 +325,12 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CE_GPIO_Port, CE_Pin, GPIO_PIN_RESET);
  80002bc:	2200      	movs	r2, #0
- 80002be:	2140      	movs	r1, #64	; 0x40
+ 80002be:	2180      	movs	r1, #128	; 0x80
  80002c0:	4834      	ldr	r0, [pc, #208]	; (8000394 <MX_GPIO_Init+0x14c>)
  80002c2:	f000 fd59 	bl	8000d78 <HAL_GPIO_WritePin>
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(CSN_GPIO_Port, CSN_Pin, GPIO_PIN_RESET);
  80002c6:	2200      	movs	r2, #0
  80002c8:	2140      	movs	r1, #64	; 0x40
  80002ca:	4833      	ldr	r0, [pc, #204]	; (8000398 <MX_GPIO_Init+0x150>)
@@ -353,12 +353,12 @@ void MX_GPIO_Init(void)
  80002e6:	f000 fbed 	bl	8000ac4 <HAL_GPIO_Init>
 
   /*Configure GPIO pins : PC0 PC1 PC2 PC3 
-                           PC4 PC5 PC7 PC8 
+                           PC4 PC5 PC6 PC8 
                            PC9 PC10 PC11 PC12 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3 
- 80002ea:	f641 73bf 	movw	r3, #8127	; 0x1fbf
+ 80002ea:	f641 737f 	movw	r3, #8063	; 0x1f7f
  80002ee:	613b      	str	r3, [r7, #16]
-                          |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_7|GPIO_PIN_8 
+                          |GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8 
                           |GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
  80002f0:	2303      	movs	r3, #3
@@ -407,7 +407,7 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = CE_Pin;
- 800032c:	2340      	movs	r3, #64	; 0x40
+ 800032c:	2380      	movs	r3, #128	; 0x80
  800032e:	613b      	str	r3, [r7, #16]
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
  8000330:	2301      	movs	r3, #1
@@ -438,7 +438,7 @@ void MX_GPIO_Init(void)
  8000358:	f000 fbb4 	bl	8000ac4 <HAL_GPIO_Init>
 
   /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = CSN1_Pin;
+  GPIO_InitStruct.Pin = CSN_Pin;
  800035c:	2340      	movs	r3, #64	; 0x40
  800035e:	613b      	str	r3, [r7, #16]
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -450,7 +450,7 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
  8000368:	2302      	movs	r3, #2
  800036a:	61fb      	str	r3, [r7, #28]
-  HAL_GPIO_Init(CSN1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(CSN_GPIO_Port, &GPIO_InitStruct);
  800036c:	f107 0310 	add.w	r3, r7, #16
  8000370:	4619      	mov	r1, r3
  8000372:	4809      	ldr	r0, [pc, #36]	; (8000398 <MX_GPIO_Init+0x150>)
@@ -527,9 +527,9 @@ int main(void)
  80003ce:	461a      	mov	r2, r3
  80003d0:	4b2a      	ldr	r3, [pc, #168]	; (800047c <main+0xd4>)
  80003d2:	701a      	strb	r2, [r3, #0]
-			//HAL_Delay(10);
-		}
-#endif
+
+	while (1) {
+
 
 #if TEST_1
 		testCounter++;

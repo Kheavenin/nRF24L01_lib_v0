@@ -16,8 +16,14 @@ uint8_t readRegister(uint8_t addr) {
 	uint8_t *pReg = &reg;
 	size_t cmdSize = sizeof(cmd);
 	size_t regSize = sizeof(reg);
-	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+
 	csnLow();
+	HAL_StatusTypeDef statusRead;
+	HAL_StatusTypeDef statusCmd;
+	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	HAL_Delay(1);
+	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+	/*
 #if 0
 	HAL_StatusTypeDef statusSend;
 	HAL_StatusTypeDef statusRead;
@@ -37,15 +43,8 @@ uint8_t readRegister(uint8_t addr) {
 #if 0
 	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT))
 		HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
-#endif
-#if 1
-	HAL_StatusTypeDef statusRead;
-	HAL_StatusTypeDef statusCmd;
-	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-	HAL_Delay(1);
-	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
-#endif
-	//HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
+	 #endif */
+
 	csnHigh();
 	return reg;
 }
@@ -62,13 +61,14 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	size_t valSize = sizeof(val);
 	csnLow();
 
-#if 1
+
 	HAL_StatusTypeDef statusSend;
 	HAL_StatusTypeDef statusRead;
 	statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
 	HAL_Delay(1);
 	statusRead = HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
-#endif
+
+	/*
 #if 0
 	HAL_StatusTypeDef statusSend;
 	HAL_StatusTypeDef statusRead;
@@ -84,7 +84,7 @@ void writeRegister(uint8_t addr, uint8_t val) {
 		HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
 	}
 #endif
-
+	 */
 	csnHigh();
 }
 
@@ -102,68 +102,70 @@ uint8_t getStatus() {
 	size_t regSize = sizeof(reg);
 
 	csnLow();
-	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT))
-		HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
-	csnHigh();
 
+	HAL_StatusTypeDef statusRead;
+	HAL_StatusTypeDef statusCmd;
+	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	HAL_Delay(1);
+	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+
+	csnHigh();
 	return reg;
 }
 
-uint8_t readBit(uint8_t addr, uint8_t bit) {
-	uint8_t reg = readRegister(addr);
-	return (reg >> bit) & 0x01;
+/**
+ * @Brief	Turn on nRF24L01+ module
+ */
+void powerUp() {
+	setBit( CONFIG, PWR_UP);
 }
 
-void setBit(uint8_t addr, uint8_t bit) {
+/**
+ * @Brief Turn off nRF24L01+ module
+ */
+void powerDown() {
+	resetBit(CONFIG, PWR_UP);
+}
+
+/**
+ * @Brief	Read bit in register
+ */
+uint8_t readBit(uint8_t addr, bitNum_t bit) {
+	uint8_t reg = readRegister(addr);
+	return ((reg >> bit) & 0x01);
+}
+
+/**
+ * @Brief	Set logic '1' on selected position
+ */
+void setBit(uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readRegister(addr);
 	tmp |= 1 << bit;
 	writeRegister(addr, tmp);
 }
 
-void resetBit(uint8_t addr, uint8_t bit) {
+/**
+ * @Brief	Set logic '0' on selected position
+ */
+void resetBit(uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readRegister(addr);
 	tmp |= 0 << bit;
 	writeRegister(addr, tmp);
 }
 
-void powerUp() {
-	setBit( CONFIG, PWR_UP);
-}
-void powerDown() {
-	resetBit(CONFIG, PWR_UP);
-
-}
-
-/***
- * @Brief	This functions provides micro seconds delay
- * @Param	Delay in micor seconds
- */
-void microDelay(uint32_t delay) {
-	uint32_t tickstart = HAL_GetTick();
-	uint32_t wait = delay;
-
-	/* Add a freq to guarantee minimum wait */
-	if (wait < HAL_MAX_DELAY) {
-		wait += (uint32_t) (uwTickFreq);
-	}
-
-	while ((HAL_GetTick() - tickstart) < wait) {
-		/*Do Nothing */
-	}
-}
 
 /**
  * @Brief	Set low level on CSN line
  */
 void csnLow() {
-	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(CSN_GPIO_Port, CSN_Pin, GPIO_PIN_RESET);
 }
 
 /**
  * @Brief	Set high level on CSN line
  */
 void csnHigh() {
-	HAL_GPIO_WritePin(CSN1_GPIO_Port, CSN1_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(CSN_GPIO_Port, CSN_Pin, GPIO_PIN_SET);
 }
 
 /**

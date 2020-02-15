@@ -82,30 +82,79 @@
 
 /* Bit definitions */
 
+typedef enum {
+	bit7 = 7,
+	bit6 = 6,
+	bit5 = 5,
+	bit4 = 4,
+	bit3 = 3,
+	bit2 = 2,
+	bit1 = 1,
+	bit0 = 0
+} bitNum_t;
+
 /* Config register */
-#define MASK_RX_DR		6
-#define MASK_TX_DS		5
-#define MASK_MAX_RT		4
-#define EN_CRC			3
-#define CRCO			2
-#define PWR_UP			1
-#define NPRIM_RX		0
+#define MASK_RX_DR		bit6
+#define MASK_TX_DS		bit5
+#define MASK_MAX_RT		bit4
+#define EN_CRC			bit3
+#define CRCO			bit2
+#define PWR_UP			bit1
+#define NPRIM_RX		bit0
+
+/* RF setup register */
+#define CONT_WAVE		bit7
+#define RF_DR_LOW		bit5
+#define PLL_LOCK		bit4
+#define RF_DR_HIGH		bit3
+#define	RF_PWR_HIGH		bit2
+#define	RF_PWR_LOW		bit1
+
+/* Status register */
+#define RX_DR		bit6
+#define TX_DS		bit5
+#define	MAX_RT		bit4
+#define TX_FULL		bit0
+
+/* Received Power Detector register */
+#define RPD_FLAG	bit0
+
+/* FIFO status register */
+#define TX_REUSE		bit6
+#define TX_FULL_FIFO	bit5
+#define TX_EMPTY		bit4
+#define RX_FULL			bit1
+#define	RX_EMPTY		bit0
+
+/* Dynamic Payload register */
+#define DPL_P5		bit5
+#define DPL_P4		bit4
+#define DPL_P3		bit3
+#define	DPL_P2		bit2
+#define DPL_P1		bit1
+#define DPL_P0		bit0
+
+/* Feature register */
+#define EN_DPL		bit2
+#define EN_ACK_PAY	bit1
+#define EN_DYN_ACk	bit0
+
 
 /**
  * nRF24L01+ internal commands
  */
 
-#define R_REGISTER 0x00 //000a aaaa
-#define W_REGISTER 0x20 //001a aaaa
-#define R_RX_PAYLOAD 0x61
-#define W_TX_PAYLOAD 0xA0
-#define FLUSH_TX 0xE1
-#define FLUSH_RX 0xE0
-#define REUSE_TX_PL 0xE0
-#define R_RX_PL_WID 0x60
-#define W_ACK_PAYLOAD 0xA8 //1010 1ppp
-#define W_TX_PAYLOAD_NO_ACK 0xB0
-#define NOP 0xFF
+#define R_REGISTER			0x00 //000a aaaa
+#define W_REGISTER			0x20 //001a aaaa
+#define R_RX_PAYLOAD		0x61
+#define W_TX_PAYLOAD		0xA0
+#define FLUSH_TX			0xE1
+#define FLUSH_RX			0xE0
+#define REUSE_TX_PL			0xE0
+#define R_RX_PL_WID			0x60
+#define W_ACK_PAYLOAD		0xA8 //1010 1ppp
+#define W_TX_PAYLOAD_NO_ACK	0xB0
+#define NOP					0xFF
 
 
 
