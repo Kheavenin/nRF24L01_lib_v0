@@ -170,4 +170,8 @@ typedef enum {
 	shortWidth = 0x01, mediumWidth = 0x02, longWidth = 0x03
 } addressWidth_t;
 
+typedef enum {
+	CRC_8_bits = 0, CRC_16_bits = 1
+} widthCRC_t;
+
 

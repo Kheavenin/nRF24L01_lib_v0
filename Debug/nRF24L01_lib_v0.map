@@ -282,11 +282,40 @@ Discarded input sections
  .text.modeTX   0x0000000000000000       0x14 Core/Src/settingModule.o
  .text.modeStandby
                 0x0000000000000000        0xc Core/Src/settingModule.o
- .debug_info    0x0000000000000000      0x659 Core/Src/settingModule.o
- .debug_abbrev  0x0000000000000000      0x13e Core/Src/settingModule.o
- .debug_aranges
+ .text.disableRXinterrupt
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.disableTXinterrupt
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.disableRTinterrupt
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.enableRXinterrupt
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.enableTXinterrupt
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.enableRTinterrupt
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.clearRX_DR
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.clearTX_DS
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.clearMAX_RT
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.enableCRC
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.setCRC   0x0000000000000000       0x2a Core/Src/settingModule.o
+ .text.checkPipe
+                0x0000000000000000       0x20 Core/Src/settingModule.o
+ .text.enableAutoAckPipe
                 0x0000000000000000       0x30 Core/Src/settingModule.o
- .debug_ranges  0x0000000000000000       0x20 Core/Src/settingModule.o
+ .text.disableAutoAckPipe
+                0x0000000000000000       0x30 Core/Src/settingModule.o
+ .text.enableRxAddr
+                0x0000000000000000       0x30 Core/Src/settingModule.o
+ .debug_info    0x0000000000000000      0x7ea Core/Src/settingModule.o
+ .debug_abbrev  0x0000000000000000      0x1ae Core/Src/settingModule.o
+ .debug_aranges
+                0x0000000000000000       0xa8 Core/Src/settingModule.o
+ .debug_ranges  0x0000000000000000       0x98 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0x1b7 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0xa5a Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0x215 Core/Src/settingModule.o
@@ -324,10 +353,10 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x83 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000       0x52 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0x252 Core/Src/settingModule.o
- .debug_line    0x0000000000000000      0x653 Core/Src/settingModule.o
- .debug_str     0x0000000000000000    0x64b50 Core/Src/settingModule.o
+ .debug_line    0x0000000000000000      0x764 Core/Src/settingModule.o
+ .debug_str     0x0000000000000000    0x64c55 Core/Src/settingModule.o
  .comment       0x0000000000000000       0x7c Core/Src/settingModule.o
- .debug_frame   0x0000000000000000       0x64 Core/Src/settingModule.o
+ .debug_frame   0x0000000000000000      0x234 Core/Src/settingModule.o
  .ARM.attributes
                 0x0000000000000000       0x33 Core/Src/settingModule.o
  .group         0x0000000000000000        0xc Core/Src/spi.o
