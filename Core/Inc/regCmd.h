@@ -110,9 +110,9 @@ typedef enum {
 #define	RF_PWR_LOW		bit1
 
 /* Status register */
-#define RX_DR		bit6
-#define TX_DS		bit5
-#define	MAX_RT		bit4
+#define RX_DR		bit6	//Data read interrupt
+#define TX_DS		bit5	//Data send interrupt
+#define	MAX_RT		bit4	//Max number of retransmits interrupt
 #define TX_FULL		bit0
 
 /* Received Power Detector register */
