@@ -35,15 +35,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  15 .debug_ranges 000005a0  00000000  00000000  00027958  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00012fa4  00000000  00000000  00027ef8  2**0
+ 16 .debug_macro  00012fac  00000000  00000000  00027ef8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00005e3a  00000000  00000000  0003ae9c  2**0
+ 17 .debug_line   00005e4d  00000000  00000000  0003aea4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    00066172  00000000  00000000  00040cd6  2**0
+ 18 .debug_str    00066175  00000000  00000000  00040cf1  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000a6e48  2**0
+ 19 .comment      0000007b  00000000  00000000  000a6e66  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00001798  00000000  00000000  000a6ec4  2**2
+ 20 .debug_frame  00001798  00000000  00000000  000a6ee4  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -219,7 +219,7 @@ void writeRegister(uint8_t addr, uint8_t val) {
  8000214:	20000040 	.word	0x20000040
 
 08000218 <csnLow>:
-
+}
 
 /**
  * @Brief	Set low level on CSN line

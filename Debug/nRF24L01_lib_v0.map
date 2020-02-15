@@ -239,6 +239,97 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x83 Core/Src/main.o
  .debug_macro   0x0000000000000000       0x52 Core/Src/main.o
  .debug_macro   0x0000000000000000      0x252 Core/Src/main.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .group         0x0000000000000000        0xc Core/Src/settingModule.o
+ .text          0x0000000000000000        0x0 Core/Src/settingModule.o
+ .data          0x0000000000000000        0x0 Core/Src/settingModule.o
+ .bss           0x0000000000000000        0x0 Core/Src/settingModule.o
+ .text.modeRX   0x0000000000000000       0x14 Core/Src/settingModule.o
+ .text.modeTX   0x0000000000000000       0x14 Core/Src/settingModule.o
+ .text.modeStandby
+                0x0000000000000000        0xc Core/Src/settingModule.o
+ .debug_info    0x0000000000000000      0x659 Core/Src/settingModule.o
+ .debug_abbrev  0x0000000000000000      0x13e Core/Src/settingModule.o
+ .debug_aranges
+                0x0000000000000000       0x30 Core/Src/settingModule.o
+ .debug_ranges  0x0000000000000000       0x20 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x1b7 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0xa5a Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x215 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x2e Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x22 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x22 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x8e Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x51 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0xef Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x6a Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x1df Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x1c Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x22 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0xc3 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0xd23 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000     0xe09e Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x43 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x174 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x5a Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x5be Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x289 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x1cb Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x114 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x1b2 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x27 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x136 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x1bc Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x34 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x3c Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x57 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x88 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x241 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x141 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x217 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x83 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000       0x52 Core/Src/settingModule.o
+ .debug_macro   0x0000000000000000      0x252 Core/Src/settingModule.o
+ .debug_line    0x0000000000000000      0x653 Core/Src/settingModule.o
+ .debug_str     0x0000000000000000    0x64b50 Core/Src/settingModule.o
+ .comment       0x0000000000000000       0x7c Core/Src/settingModule.o
+ .debug_frame   0x0000000000000000       0x64 Core/Src/settingModule.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Core/Src/settingModule.o
  .group         0x0000000000000000        0xc Core/Src/spi.o
  .group         0x0000000000000000        0xc Core/Src/spi.o
  .group         0x0000000000000000        0xc Core/Src/spi.o
@@ -2256,6 +2347,7 @@ LOAD c:/st/stm32cubeide_1.2.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
 LOAD Core/Src/controleModule.o
 LOAD Core/Src/gpio.o
 LOAD Core/Src/main.o
+LOAD Core/Src/settingModule.o
 LOAD Core/Src/spi.o
 LOAD Core/Src/stm32f1xx_hal_msp.o
 LOAD Core/Src/stm32f1xx_it.o
@@ -2772,97 +2864,97 @@ OUTPUT(nRF24L01_lib_v0.elf elf32-littlearm)
  .debug_ranges  0x0000000000000360       0x80 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .debug_ranges  0x00000000000003e0      0x1c0 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
 
-.debug_macro    0x0000000000000000    0x12fa4
+.debug_macro    0x0000000000000000    0x12fac
  .debug_macro   0x0000000000000000      0x1af Core/Src/controleModule.o
  .debug_macro   0x00000000000001af      0xa5a Core/Src/controleModule.o
- .debug_macro   0x0000000000000c09      0x252 Core/Src/controleModule.o
- .debug_macro   0x0000000000000e5b      0x215 Core/Src/controleModule.o
- .debug_macro   0x0000000000001070       0x2e Core/Src/controleModule.o
- .debug_macro   0x000000000000109e       0x22 Core/Src/controleModule.o
- .debug_macro   0x00000000000010c0       0x22 Core/Src/controleModule.o
- .debug_macro   0x00000000000010e2       0x8e Core/Src/controleModule.o
- .debug_macro   0x0000000000001170       0x51 Core/Src/controleModule.o
- .debug_macro   0x00000000000011c1       0xef Core/Src/controleModule.o
- .debug_macro   0x00000000000012b0       0x6a Core/Src/controleModule.o
- .debug_macro   0x000000000000131a      0x1df Core/Src/controleModule.o
- .debug_macro   0x00000000000014f9       0x1c Core/Src/controleModule.o
- .debug_macro   0x0000000000001515       0x22 Core/Src/controleModule.o
- .debug_macro   0x0000000000001537       0xc3 Core/Src/controleModule.o
- .debug_macro   0x00000000000015fa      0xd23 Core/Src/controleModule.o
- .debug_macro   0x000000000000231d     0xe09e Core/Src/controleModule.o
- .debug_macro   0x00000000000103bb       0x43 Core/Src/controleModule.o
- .debug_macro   0x00000000000103fe      0x174 Core/Src/controleModule.o
- .debug_macro   0x0000000000010572       0x5a Core/Src/controleModule.o
- .debug_macro   0x00000000000105cc      0x5be Core/Src/controleModule.o
- .debug_macro   0x0000000000010b8a      0x289 Core/Src/controleModule.o
- .debug_macro   0x0000000000010e13      0x1cb Core/Src/controleModule.o
- .debug_macro   0x0000000000010fde      0x114 Core/Src/controleModule.o
- .debug_macro   0x00000000000110f2      0x1b2 Core/Src/controleModule.o
- .debug_macro   0x00000000000112a4       0x27 Core/Src/controleModule.o
- .debug_macro   0x00000000000112cb      0x136 Core/Src/controleModule.o
- .debug_macro   0x0000000000011401      0x1bc Core/Src/controleModule.o
- .debug_macro   0x00000000000115bd       0x34 Core/Src/controleModule.o
- .debug_macro   0x00000000000115f1       0x3c Core/Src/controleModule.o
- .debug_macro   0x000000000001162d       0x57 Core/Src/controleModule.o
- .debug_macro   0x0000000000011684       0x88 Core/Src/controleModule.o
- .debug_macro   0x000000000001170c      0x241 Core/Src/controleModule.o
- .debug_macro   0x000000000001194d      0x141 Core/Src/controleModule.o
- .debug_macro   0x0000000000011a8e      0x217 Core/Src/controleModule.o
- .debug_macro   0x0000000000011ca5       0x83 Core/Src/controleModule.o
- .debug_macro   0x0000000000011d28       0x52 Core/Src/controleModule.o
+ .debug_macro   0x0000000000000c09      0x215 Core/Src/controleModule.o
+ .debug_macro   0x0000000000000e1e       0x2e Core/Src/controleModule.o
+ .debug_macro   0x0000000000000e4c       0x22 Core/Src/controleModule.o
+ .debug_macro   0x0000000000000e6e       0x22 Core/Src/controleModule.o
+ .debug_macro   0x0000000000000e90       0x8e Core/Src/controleModule.o
+ .debug_macro   0x0000000000000f1e       0x51 Core/Src/controleModule.o
+ .debug_macro   0x0000000000000f6f       0xef Core/Src/controleModule.o
+ .debug_macro   0x000000000000105e       0x6a Core/Src/controleModule.o
+ .debug_macro   0x00000000000010c8      0x1df Core/Src/controleModule.o
+ .debug_macro   0x00000000000012a7       0x1c Core/Src/controleModule.o
+ .debug_macro   0x00000000000012c3       0x22 Core/Src/controleModule.o
+ .debug_macro   0x00000000000012e5       0xc3 Core/Src/controleModule.o
+ .debug_macro   0x00000000000013a8      0xd23 Core/Src/controleModule.o
+ .debug_macro   0x00000000000020cb     0xe09e Core/Src/controleModule.o
+ .debug_macro   0x0000000000010169       0x43 Core/Src/controleModule.o
+ .debug_macro   0x00000000000101ac      0x174 Core/Src/controleModule.o
+ .debug_macro   0x0000000000010320       0x5a Core/Src/controleModule.o
+ .debug_macro   0x000000000001037a      0x5be Core/Src/controleModule.o
+ .debug_macro   0x0000000000010938      0x289 Core/Src/controleModule.o
+ .debug_macro   0x0000000000010bc1      0x1cb Core/Src/controleModule.o
+ .debug_macro   0x0000000000010d8c      0x114 Core/Src/controleModule.o
+ .debug_macro   0x0000000000010ea0      0x1b2 Core/Src/controleModule.o
+ .debug_macro   0x0000000000011052       0x27 Core/Src/controleModule.o
+ .debug_macro   0x0000000000011079      0x136 Core/Src/controleModule.o
+ .debug_macro   0x00000000000111af      0x1bc Core/Src/controleModule.o
+ .debug_macro   0x000000000001136b       0x34 Core/Src/controleModule.o
+ .debug_macro   0x000000000001139f       0x3c Core/Src/controleModule.o
+ .debug_macro   0x00000000000113db       0x57 Core/Src/controleModule.o
+ .debug_macro   0x0000000000011432       0x88 Core/Src/controleModule.o
+ .debug_macro   0x00000000000114ba      0x241 Core/Src/controleModule.o
+ .debug_macro   0x00000000000116fb      0x141 Core/Src/controleModule.o
+ .debug_macro   0x000000000001183c      0x217 Core/Src/controleModule.o
+ .debug_macro   0x0000000000011a53       0x83 Core/Src/controleModule.o
+ .debug_macro   0x0000000000011ad6       0x52 Core/Src/controleModule.o
+ .debug_macro   0x0000000000011b28      0x252 Core/Src/controleModule.o
  .debug_macro   0x0000000000011d7a      0x1a2 Core/Src/gpio.o
- .debug_macro   0x0000000000011f1c      0x1df Core/Src/main.o
- .debug_macro   0x00000000000120fb      0x1a2 Core/Src/spi.o
- .debug_macro   0x000000000001229d      0x198 Core/Src/stm32f1xx_hal_msp.o
- .debug_macro   0x0000000000012435      0x1a2 Core/Src/stm32f1xx_it.o
- .debug_macro   0x00000000000125d7      0x18b Core/Src/system_stm32f1xx.o
- .debug_macro   0x0000000000012762      0x1a9 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
- .debug_macro   0x000000000001290b      0x185 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
- .debug_macro   0x0000000000012a90      0x1f0 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
- .debug_macro   0x0000000000012c80      0x197 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
- .debug_macro   0x0000000000012e17      0x18d Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
+ .debug_macro   0x0000000000011f1c      0x1e7 Core/Src/main.o
+ .debug_macro   0x0000000000012103      0x1a2 Core/Src/spi.o
+ .debug_macro   0x00000000000122a5      0x198 Core/Src/stm32f1xx_hal_msp.o
+ .debug_macro   0x000000000001243d      0x1a2 Core/Src/stm32f1xx_it.o
+ .debug_macro   0x00000000000125df      0x18b Core/Src/system_stm32f1xx.o
+ .debug_macro   0x000000000001276a      0x1a9 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+ .debug_macro   0x0000000000012913      0x185 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
+ .debug_macro   0x0000000000012a98      0x1f0 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_macro   0x0000000000012c88      0x197 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_macro   0x0000000000012e1f      0x18d Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
 
-.debug_line     0x0000000000000000     0x5e3a
+.debug_line     0x0000000000000000     0x5e4d
  .debug_line    0x0000000000000000      0x709 Core/Src/controleModule.o
  .debug_line    0x0000000000000709      0x621 Core/Src/gpio.o
- .debug_line    0x0000000000000d2a      0x6a4 Core/Src/main.o
- .debug_line    0x00000000000013ce      0x63a Core/Src/spi.o
- .debug_line    0x0000000000001a08      0x605 Core/Src/stm32f1xx_hal_msp.o
- .debug_line    0x000000000000200d      0x6ba Core/Src/stm32f1xx_it.o
- .debug_line    0x00000000000026c7      0x635 Core/Src/system_stm32f1xx.o
- .debug_line    0x0000000000002cfc       0x84 Core/Startup/startup_stm32f103rbtx.o
- .debug_line    0x0000000000002d80      0x7dd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
- .debug_line    0x000000000000355d      0x8b6 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
- .debug_line    0x0000000000003e13      0x7dd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
- .debug_line    0x00000000000045f0      0x89f Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
- .debug_line    0x0000000000004e8f      0xfab Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
+ .debug_line    0x0000000000000d2a      0x6b7 Core/Src/main.o
+ .debug_line    0x00000000000013e1      0x63a Core/Src/spi.o
+ .debug_line    0x0000000000001a1b      0x605 Core/Src/stm32f1xx_hal_msp.o
+ .debug_line    0x0000000000002020      0x6ba Core/Src/stm32f1xx_it.o
+ .debug_line    0x00000000000026da      0x635 Core/Src/system_stm32f1xx.o
+ .debug_line    0x0000000000002d0f       0x84 Core/Startup/startup_stm32f103rbtx.o
+ .debug_line    0x0000000000002d93      0x7dd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+ .debug_line    0x0000000000003570      0x8b6 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
+ .debug_line    0x0000000000003e26      0x7dd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_line    0x0000000000004603      0x89f Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_line    0x0000000000004ea2      0xfab Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
 
-.debug_str      0x0000000000000000    0x66172
- .debug_str     0x0000000000000000    0x64908 Core/Src/controleModule.o
-                                      0x64c61 (size before relaxing)
- .debug_str     0x0000000000064908      0x2ec Core/Src/gpio.o
+.debug_str      0x0000000000000000    0x66175
+ .debug_str     0x0000000000000000    0x6490b Core/Src/controleModule.o
+                                      0x64c64 (size before relaxing)
+ .debug_str     0x000000000006490b      0x2ec Core/Src/gpio.o
                                       0x6452f (size before relaxing)
- .debug_str     0x0000000000064bf4      0x1d4 Core/Src/main.o
-                                      0x64cf3 (size before relaxing)
- .debug_str     0x0000000000064dc8       0x4b Core/Src/spi.o
+ .debug_str     0x0000000000064bf7      0x1d4 Core/Src/main.o
+                                      0x64cf6 (size before relaxing)
+ .debug_str     0x0000000000064dcb       0x4b Core/Src/spi.o
                                       0x6463c (size before relaxing)
- .debug_str     0x0000000000064e13       0x5a Core/Src/stm32f1xx_hal_msp.o
+ .debug_str     0x0000000000064e16       0x5a Core/Src/stm32f1xx_hal_msp.o
                                       0x64212 (size before relaxing)
- .debug_str     0x0000000000064e6d       0xd2 Core/Src/stm32f1xx_it.o
+ .debug_str     0x0000000000064e70       0xd2 Core/Src/stm32f1xx_it.o
                                       0x64258 (size before relaxing)
- .debug_str     0x0000000000064f3f       0xc2 Core/Src/system_stm32f1xx.o
+ .debug_str     0x0000000000064f42       0xc2 Core/Src/system_stm32f1xx.o
                                       0x64174 (size before relaxing)
- .debug_str     0x0000000000065001       0x36 Core/Startup/startup_stm32f103rbtx.o
+ .debug_str     0x0000000000065004       0x36 Core/Startup/startup_stm32f103rbtx.o
                                          0x7b (size before relaxing)
- .debug_str     0x0000000000065037      0x3b3 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+ .debug_str     0x000000000006503a      0x3b3 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
                                       0x64785 (size before relaxing)
- .debug_str     0x00000000000653ea      0x2c8 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
+ .debug_str     0x00000000000653ed      0x2c8 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
                                       0x64793 (size before relaxing)
- .debug_str     0x00000000000656b2      0x324 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_str     0x00000000000656b5      0x324 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
                                       0x644be (size before relaxing)
- .debug_str     0x00000000000659d6      0x263 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_str     0x00000000000659d9      0x263 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
                                       0x644f7 (size before relaxing)
- .debug_str     0x0000000000065c39      0x539 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
+ .debug_str     0x0000000000065c3c      0x539 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
                                       0x649e5 (size before relaxing)
 
 .comment        0x0000000000000000       0x7b

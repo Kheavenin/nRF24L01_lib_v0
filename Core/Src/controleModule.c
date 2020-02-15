@@ -153,7 +153,6 @@ void resetBit(uint8_t addr, bitNum_t bit) {
 	writeRegister(addr, tmp);
 }
 
-
 /**
  * @Brief	Set low level on CSN line
  */

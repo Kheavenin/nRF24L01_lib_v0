@@ -1,7 +1,9 @@
-#include "regCmd.h"
 #include <main.h>
 #include <stdint.h>
 #include <stddef.h>
+
+#include "regCmd.h"
+
 
 #define SPI_TIMEOUT 10
 
@@ -18,7 +20,7 @@ uint8_t readRegister(uint8_t addr);
 void writeRegister(uint8_t addr, uint8_t val);
 
 
-uint8_t readBit(uint8_t addr, bitNum_t bit);	//TODO:  to refactoring
+uint8_t readBit(uint8_t addr, bitNum_t bit);
 void setBit(uint8_t addr, bitNum_t bit);
 void resetBit(uint8_t addr, bitNum_t bit);
 
@@ -29,9 +31,3 @@ void powerDown();
 /* Additional feature functions */
 uint8_t getStatus();
 
-/*
-void modeRX();
-void modeTX();
-
-
-*/

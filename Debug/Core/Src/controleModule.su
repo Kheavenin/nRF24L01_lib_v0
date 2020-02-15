@@ -6,7 +6,7 @@ controleModule.c:126:6:powerDown	8	static
 controleModule.c:133:9:readBit	24	static
 controleModule.c:141:6:setBit	24	static
 controleModule.c:150:6:resetBit	24	static
-controleModule.c:160:6:csnLow	8	static
-controleModule.c:167:6:csnHigh	8	static
-controleModule.c:174:6:ceLow	8	static
-controleModule.c:181:6:ceHigh	8	static
+controleModule.c:159:6:csnLow	8	static
+controleModule.c:166:6:csnHigh	8	static
+controleModule.c:173:6:ceLow	8	static
+controleModule.c:180:6:ceHigh	8	static
