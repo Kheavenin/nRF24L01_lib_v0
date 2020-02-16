@@ -149,7 +149,7 @@ void setBit(uint8_t addr, bitNum_t bit) {
  */
 void resetBit(uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readRegister(addr);
-	tmp |= 0 << bit;
+	tmp &= 0 << bit;		//zmieniono OR na AND
 	writeRegister(addr, tmp);
 }
 

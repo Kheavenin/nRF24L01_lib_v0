@@ -159,19 +159,17 @@ typedef enum {
 	RF_PWR_6dBm = 0x02,
 	RF_PWR_12dBm = 0x01,
 	RF_PWR_18dBm = 0x00
-} powerSetting_t;
+} powerRF_t;
 
 typedef enum {
-	RF_DataRate_250 = 0x02, RF_DataRate_1M = 0x00, RF_DataRate_2M = 0x01
-
+	RF_DataRate_250 = 0x04, RF_DataRate_1M = 0x00, RF_DataRate_2M = 0x01
 } dataRate_t;
 
-typedef enum {
-	shortWidth = 0x01, mediumWidth = 0x02, longWidth = 0x03
-} addressWidth_t;
 
 typedef enum {
 	CRC_8_bits = 0, CRC_16_bits = 1
 } widthCRC_t;
 
-
+typedef enum {
+	shortWidth = 0x01, mediumWidth = 0x02, longWidth = 0x03
+} addressWidth_t;

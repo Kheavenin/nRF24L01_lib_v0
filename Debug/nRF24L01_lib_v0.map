@@ -78,7 +78,7 @@ Discarded input sections
  .text.readBit  0x0000000000000000       0x34 Core/Src/controleModule.o
  .text.setBit   0x0000000000000000       0x44 Core/Src/controleModule.o
  .text.resetBit
-                0x0000000000000000       0x30 Core/Src/controleModule.o
+                0x0000000000000000       0x34 Core/Src/controleModule.o
  .text.ceLow    0x0000000000000000       0x18 Core/Src/controleModule.o
  .text.ceHigh   0x0000000000000000       0x18 Core/Src/controleModule.o
  .group         0x0000000000000000        0xc Core/Src/gpio.o
@@ -311,11 +311,45 @@ Discarded input sections
                 0x0000000000000000       0x30 Core/Src/settingModule.o
  .text.enableRxAddr
                 0x0000000000000000       0x30 Core/Src/settingModule.o
- .debug_info    0x0000000000000000      0x7ea Core/Src/settingModule.o
- .debug_abbrev  0x0000000000000000      0x1ae Core/Src/settingModule.o
+ .text.disableRxAddr
+                0x0000000000000000       0x30 Core/Src/settingModule.o
+ .text.setAddrWidth
+                0x0000000000000000       0x1c Core/Src/settingModule.o
+ .text.setAutoRetrCount
+                0x0000000000000000       0x42 Core/Src/settingModule.o
+ .text.setAutoRetrDelay
+                0x0000000000000000       0x56 Core/Src/settingModule.o
+ .text.setChannel
+                0x0000000000000000       0x28 Core/Src/settingModule.o
+ .text.enableContCarrier
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.disableContCarrier
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.enableLockPLL
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.diableLockPLL
+                0x0000000000000000       0x10 Core/Src/settingModule.o
+ .text.setRFpower
+                0x0000000000000000       0x3e Core/Src/settingModule.o
+ .text.setDataRate
+                0x0000000000000000       0x3e Core/Src/settingModule.o
+ .text.checkTxFIFO
+                0x0000000000000000       0x1c Core/Src/settingModule.o
+ .text.checkRxFIFO
+                0x0000000000000000       0x4c Core/Src/settingModule.o
+ .text.lostPacketsCount
+                0x0000000000000000       0x1e Core/Src/settingModule.o
+ .text.retrPacketsCount
+                0x0000000000000000       0x20 Core/Src/settingModule.o
+ .text.checkRPD
+                0x0000000000000000       0x1a Core/Src/settingModule.o
+ .text.setReceivePipeAddress
+                0x0000000000000000       0x26 Core/Src/settingModule.o
+ .debug_info    0x0000000000000000      0xaeb Core/Src/settingModule.o
+ .debug_abbrev  0x0000000000000000      0x1f8 Core/Src/settingModule.o
  .debug_aranges
-                0x0000000000000000       0xa8 Core/Src/settingModule.o
- .debug_ranges  0x0000000000000000       0x98 Core/Src/settingModule.o
+                0x0000000000000000      0x130 Core/Src/settingModule.o
+ .debug_ranges  0x0000000000000000      0x120 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0x1b7 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0xa5a Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0x215 Core/Src/settingModule.o
@@ -353,10 +387,10 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x83 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000       0x52 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0x252 Core/Src/settingModule.o
- .debug_line    0x0000000000000000      0x764 Core/Src/settingModule.o
- .debug_str     0x0000000000000000    0x64c55 Core/Src/settingModule.o
+ .debug_line    0x0000000000000000      0x8bf Core/Src/settingModule.o
+ .debug_str     0x0000000000000000    0x64e1d Core/Src/settingModule.o
  .comment       0x0000000000000000       0x7c Core/Src/settingModule.o
- .debug_frame   0x0000000000000000      0x234 Core/Src/settingModule.o
+ .debug_frame   0x0000000000000000      0x468 Core/Src/settingModule.o
  .ARM.attributes
                 0x0000000000000000       0x33 Core/Src/settingModule.o
  .group         0x0000000000000000        0xc Core/Src/spi.o
@@ -2943,20 +2977,20 @@ OUTPUT(nRF24L01_lib_v0.elf elf32-littlearm)
  .debug_macro   0x0000000000012c88      0x197 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
  .debug_macro   0x0000000000012e1f      0x18d Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
 
-.debug_line     0x0000000000000000     0x5e4d
- .debug_line    0x0000000000000000      0x709 Core/Src/controleModule.o
- .debug_line    0x0000000000000709      0x621 Core/Src/gpio.o
- .debug_line    0x0000000000000d2a      0x6b7 Core/Src/main.o
- .debug_line    0x00000000000013e1      0x63a Core/Src/spi.o
- .debug_line    0x0000000000001a1b      0x605 Core/Src/stm32f1xx_hal_msp.o
- .debug_line    0x0000000000002020      0x6ba Core/Src/stm32f1xx_it.o
- .debug_line    0x00000000000026da      0x635 Core/Src/system_stm32f1xx.o
- .debug_line    0x0000000000002d0f       0x84 Core/Startup/startup_stm32f103rbtx.o
- .debug_line    0x0000000000002d93      0x7dd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
- .debug_line    0x0000000000003570      0x8b6 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
- .debug_line    0x0000000000003e26      0x7dd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
- .debug_line    0x0000000000004603      0x89f Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
- .debug_line    0x0000000000004ea2      0xfab Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
+.debug_line     0x0000000000000000     0x5e4e
+ .debug_line    0x0000000000000000      0x70a Core/Src/controleModule.o
+ .debug_line    0x000000000000070a      0x621 Core/Src/gpio.o
+ .debug_line    0x0000000000000d2b      0x6b7 Core/Src/main.o
+ .debug_line    0x00000000000013e2      0x63a Core/Src/spi.o
+ .debug_line    0x0000000000001a1c      0x605 Core/Src/stm32f1xx_hal_msp.o
+ .debug_line    0x0000000000002021      0x6ba Core/Src/stm32f1xx_it.o
+ .debug_line    0x00000000000026db      0x635 Core/Src/system_stm32f1xx.o
+ .debug_line    0x0000000000002d10       0x84 Core/Startup/startup_stm32f103rbtx.o
+ .debug_line    0x0000000000002d94      0x7dd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+ .debug_line    0x0000000000003571      0x8b6 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
+ .debug_line    0x0000000000003e27      0x7dd Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_line    0x0000000000004604      0x89f Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_line    0x0000000000004ea3      0xfab Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
 
 .debug_str      0x0000000000000000    0x66175
  .debug_str     0x0000000000000000    0x6490b Core/Src/controleModule.o
