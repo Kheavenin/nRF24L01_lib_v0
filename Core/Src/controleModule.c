@@ -88,30 +88,38 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	csnHigh();
 }
 
-/**
- * @Brief	Get Status Register.
- * @Retval	Return value of Status Register
- */
-uint8_t getStatus() {
-	uint8_t cmd = NOP;
+
+/* Multi bytes read/write register functions */
+void multiRead(uint8_t addr, uint8_t *buf, size_t bufSize) {
+	uint8_t cmd = R_REGISTER | addr;
 	uint8_t *pCmd = &cmd;
 	size_t cmdSize = sizeof(cmd);
-
-	uint8_t reg = 0;
-	uint8_t *pReg = &reg;
-	size_t regSize = sizeof(reg);
-
 	csnLow();
 
 	HAL_StatusTypeDef statusRead;
 	HAL_StatusTypeDef statusCmd;
 	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
 	HAL_Delay(1);
-	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+	statusRead = HAL_SPI_Receive(&hspi1, bufSize, SPI_TIMEOUT);
 
 	csnHigh();
-	return reg;
 }
+void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize) {
+	uint8_t cmd = W_REGISTER | addr;
+	uint8_t *pCmd = &cmd;
+	size_t cmdSize = sizeof(cmd);
+	csnLow();
+
+	HAL_StatusTypeDef statusSend;
+	HAL_StatusTypeDef statusRead;
+	statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	HAL_Delay(1);
+	statusRead = HAL_SPI_Transmit(&hspi1, buf, bufSize, SPI_TIMEOUT);
+
+	csnHigh();
+}
+
+
 
 /**
  * @Brief	Turn on nRF24L01+ module
@@ -179,4 +187,29 @@ void ceLow() {
  */
 void ceHigh() {
 	HAL_GPIO_WritePin(CE_GPIO_Port, CE_Pin, GPIO_PIN_SET);
+}
+
+/**
+ * @Brief	Get Status Register.
+ * @Retval	Return value of Status Register
+ */
+uint8_t getStatus() {
+	uint8_t cmd = NOP;
+	uint8_t *pCmd = &cmd;
+	size_t cmdSize = sizeof(cmd);
+
+	uint8_t reg = 0;
+	uint8_t *pReg = &reg;
+	size_t regSize = sizeof(reg);
+
+	csnLow();
+
+	HAL_StatusTypeDef statusRead;
+	HAL_StatusTypeDef statusCmd;
+	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	HAL_Delay(1);
+	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+
+	csnHigh();
+	return reg;
 }
