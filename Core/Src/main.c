@@ -38,8 +38,8 @@
 /* USER CODE BEGIN PD */
 #define TEST_0 1
 #define TEST_1 0
-#define TEST_2 1
-#define TEST_3 0
+#define TEST_2 0
+#define TEST_3 1
 
 #define addrBufSize 5
 /* USER CODE END PD */
@@ -167,6 +167,20 @@ int main(void)
 		HAL_Delay(100);
 #endif
 #if TEST_3
+
+		readRegister(CONFIG);
+		HAL_Delay(100);
+		setReceivePipeAddress(3, addrWrite, sizeof(addrWrite));
+		HAL_Delay(100);
+		multiRead(RX_ADDR_P0, addrRead, sizeof(addrRead));
+		HAL_Delay(100);
+		multiRead(TX_ADDR, addrRead, sizeof(addrRead));
+		HAL_Delay(100);
+		setTransmitPipeAddress(addrWrite, sizeof(addrWrite));
+		HAL_Delay(100);
+		multiRead(TX_ADDR, addrRead, sizeof(addrRead));
+		HAL_Delay(100);
+
 #endif
 
     /* USER CODE END WHILE */

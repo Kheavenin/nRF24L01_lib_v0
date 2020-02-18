@@ -194,6 +194,7 @@ uint8_t checkRxFIFO() {	//TODO: pomyslec nad kodem zwracanym gdy RX FIFO empty
 		return 7;
 	if (tmp == 0x06)	//110B - mean not used
 		return -1;		//return ERR
+	return -1;
 }
 
 /* Transmit observe */
@@ -217,11 +218,38 @@ uint8_t checkRPD() {
 
 
 /* Receive Address data pipe */
-uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addr[]) {//TODO: create multiByte read/write functions
-	if (checkPipe(pipe)) {
-		return 1;
+/**
+ * @Brief	Write receiver address of pipe
+ * @Param	Number of pipe
+ * @Param	Pointer to buffer with address
+ * @Param	Size of address's buffer
+ * @Note	Remember that addresses registers for pipes from 2 to 5 are 1 byte only.
+ * 			Also registers for pipe 0 and 1 can have size of from 3 to 5 bytes.
+ */
+uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addrBuf,
+		size_t addrBufSize) {
+	if (!checkPipe(pipe)) {	//if checkPipe return 0 - end fun. by return 0.
+		return 0;
 	}
+	uint8_t addr = RX_ADDR_P0 + pipe;//if pipe = 0 -> write Receive address pipe 0
+	if (pipe >= 2 && pipe <= 5) {
+		if (addrBufSize != 1) {
+			return 0;
+		}
+	}
+	multiWrite(addr, addrBuf, addrBufSize);
+	return 1;
 }
+
+/* Transmit address data pipe */
+uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize) {
+	if (addrBufSize != 5) {
+		return 0;					//if addrBufSize isn't 5 bytes retun 0
+	}
+	multiWrite(TX_ADDR, addrBuf, addrBufSize);
+	return 1;
+}
+
 
 
 

@@ -69,9 +69,10 @@ uint8_t retrPacketsCount();
 uint8_t checkRPD();
 
 /* Receive Address data pipe */
-uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addr[]);
+uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addr, size_t addrBufSize);
 
-
+/* Transmit address data pipe */
+uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize);
 
 
 
