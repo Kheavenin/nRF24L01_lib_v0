@@ -37,10 +37,11 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define TEST_0 1
-#define TEST_1 1
-#define TEST_2 0
+#define TEST_1 0
+#define TEST_2 1
 #define TEST_3 0
 
+#define addrBufSize 5
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -65,6 +66,10 @@ uint8_t retrRegTmp = 0;
 uint16_t regAddrMax = 0x1D;
 uint8_t regTmp = 0;
 
+uint8_t addrRead[addrBufSize];
+uint8_t addrWrite[addrBufSize] = { 'A', 'B', 'C', 'D', 'E' };
+uint8_t *pAddrRead = addrRead;
+uint8_t *pAddrWrite = addrWrite;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -151,6 +156,15 @@ int main(void)
 #endif
 
 #if TEST_2
+		/*
+		 * test of multi register write read
+		 */
+		readRegister(CONFIG);
+		HAL_Delay(100);
+		multiRead(RX_ADDR_P0, pAddrRead, sizeof(addrRead));
+		HAL_Delay(100);
+		multiWrite(RX_ADDR_P0, pAddrWrite, sizeof(addrWrite));
+		HAL_Delay(100);
 #endif
 #if TEST_3
 #endif

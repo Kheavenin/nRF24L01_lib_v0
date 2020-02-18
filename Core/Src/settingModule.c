@@ -162,6 +162,7 @@ void diableLockPLL() {
 	resetBit(RF_SETUP, bit4);
 }
 
+
 void setRFpower(powerRF_t power) {
 	uint8_t tmp = readRegister(RF_SETUP);		//
 	tmp = tmp & 0xF8;							//0xF8 - 1111 1000B reset 3 LSB
@@ -193,7 +194,6 @@ uint8_t checkRxFIFO() {	//TODO: pomyslec nad kodem zwracanym gdy RX FIFO empty
 		return 7;
 	if (tmp == 0x06)	//110B - mean not used
 		return -1;		//return ERR
-
 }
 
 /* Transmit observe */

@@ -25,10 +25,10 @@ settingModule.c:152:6:enableContCarrier	8	static
 settingModule.c:155:6:disableContCarrier	8	static
 settingModule.c:158:6:enableLockPLL	8	static
 settingModule.c:161:6:diableLockPLL	8	static
-settingModule.c:165:6:setRFpower	24	static
-settingModule.c:172:6:setDataRate	24	static
-settingModule.c:180:9:checkTxFIFO	8	static
-settingModule.c:186:9:checkRxFIFO	16	static
+settingModule.c:166:6:setRFpower	24	static
+settingModule.c:173:6:setDataRate	24	static
+settingModule.c:181:9:checkTxFIFO	8	static
+settingModule.c:187:9:checkRxFIFO	16	static
 settingModule.c:200:9:lostPacketsCount	16	static
 settingModule.c:205:9:retrPacketsCount	16	static
 settingModule.c:211:9:checkRPD	8	static

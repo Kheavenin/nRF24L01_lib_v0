@@ -100,7 +100,7 @@ void multiRead(uint8_t addr, uint8_t *buf, size_t bufSize) {
 	HAL_StatusTypeDef statusCmd;
 	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
 	HAL_Delay(1);
-	statusRead = HAL_SPI_Receive(&hspi1, bufSize, SPI_TIMEOUT);
+	statusRead = HAL_SPI_Receive(&hspi1, buf, bufSize, SPI_TIMEOUT);
 
 	csnHigh();
 }
