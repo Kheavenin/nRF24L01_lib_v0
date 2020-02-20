@@ -10,15 +10,15 @@ void modeTX();
 void modeStandby();
 
 /* Interrupts */
-void disableTXinterrupt();	//mask data send interrupt
-void disableRXinterrupt();	//mask data receive interrupt
-void disableRTinterrupt();	//mask data retransmition interrupt
+void disableTXinterrupt(); //mask data send interrupt
+void disableRXinterrupt(); //mask data receive interrupt
+void disableRTinterrupt(); //mask data retransmition interrupt
 
-void enableTXinterrupt();	//dont mask data send interrupt
-void enableRXinterrupt();	//dont mask data receive interrupt
-void enableRTinterrupt();	//dont mask data retransmition interrupt
+void enableTXinterrupt(); //dont mask data send interrupt
+void enableRXinterrupt(); //dont mask data receive interrupt
+void enableRTinterrupt(); //dont mask data retransmition interrupt
 
-void clearRX_DR();		//clear irt bits in Status Register
+void clearRX_DR(); //clear irt bits in Status Register
 void clearTX_DS();
 void clearMAX_RT();
 
@@ -54,42 +54,40 @@ void disableContCarrier();
 void enableLockPLL();
 void diableLockPLL();
 
-void setRFpower(powerRF_t power);
-void setDataRate(dataRate_t rate);
+void setRFpower(powerRF_t power);  //TODO: to tests
+void setDataRate(dataRate_t rate); //TODO: to tests
 
 /* Status */
-uint8_t checkTxFIFO();
-uint8_t checkRxFIFO();
+uint8_t getStatusFullTxFIFO(); //TODO: to tests
+uint8_t getPipeStatusRxFIFO(); //TODO: to tests
 
 /* Transmit observe */
-uint8_t lostPacketsCount();
-uint8_t retrPacketsCount();
+uint8_t lostPacketsCount(); //TODO: to tests
+uint8_t retrPacketsCount(); //TODO: to tests
 
 /* RPD - for test use only */
 uint8_t checkRPD();
 
 /* Receive Address data pipe */
-uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addr, size_t addrBufSize);
+uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addr, size_t addrBufSize); //TODO: to tests
 
 /* Transmit address data pipe */
-uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize);
+uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize); //TODO: to tests
 
+/* TX and RX FIFO */
+uint8_t getkRxStatusFIFO(); //TODO: to tests
+uint8_t getTxStatusFIFO();  //TODO: to tests
+uint8_t getTxReuse();       //TODO: to tests
 
+/* DYNPD */
+uint8_t enableDynamicPayloadLengthPipe(uint8_t pipe);  //TODO: to tests
+uint8_t disableDynamicPayloadLengthPipe(uint8_t pipe); //TODO: to tests
 
+/* Feature */
+void enableDynamicPayloadLength();  //TODO: to tests
+void disableDynamicPayloadLength(); //TODO: to tests
 
+void enableAckPayload();  //TODO: to tests
+void disableAckPayload(); //TODO: to tests
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void enableDynamicAck(); //TODO: to tests
