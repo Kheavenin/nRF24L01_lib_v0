@@ -153,5 +153,26 @@ bool test_ReciveAddress(void) {
 }
 
 bool test_TransmitAddress(void) {
-	return FALL;
+	uint8_t buf[] = { 'a', 'b', 'c', 'd', 'e' };
+	uint8_t *addrBuf = buf;
+
+	uint16_t fallCounter = 0;
+	uint8_t inputDataStatus = OK_CODE;
+	uint8_t var;
+	uint8_t max = 10;
+
+	for (var = 0; var < max; var++) {
+		inputDataStatus = setTransmitPipeAddress(addrBuf, var);
+		if (inputDataStatus == ERR_CODE)
+			fallCounter++;
+	}
+	if (fallCounter < 9) {
+		return FALL;
+	}
+	uint8_t testBuf[5];
+	multiRead(TX_ADDR, testBuf, sizeof(testBuf));
+	if (buf[4] != testBuf[4] && buf[3] != testBuf[3]) {
+		return FALL;
+	}
+	return PASS;
 }

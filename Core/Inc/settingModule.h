@@ -74,6 +74,10 @@ uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addr, size_t addrBufSize); 
 /* Transmit address data pipe */
 uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize); //TODO: to tests
 
+/* Payload width of each pipes */
+uint8_t getRxPayloadWidth(uint8_t pipe);				//TODO: to tests
+uint8_t setRxPayload(uint8_t pipe, uint8_t width);		//TODO: to tests
+
 /* TX and RX FIFO */
 uint8_t getkRxStatusFIFO(); //TODO: to tests
 uint8_t getTxStatusFIFO();  //TODO: to tests

@@ -308,11 +308,10 @@ uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize)
 }
 
 /* RX Payload width */
-uint8_t getRxPayload(uint8_t pipe)
-{ //TODO: to tests
+uint8_t getRxPayloadWidth(uint8_t pipe) {
 	if (checkPipe(pipe))
 	{
-      uint8_t addr = RX_PW_P0 + pipe;
+		uint8_t addr = RX_PW_P0 + pipe;
 		return readRegister(addr);
 	}
   return ERR_CODE;
