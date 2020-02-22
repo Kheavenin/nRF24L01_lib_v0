@@ -31,9 +31,5 @@ void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize); //TODO: to test
 void powerUp(); //Fixed
 void powerDown();
 
-/* 
-
-
-
 /* Additional feature functions */
 uint8_t getStatus();

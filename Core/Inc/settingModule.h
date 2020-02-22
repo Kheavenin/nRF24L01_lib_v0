@@ -54,7 +54,7 @@ void disableContCarrier();
 void enableLockPLL();
 void diableLockPLL();
 
-void setRFpower(powerRF_t power);  //TODO: to tests
+void setRFpower(powerRF_t power);
 void setDataRate(dataRate_t rate); //TODO: to tests
 
 /* Status */

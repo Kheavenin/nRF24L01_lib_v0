@@ -154,6 +154,7 @@ typedef enum
 #define W_TX_PAYLOAD_NO_ACK 0xB0
 #define NOP 0xFF
 
+/* power enum typedef */
 typedef enum
 {
 	RF_PWR_0dBm = 0x03,
@@ -162,6 +163,7 @@ typedef enum
 	RF_PWR_18dBm = 0x00
 } powerRF_t;
 
+/* data rate enum typedef */
 typedef enum
 {
 	RF_DataRate_250 = 0x04,

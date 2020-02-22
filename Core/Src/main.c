@@ -26,7 +26,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 //#include "controleModule.h"
-#include "settingModule.h"
+//#include "settingModule.h" //TODO: commented to include in test block
+
+#include "nRF24L01_test-lib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -37,9 +39,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define TEST_0 1
-#define TEST_1 0
+#define TEST_LIB 1
 #define TEST_2 0
-#define TEST_3 1
+#define TEST_3 0
 
 #define addrBufSize 5
 /* USER CODE END PD */
@@ -127,59 +129,9 @@ int main(void)
 #endif
 
 	while (1) {
-
-
-#if TEST_1
-		testCounter++;
-		if (testCounter == thr1) {
-			uint8_t i;
-			for (i = 0; i < 0x07; ++i) {
-				writeRegister(i, 0x07);
-			}
-		}
-		if (testCounter == thr2) {
-			uint8_t i;
-			for (i = 0; i < 0x07; ++i) {
-				regTmp = readRegister(i);
-			}
-		}
-		if (testCounter == thr3) {
-			uint8_t i;
-			for (i = 0; i < 0x07; ++i) {
-				writeRegister(CONFIG, 0x07);
-			}
-			regTmp = readRegister(CONFIG);
-		}
-		if (testCounter == thr4) {
-			testCounter = 0;
-		}
-#endif
-
-#if TEST_2
-		/*
-		 * test of multi register write read
-		 */
-		readRegister(CONFIG);
-		HAL_Delay(100);
-		multiRead(RX_ADDR_P0, pAddrRead, sizeof(addrRead));
-		HAL_Delay(100);
-		multiWrite(RX_ADDR_P0, pAddrWrite, sizeof(addrWrite));
-		HAL_Delay(100);
-#endif
-#if TEST_3
-
-		readRegister(CONFIG);
-		HAL_Delay(100);
-		setReceivePipeAddress(3, addrWrite, sizeof(addrWrite));
-		HAL_Delay(100);
-		multiRead(RX_ADDR_P0, addrRead, sizeof(addrRead));
-		HAL_Delay(100);
-		multiRead(TX_ADDR, addrRead, sizeof(addrRead));
-		HAL_Delay(100);
-		setTransmitPipeAddress(addrWrite, sizeof(addrWrite));
-		HAL_Delay(100);
-		multiRead(TX_ADDR, addrRead, sizeof(addrRead));
-		HAL_Delay(100);
+#if TEST_LIB
+		uint8_t testVal = test_RFchannel();
+		testVal = test_RFpower();
 
 #endif
 

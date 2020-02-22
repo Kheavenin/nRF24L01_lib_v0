@@ -145,9 +145,9 @@ uint8_t setAutoRetrCount(uint8_t count)
 		tmp = tmp & 0xF0;						// reset LSB and save MSB
 		tmp |= count;							//add tmp and count
 		writeRegister(SETUP_RETR, tmp);			//write to SETUP_RETR
-		return 1;
+		return OK_CODE;
 	}
-	return 0;
+	return ERR_CODE;
 }
 
 uint8_t setAutoRetrDelay(uint8_t delay)
@@ -162,9 +162,9 @@ uint8_t setAutoRetrDelay(uint8_t delay)
 		tmp = tmp & 0x0F;	//save LSB, reset MSB
 		tmp |= (delay << 8); //add tmp and delay
 		writeRegister(SETUP_RETR, tmp);
-		return 1;
+		return OK_CODE;
 	}
-	return 0;
+	return ERR_CODE;
 }
 
 /* RF channel */
@@ -173,9 +173,9 @@ uint8_t setChannel(uint8_t channel)
 	if (channel >= 0 && channel <= 125)
 	{
 		writeRegister(RF_CH, channel); //Maximum channel limited to 125 by hardware
-		return 1;
+		return OK_CODE;
 	}
-	return 0;
+	return ERR_CODE;
 }
 
 /* RF setup */
@@ -201,16 +201,20 @@ void diableLockPLL()
 
 void setRFpower(powerRF_t power)
 {
+	/*
+	if (power > RF_PWR_0dBm && power < RF_PWR_18dBm)
+	 return ERR_CODE;*/
 	uint8_t tmp = readRegister(RF_SETUP); //
 	tmp = tmp & 0xF8;					  //0xF8 - 1111 1000B reset 3 LSB
 	tmp = tmp | (power << 1);			  //combining tmp and shifted power
 	writeRegister(RF_SETUP, tmp);
+	/* return OK_CODE; */
 }
 
 void setDataRate(dataRate_t rate)
 {
-	uint8_t tmp = readRegister(RF_SETUP); //
-	tmp = tmp & 0x06;					  //0x86 = 0000 0110B - reset data rate's bits - Also this line reset PLL_LOCK and CONT_WAVE bits
+	uint8_t tmp = readRegister(RF_SETUP); 	//
+	tmp = tmp & 0x06;//0x06 = 0000 0110B - reset data rate's bits - Also this line reset PLL_LOCK and CONT_WAVE bits
 	tmp = tmp | (rate << 3);			  //combining tmp and shifted data rate
 	writeRegister(RF_SETUP, tmp);
 }
@@ -308,10 +312,10 @@ uint8_t getRxPayload(uint8_t pipe)
 { //TODO: to tests
 	if (checkPipe(pipe))
 	{
-		addr = RX_PW_P0 + pipe;
+      uint8_t addr = RX_PW_P0 + pipe;
 		return readRegister(addr);
 	}
-	return 0;
+  return ERR_CODE;
 }
 
 uint8_t setRxPayload(uint8_t pipe, uint8_t width)
@@ -320,12 +324,13 @@ uint8_t setRxPayload(uint8_t pipe, uint8_t width)
 	{
 		if (width < 1 && width > 32)
 		{ //check width correct value
-			return 0;
+	  return ERR_CODE;
 		}
-		addr = RX_PW_P0 + pipe;
+      uint8_t addr = RX_PW_P0 + pipe;
 		writeRegister(addr, width);
 		return 1;
 	}
+  return ERR_CODE;
 }
 
 /* FIFO status */
@@ -405,7 +410,6 @@ uint8_t disableDynamicPayloadLengthPipe(uint8_t pipe)
 	resetBit(DYNPD, pipe);
 	return OK_CODE;
 }
-
 /* Feature */
 void enableDynamicPayloadLength()
 {
@@ -422,7 +426,7 @@ void enableAckPayload()
 }
 void disableAckPayload()
 {
-	dissetBit(FEATURE, EN_ACK_PAY);
+  resetBit (FEATURE, EN_ACK_PAY);
 }
 
 /**

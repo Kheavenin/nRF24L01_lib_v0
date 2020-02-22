@@ -1,6 +1,7 @@
 "Core/Src/controleModule.o"
 "Core/Src/gpio.o"
 "Core/Src/main.o"
+"Core/Src/nRF24L01_test-lib.o"
 "Core/Src/settingModule.o"
 "Core/Src/spi.o"
 "Core/Src/stm32f1xx_hal_msp.o"
