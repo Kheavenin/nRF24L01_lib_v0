@@ -132,6 +132,9 @@ int main(void)
 #if TEST_LIB
 		uint8_t testVal = test_RFchannel();
 		testVal = test_RFpower();
+		testVal = test_RFdataRate();
+		testVal = test_ReciveAddress();
+		testVal = test_TransmitAddress();
 
 #endif
 

@@ -18,6 +18,7 @@
 bool test_RFchannel(void);
 bool test_RFpower(void);
 bool test_RFdataRate(void);
-
+bool test_ReciveAddress(void);
+bool test_TransmitAddress(void);
 
 #endif /* INC_NRF24L01_TEST_LIB_H_ */

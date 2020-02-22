@@ -55,7 +55,7 @@ void enableLockPLL();
 void diableLockPLL();
 
 void setRFpower(powerRF_t power);
-void setDataRate(dataRate_t rate); //TODO: to tests
+void setDataRate(dataRate_t rate); //TODO: to test
 
 /* Status */
 uint8_t getStatusFullTxFIFO(); //TODO: to tests
@@ -65,7 +65,7 @@ uint8_t getPipeStatusRxFIFO(); //TODO: to tests
 uint8_t lostPacketsCount(); //TODO: to tests
 uint8_t retrPacketsCount(); //TODO: to tests
 
-/* RPD - for test use only */
+/* RPD - for RF test use only */
 uint8_t checkRPD();
 
 /* Receive Address data pipe */

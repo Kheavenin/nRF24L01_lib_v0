@@ -282,18 +282,18 @@ uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addrBuf,
 {
 	if (!checkPipe(pipe))
 	{ //if checkPipe return 0 - end fun. by return 0.
-		return 0;
+		return ERR_CODE;
 	}
 	uint8_t addr = RX_ADDR_P0 + pipe; //if pipe = 0 -> write Receive address pipe 0
 	if (pipe >= 2 && pipe <= 5)
 	{
 		if (addrBufSize != 1)
 		{
-			return 0;
+			return ERR_CODE;
 		}
 	}
 	multiWrite(addr, addrBuf, addrBufSize);
-	return 1;
+	return OK_CODE;
 }
 
 /* Transmit address data pipe */
@@ -301,10 +301,10 @@ uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize)
 {
 	if (addrBufSize != 5)
 	{
-		return 0; //if addrBufSize isn't 5 bytes retun 0
+		return ERR_CODE; //if addrBufSize isn't 5 bytes retun 0
 	}
 	multiWrite(TX_ADDR, addrBuf, addrBufSize);
-	return 1;
+	return OK_CODE;
 }
 
 /* RX Payload width */

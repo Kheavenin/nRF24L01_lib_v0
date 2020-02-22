@@ -177,6 +177,7 @@ typedef enum
 	CRC_16_bits = 1
 } widthCRC_t;
 
+/* address width typedef */
 typedef enum
 {
 	shortWidth = 0x01,

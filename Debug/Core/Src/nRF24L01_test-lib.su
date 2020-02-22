@@ -1,3 +1,5 @@
 nRF24L01_test-lib.c:10:6:test_RFchannel	24	static
 nRF24L01_test-lib.c:58:6:test_RFpower	16	static
 nRF24L01_test-lib.c:77:6:test_RFdataRate	16	static
+nRF24L01_test-lib.c:106:6:test_ReciveAddress	40	static
+nRF24L01_test-lib.c:155:6:test_TransmitAddress	4	static

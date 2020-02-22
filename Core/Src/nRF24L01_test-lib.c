@@ -103,3 +103,55 @@ bool test_RFdataRate(void) {
 	return PASS;
 }
 
+bool test_ReciveAddress(void) {
+	uint8_t buf[] = { 'a', 'b', 'c', 'd', 'e' };
+	uint8_t *addrBuf = buf;
+	uint8_t addrBufSize = sizeof(buf);
+	setAddrWidth(longWidth); //set lenght of address as 5 bytes
+
+	uint8_t var;
+	uint8_t max = 6;
+	uint8_t inputDataStatus = OK_CODE;
+	uint16_t fallCounter = 0;
+
+	for (var = 0; var < max; var++) {
+		inputDataStatus = setReceivePipeAddress(var, addrBuf, addrBufSize);
+		if (inputDataStatus == ERR_CODE)
+			fallCounter++;
+	}
+	if (fallCounter > 0)
+		return FALL;
+
+	max = 64;
+	inputDataStatus = OK_CODE;
+	fallCounter = 0;
+	for (var = 0; var < max; var++) {
+		inputDataStatus = setReceivePipeAddress(var, addrBuf, addrBufSize);
+		if (inputDataStatus == ERR_CODE)
+			fallCounter++;
+	}
+	if (fallCounter == 0)
+		return FALL;
+
+
+	max = 6;
+	inputDataStatus = OK_CODE;
+	fallCounter = 0;
+	uint8_t testBuf[5];
+
+	for (var = 0; var < max; var++) {
+		inputDataStatus = setReceivePipeAddress(var, addrBuf, addrBufSize);
+		uint8_t addr = 0x0A + var;
+		multiRead(addr, testBuf, sizeof(testBuf));
+	if(buf[4] != testBuf[4] && buf[3] != testBuf[3])
+			fallCounter++;
+	}
+	if (fallCounter == 0) {
+		return PASS;
+	}
+	return FALL;
+}
+
+bool test_TransmitAddress(void) {
+	return FALL;
+}
