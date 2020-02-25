@@ -21,4 +21,16 @@ bool test_RFdataRate(void);
 bool test_ReciveAddress(void);
 bool test_TransmitAddress(void);
 
+bool test_ReadWriteSingleRegisters();
+bool test_Config();
+bool test_EN_AA();
+bool test_EN_RXADR();
+bool test_SETUP_AW();
+bool test_SETUP_RETR();
+bool test_RF_SETUP();
+bool test_STATUS();
+bool test_RX_PW();
+bool test_DYNPD();
+bool test_FEATURE();
+
 #endif /* INC_NRF24L01_TEST_LIB_H_ */

@@ -39,8 +39,8 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 #define TEST_0 1
-#define TEST_LIB 1
-#define TEST_2 0
+#define TEST_LIB 0
+#define TEST_LIB1 1
 #define TEST_3 0
 
 #define addrBufSize 5
@@ -123,7 +123,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-#if TEST_0
+#if 1
 	writeRegister(CONFIG, 0x02);
 	regTmp = readRegister(CONFIG);
 #endif
@@ -135,6 +135,11 @@ int main(void)
 		testVal = test_RFdataRate();
 		testVal = test_ReciveAddress();
 		testVal = test_TransmitAddress();
+
+#endif
+#ifdef TEST_LIB1
+
+		uint8_t testVal = test_ReadWriteSingleRegisters();
 
 #endif
 

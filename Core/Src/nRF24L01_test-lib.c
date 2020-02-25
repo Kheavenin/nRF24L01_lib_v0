@@ -176,3 +176,226 @@ bool test_TransmitAddress(void) {
 	}
 	return PASS;
 }
+
+/* tests of read/write registers */
+
+bool test_ReadWriteSingleRegisters() {
+	powerUp();
+	const size_t testSize = 12;
+	uint8_t countPass = 0;
+	bool testTab[testSize];
+	/* tab of functions's pointers*/
+	bool (*testFunTab[])(
+			void) = {test_Config, test_EN_AA, test_EN_RXADR, test_SETUP_AW, test_SETUP_RETR, test_RF_SETUP,
+				test_STATUS, test_RX_PW, test_DYNPD, test_FEATURE,
+	};
+	/* Config test */
+	uint8_t i = 0;
+	for (i = 0; i < testSize; i++) {
+		testTab[i] = (testFunTab[i])();	//result of test return to tab
+	}
+
+	for (i = 0; i < testSize; i++) {
+		if (testTab[i] == 1) {
+			countPass++;
+		}
+	}
+	if (countPass == testSize)
+		return PASS;
+	return FALL;
+
+}
+
+
+bool test_Config() {
+	uint8_t counter = 0;
+	uint8_t max = 0x7F;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0; i < max; i++) {
+		var = i | 0x02;
+		writeRegister(CONFIG, var);
+		if (readRegister(CONFIG) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+}
+
+bool test_EN_AA() {
+	uint8_t counter = 0;
+	uint8_t max = 0x3F;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0; i < max; i++) {
+		var = i;
+		writeRegister(EN_AA, var);
+		if (readRegister(EN_AA) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+}
+
+bool test_EN_RXADR() {
+	uint8_t counter = 0;
+	uint8_t max = 0x3F;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0; i < max; i++) {
+		var = i;
+		writeRegister(EN_RXADDR, var);
+		if (readRegister(EN_RXADDR) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+}
+
+bool test_SETUP_AW() {
+	uint8_t counter = 0;
+	uint8_t max = 0x03;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0x01; i < max; i++) {
+		var = i;
+		writeRegister(SETUP_AW, var);
+		if (readRegister(SETUP_AW) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+}
+
+bool test_SETUP_RETR() {
+	uint8_t counter = 0;
+	uint8_t max = 0xfF;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0; i < max; i++) {
+		var = i;
+		writeRegister(SETUP_RETR, var);
+		if (readRegister(SETUP_RETR) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+}
+
+bool test_RF_SETUP() {
+	uint8_t counter = 0;
+	uint8_t max = 0xFF;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0; i < max; i++) {
+		var = i & 0xBF;
+		writeRegister(RF_SETUP, var);
+		if (readRegister(RF_SETUP) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+}
+
+bool test_STATUS() {
+	uint8_t counter = 0;
+	uint8_t max = 0x7F;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0; i < max; i++) {
+		var = i & 0xF0;
+		writeRegister(STATUS, var);
+		if (readRegister(STATUS) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+
+}
+
+/* Observe TX register can be test only with full RF transmission */
+/* RPD register can be test only with full RF transmission */
+
+bool test_RX_PW() {
+	uint8_t counter = 0;
+	uint8_t counterPipe = 0;
+	uint8_t pipe = 5;
+	uint8_t max = 0x3F;
+	uint8_t i, j;
+	uint8_t addr = RX_ADDR_P0;
+	uint8_t addrMax = RX_ADDR_P0 + pipe;
+	uint8_t var = 0;
+
+	for (j = 0; j < addrMax; j++) {
+		for (i = 0; i < max; i++) {
+			var = i;
+			writeRegister(addr, var);
+			if (readRegister(addr) == var) {
+				counter++;
+			}
+		}
+		if (counter == max)
+			counterPipe++;
+	}
+	if (counterPipe == 5)
+		return PASS;
+	return FALL;
+}
+/* FIFO status register can be test only with full RF transmission */
+
+bool test_DYNPD() {
+	uint8_t counter = 0;
+	uint8_t max = 0x3F;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0; i < max; i++) {
+		var = i;
+		writeRegister(DYNPD, var);
+		if (readRegister(DYNPD) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+}
+
+bool test_FEATURE() {
+	uint8_t counter = 0;
+	uint8_t max = 0x07;
+	uint8_t i;
+	uint8_t var = 0;
+
+	for (i = 0; i < max; i++) {
+		var = i;
+		writeRegister(FEATURE, var);
+		if (readRegister(FEATURE) == var) {
+			counter++;
+		}
+	}
+	if (counter == max)
+		return PASS;
+	return FALL;
+}
