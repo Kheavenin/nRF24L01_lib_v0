@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  0002000c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000ab57  00000000  00000000  00020035  2**0
+ 12 .debug_info   0000ab41  00000000  00000000  00020035  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00001c80  00000000  00000000  0002ab8c  2**0
+ 13 .debug_abbrev 00001c73  00000000  00000000  0002ab76  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000c40  00000000  00000000  0002c810  2**3
+ 14 .debug_aranges 00000c40  00000000  00000000  0002c7f0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000b38  00000000  00000000  0002d450  2**3
+ 15 .debug_ranges 00000b38  00000000  00000000  0002d430  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  000140b7  00000000  00000000  0002df88  2**0
+ 16 .debug_macro  000140b7  00000000  00000000  0002df68  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   000093ce  00000000  00000000  0004203f  2**0
+ 17 .debug_line   000093ce  00000000  00000000  0004201f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0006dbbc  00000000  00000000  0004b40d  2**0
+ 18 .debug_str    0006dbbc  00000000  00000000  0004b3ed  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000b8fc9  2**0
+ 19 .comment      0000007b  00000000  00000000  000b8fa9  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000318c  00000000  00000000  000b9044  2**2
+ 20 .debug_frame  0000318c  00000000  00000000  000b9024  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -101,8 +101,7 @@ uint8_t readRegister(uint8_t addr) {
 
 	csnLow();
  8000166:	f000 f86d 	bl	8000244 <csnLow>
-	HAL_StatusTypeDef statusRead;
-	HAL_StatusTypeDef statusCmd;
+
 	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);
  800016a:	230a      	movs	r3, #10
  800016c:	2201      	movs	r2, #1
@@ -1623,9 +1622,9 @@ void MX_SPI1_Init(void)
  8000a1a:	4b0e      	ldr	r3, [pc, #56]	; (8000a54 <MX_SPI1_Init+0x64>)
  8000a1c:	f44f 7200 	mov.w	r2, #512	; 0x200
  8000a20:	619a      	str	r2, [r3, #24]
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
  8000a22:	4b0c      	ldr	r3, [pc, #48]	; (8000a54 <MX_SPI1_Init+0x64>)
- 8000a24:	2228      	movs	r2, #40	; 0x28
+ 8000a24:	2218      	movs	r2, #24
  8000a26:	61da      	str	r2, [r3, #28]
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
  8000a28:	4b0a      	ldr	r3, [pc, #40]	; (8000a54 <MX_SPI1_Init+0x64>)

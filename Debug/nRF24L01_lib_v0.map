@@ -3449,43 +3449,43 @@ LOAD c:/st/stm32cubeide_1.2.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
                 0x00000000000003f5       0x1d c:/st/stm32cubeide_1.2.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.0.0.201904181610/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/crtn.o
 OUTPUT(nRF24L01_lib_v0.elf elf32-littlearm)
 
-.debug_info     0x0000000000000000     0xab57
- .debug_info    0x0000000000000000      0xa92 Core/Src/controleModule.o
- .debug_info    0x0000000000000a92      0x4b4 Core/Src/gpio.o
- .debug_info    0x0000000000000f46      0xb2e Core/Src/main.o
- .debug_info    0x0000000000001a74      0xc81 Core/Src/nRF24L01_test-lib.o
- .debug_info    0x00000000000026f5      0x808 Core/Src/spi.o
- .debug_info    0x0000000000002efd      0x2cb Core/Src/stm32f1xx_hal_msp.o
- .debug_info    0x00000000000031c8      0x221 Core/Src/stm32f1xx_it.o
- .debug_info    0x00000000000033e9      0x433 Core/Src/system_stm32f1xx.o
- .debug_info    0x000000000000381c      0x7bc Core/Src/tim.o
- .debug_info    0x0000000000003fd8       0x22 Core/Startup/startup_stm32f103rbtx.o
- .debug_info    0x0000000000003ffa      0x6fe Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
- .debug_info    0x00000000000046f8      0xb46 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
- .debug_info    0x000000000000523e      0x681 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
- .debug_info    0x00000000000058bf      0x804 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
- .debug_info    0x00000000000060c3     0x153a Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
- .debug_info    0x00000000000075fd     0x2456 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o
- .debug_info    0x0000000000009a53     0x1104 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+.debug_info     0x0000000000000000     0xab41
+ .debug_info    0x0000000000000000      0xa7c Core/Src/controleModule.o
+ .debug_info    0x0000000000000a7c      0x4b4 Core/Src/gpio.o
+ .debug_info    0x0000000000000f30      0xb2e Core/Src/main.o
+ .debug_info    0x0000000000001a5e      0xc81 Core/Src/nRF24L01_test-lib.o
+ .debug_info    0x00000000000026df      0x808 Core/Src/spi.o
+ .debug_info    0x0000000000002ee7      0x2cb Core/Src/stm32f1xx_hal_msp.o
+ .debug_info    0x00000000000031b2      0x221 Core/Src/stm32f1xx_it.o
+ .debug_info    0x00000000000033d3      0x433 Core/Src/system_stm32f1xx.o
+ .debug_info    0x0000000000003806      0x7bc Core/Src/tim.o
+ .debug_info    0x0000000000003fc2       0x22 Core/Startup/startup_stm32f103rbtx.o
+ .debug_info    0x0000000000003fe4      0x6fe Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+ .debug_info    0x00000000000046e2      0xb46 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
+ .debug_info    0x0000000000005228      0x681 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_info    0x00000000000058a9      0x804 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_info    0x00000000000060ad     0x153a Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
+ .debug_info    0x00000000000075e7     0x2456 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o
+ .debug_info    0x0000000000009a3d     0x1104 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
 
-.debug_abbrev   0x0000000000000000     0x1c80
- .debug_abbrev  0x0000000000000000      0x207 Core/Src/controleModule.o
- .debug_abbrev  0x0000000000000207      0x13d Core/Src/gpio.o
- .debug_abbrev  0x0000000000000344      0x1d7 Core/Src/main.o
- .debug_abbrev  0x000000000000051b      0x1e9 Core/Src/nRF24L01_test-lib.o
- .debug_abbrev  0x0000000000000704      0x199 Core/Src/spi.o
- .debug_abbrev  0x000000000000089d      0x109 Core/Src/stm32f1xx_hal_msp.o
- .debug_abbrev  0x00000000000009a6       0xc6 Core/Src/stm32f1xx_it.o
- .debug_abbrev  0x0000000000000a6c      0x134 Core/Src/system_stm32f1xx.o
- .debug_abbrev  0x0000000000000ba0      0x190 Core/Src/tim.o
- .debug_abbrev  0x0000000000000d30       0x12 Core/Startup/startup_stm32f103rbtx.o
- .debug_abbrev  0x0000000000000d42      0x1d8 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
- .debug_abbrev  0x0000000000000f1a      0x2d5 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
- .debug_abbrev  0x00000000000011ef      0x1c0 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
- .debug_abbrev  0x00000000000013af      0x243 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
- .debug_abbrev  0x00000000000015f2      0x240 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
- .debug_abbrev  0x0000000000001832      0x230 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o
- .debug_abbrev  0x0000000000001a62      0x21e Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
+.debug_abbrev   0x0000000000000000     0x1c73
+ .debug_abbrev  0x0000000000000000      0x1fa Core/Src/controleModule.o
+ .debug_abbrev  0x00000000000001fa      0x13d Core/Src/gpio.o
+ .debug_abbrev  0x0000000000000337      0x1d7 Core/Src/main.o
+ .debug_abbrev  0x000000000000050e      0x1e9 Core/Src/nRF24L01_test-lib.o
+ .debug_abbrev  0x00000000000006f7      0x199 Core/Src/spi.o
+ .debug_abbrev  0x0000000000000890      0x109 Core/Src/stm32f1xx_hal_msp.o
+ .debug_abbrev  0x0000000000000999       0xc6 Core/Src/stm32f1xx_it.o
+ .debug_abbrev  0x0000000000000a5f      0x134 Core/Src/system_stm32f1xx.o
+ .debug_abbrev  0x0000000000000b93      0x190 Core/Src/tim.o
+ .debug_abbrev  0x0000000000000d23       0x12 Core/Startup/startup_stm32f103rbtx.o
+ .debug_abbrev  0x0000000000000d35      0x1d8 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
+ .debug_abbrev  0x0000000000000f0d      0x2d5 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o
+ .debug_abbrev  0x00000000000011e2      0x1c0 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.o
+ .debug_abbrev  0x00000000000013a2      0x243 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.o
+ .debug_abbrev  0x00000000000015e5      0x240 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_spi.o
+ .debug_abbrev  0x0000000000001825      0x230 Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.o
+ .debug_abbrev  0x0000000000001a55      0x21e Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.o
 
 .debug_aranges  0x0000000000000000      0xc40
  .debug_aranges
