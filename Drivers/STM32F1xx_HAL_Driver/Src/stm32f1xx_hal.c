@@ -234,7 +234,10 @@ __weak void HAL_MspDeInit(void)
 __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
   /* Configure the SysTick to have interrupt in 1ms time basis*/
-  if (HAL_SYSTICK_Config(SystemCoreClock / (1000U / uwTickFreq)) > 0U)
+	/**User change
+	 * 1000U / uwTickFreq -> 1 000 000
+	 */
+	if (HAL_SYSTICK_Config(SystemCoreClock / (1000000U)) > 0U)
   {
     return HAL_ERROR;
   }
