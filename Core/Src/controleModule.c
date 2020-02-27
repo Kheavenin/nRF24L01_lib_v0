@@ -21,7 +21,8 @@ uint8_t readRegister(uint8_t addr) {
 	HAL_StatusTypeDef statusRead;
 	HAL_StatusTypeDef statusCmd;
 	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-	HAL_Delay(1);
+	DelayUs(50);
+	//HAL_Delay(1);
 	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
 	/*
 #if 0
@@ -65,7 +66,8 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	HAL_StatusTypeDef statusSend;
 	HAL_StatusTypeDef statusRead;
 	statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-	HAL_Delay(1);
+	//HAL_Delay(1);
+	DelayUs(50);
 	statusRead = HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
 
 	/*
