@@ -16,8 +16,7 @@ uint8_t readRegister(uint8_t addr) {
 	uint8_t *pReg = &reg;
 
 	csnLow();
-	HAL_StatusTypeDef statusRead;
-	HAL_StatusTypeDef statusCmd;
+
 	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);
 	DelayUs(50);
 	//HAL_Delay(1);
