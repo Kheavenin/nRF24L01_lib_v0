@@ -181,7 +181,7 @@ bool test_TransmitAddress(void) {
 
 bool test_ReadWriteSingleRegisters() {
 	powerUp();
-	const size_t testSize = 12;
+	const size_t testSize = 10;
 	uint8_t countPass = 0;
 	bool testTab[testSize];
 	/* tab of functions's pointers*/
