@@ -83,7 +83,6 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	csnHigh();
 }
 
-
 /* Multi bytes read/write register functions */
 void multiRead(uint8_t addr, uint8_t *buf, size_t bufSize) {
 	uint8_t cmd = R_REGISTER | addr;
@@ -114,6 +113,38 @@ void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize) {
 	csnHigh();
 }
 
+/* Payload functions*/
+uint8_t readRxPayload(uint8_t *buf, size_t bufSize) {
+
+}
+
+uint8_t writeTxPayload(uint8_t *buf, size_t bufSize) {
+
+}
+
+uint8_t readRxPayloadWidth(uint8_t *buf, size_t bufSize, uint8_t width) {
+
+}
+
+uint8_t writeTxPayloadAck(uint8_t *buf, size_t bufSize) {
+
+}
+
+uint8_t writeTxPayloadNoAck(uint8_t *buf, size_t bufSize) {
+
+}
+
+uint8_t flushTx() {
+
+}
+
+uint8_t flushRx() {
+
+}
+
+void reuseTxPayload() {
+
+}
 
 
 /**

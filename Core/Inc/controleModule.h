@@ -91,11 +91,6 @@ uint8_t writeTxPayloadAck(uint8_t *buf, size_t bufSize);
 uint8_t writeTxPayloadNoAck(uint8_t *buf, size_t bufSize);
 
 /*
- * @Brief	Reuse last transmitted payload
- */
-void reuseTxPayload();
-
-/*
  * @Brieg	Flush TX FIFO
  * @Retval	OK_CODE if flush will be execute
  * 			ERR_CODE if flush will not be execute
@@ -108,6 +103,13 @@ uint8_t flushTx();
  * 			ERR_CODE if flush will not be execute
  */
 uint8_t flushRx();
+
+/*
+ * @Brief	Reuse last transmitted payload
+ */
+void reuseTxPayload();
+
+
 
 
 
