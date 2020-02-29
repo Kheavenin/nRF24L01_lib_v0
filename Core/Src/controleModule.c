@@ -115,7 +115,10 @@ void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize) {
 
 /* Payload functions*/
 uint8_t readRxPayload(uint8_t *buf, size_t bufSize) {
-
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
 
 	uint8_t cmd = R_RX_PAYLOAD;	//set command mask
 	uint8_t *pCmd = &cmd;
@@ -131,7 +134,22 @@ uint8_t readRxPayload(uint8_t *buf, size_t bufSize) {
 }
 
 uint8_t writeTxPayload(uint8_t *buf, size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
 
+	uint8_t cmd = W_TX_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	DelayUs(50);
+	HAL_SPI_Transmit(&hspi1, buf, bufSize, SPI_TIMEOUT);		//read payload
+
+	csnHigh();
+	return OK_CODE;
 }
 
 uint8_t readRxPayloadWidth(uint8_t *buf, size_t bufSize, uint8_t width) {
@@ -147,11 +165,29 @@ uint8_t writeTxPayloadNoAck(uint8_t *buf, size_t bufSize) {
 }
 
 uint8_t flushTx() {
+	uint8_t cmd = FLUSH_TX;	//set command mask
+	uint8_t *pCmd = &cmd;
 
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	//DelayUs(50);
+
+	csnHigh();
+	return OK_CODE;
 }
 
 uint8_t flushRx() {
+	uint8_t cmd = FLUSH_RX;	//set command mask
+	uint8_t *pCmd = &cmd;
 
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	//DelayUs(50);
+
+	csnHigh();
+	return OK_CODE;
 }
 
 void reuseTxPayload() {
