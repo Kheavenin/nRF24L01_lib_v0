@@ -399,3 +399,24 @@ bool test_FEATURE() {
 		return PASS;
 	return FALL;
 }
+
+bool test_RxPayload() {
+	static size_t size8 = 8;
+	static size_t size12 = 12;
+	static size_t size16 = 16;
+	static size_t size24 = 24;
+	static size_t size32 = 32;
+
+	uint8_t buffer[size32];
+
+	uint8_t i;
+	max = size32;
+	for (i = 0; i < max; i++) {
+		buffer[i] = i;
+	}
+
+
+
+	return ERR_CODE;
+}
+
