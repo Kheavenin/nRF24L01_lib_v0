@@ -401,22 +401,39 @@ bool test_FEATURE() {
 }
 
 bool test_RxPayload() {
-	static size_t size8 = 8;
-	static size_t size12 = 12;
-	static size_t size16 = 16;
-	static size_t size24 = 24;
+	return ERR_CODE;
+}
+
+bool test_TxPayload() {
+	size_t sizesBuffer[] = { 8, 12, 16, 20, 24 };
+	size_t sizeSizes = sizeof(sizesBuffer);
+
 	static size_t size32 = 32;
-
 	uint8_t buffer[size32];
-
 	uint8_t i;
 	uint8_t max = size32;
-	for (i = 0; i < max; i++) {
+
+	uint16_t passCounter = 0;
+
+	/* prepare buffer with data */
+	for (i = 0; i < max; ++i) {
 		buffer[i] = i;
 	}
 
+	for (i = 0; i < sizeSizes; i++) {
+		writeTxPayload(buffer, sizesBuffer[i]);
+		if (!readBit(FIFO_STATUS, bit4))
+			passCounter++;
+		flushTx();
+	}
 
+	writeTxPayload(buffer, size32);
+	if (readBit(FIFO_STATUS, bit5))
+		passCounter++;
+	
+	if (passCounter == sizeSizes + 1)
+		return PASS;
+	return FALL;
 
-	return ERR_CODE;
 }
 
