@@ -410,7 +410,7 @@ bool test_RxPayload() {
 	uint8_t buffer[size32];
 
 	uint8_t i;
-	max = size32;
+	uint8_t max = size32;
 	for (i = 0; i < max; i++) {
 		buffer[i] = i;
 	}
