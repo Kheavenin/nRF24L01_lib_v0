@@ -71,7 +71,7 @@ uint8_t writeTxPayload(uint8_t *buf, size_t bufSize);
 uint8_t readRxPayloadWidth(uint8_t *buf, size_t bufSize, uint8_t width);
 
 /*
- * @Brief	Write  payload to transmit together wich ACK packet
+ * @Brief	Write  payload to transmit together with ACK packet
  * @Param	Pointer with payload's buffer
  * @Param	Buffer size
  * @Retval	Return status of execution
@@ -90,9 +90,24 @@ uint8_t writeTxPayloadAck(uint8_t *buf, size_t bufSize);
  */
 uint8_t writeTxPayloadNoAck(uint8_t *buf, size_t bufSize);
 
+/*
+ * @Brief	Reuse last transmitted payload
+ */
+void reuseTxPayload();
 
+/*
+ * @Brieg	Flush TX FIFO
+ * @Retval	OK_CODE if flush will be execute
+ * 			ERR_CODE if flush will not be execute
+ */
+uint8_t flushTx();
 
-
+/*
+ * @Brieg	Flush RX FIFO
+ * @Retval	OK_CODE if flush will be execute
+ * 			ERR_CODE if flush will not be execute
+ */
+uint8_t flushRx();
 
 
 
