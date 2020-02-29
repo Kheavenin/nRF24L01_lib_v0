@@ -116,6 +116,18 @@ void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize) {
 /* Payload functions*/
 uint8_t readRxPayload(uint8_t *buf, size_t bufSize) {
 
+
+	uint8_t cmd = R_RX_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	DelayUs(50);
+	HAL_SPI_Receive(&hspi1, buf, bufSize, SPI_TIMEOUT);			//read payload
+
+	csnHigh();
+	return OK_CODE;
 }
 
 uint8_t writeTxPayload(uint8_t *buf, size_t bufSize) {
