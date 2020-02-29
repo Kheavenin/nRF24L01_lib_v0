@@ -14,15 +14,13 @@ uint8_t readRegister(uint8_t addr) {
 	uint8_t reg;
 	uint8_t *pCmd = &cmd;
 	uint8_t *pReg = &reg;
-	size_t cmdSize = sizeof(cmd);
-	size_t regSize = sizeof(reg);
 
 	csnLow();
-	HAL_StatusTypeDef statusRead;
-	HAL_StatusTypeDef statusCmd;
-	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-	HAL_Delay(1);
-	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);
+	DelayUs(50);
+	//HAL_Delay(1);
+	HAL_SPI_Receive(&hspi1, pReg, sizeof(reg), SPI_TIMEOUT);
 	/*
 #if 0
 	HAL_StatusTypeDef statusSend;
@@ -57,16 +55,13 @@ uint8_t readRegister(uint8_t addr) {
 void writeRegister(uint8_t addr, uint8_t val) {
 	uint8_t cmd = W_REGISTER | addr;
 	uint8_t *pCmd = &cmd;
-	size_t cmdSize = sizeof(cmd);
-	size_t valSize = sizeof(val);
+
 	csnLow();
 
-
-	HAL_StatusTypeDef statusSend;
-	HAL_StatusTypeDef statusRead;
-	statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-	HAL_Delay(1);
-	statusRead = HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);
+	//HAL_Delay(1);
+	DelayUs(50);
+	HAL_SPI_Transmit(&hspi1, &val, sizeof(val), SPI_TIMEOUT);
 
 	/*
 #if 0
@@ -87,7 +82,6 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	 */
 	csnHigh();
 }
-
 
 /* Multi bytes read/write register functions */
 void multiRead(uint8_t addr, uint8_t *buf, size_t bufSize) {
@@ -119,6 +113,50 @@ void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize) {
 	csnHigh();
 }
 
+/* Payload functions*/
+uint8_t readRxPayload(uint8_t *buf, size_t bufSize) {
+
+
+	uint8_t cmd = R_RX_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	DelayUs(50);
+	HAL_SPI_Receive(&hspi1, buf, bufSize, SPI_TIMEOUT);			//read payload
+
+	csnHigh();
+	return OK_CODE;
+}
+
+uint8_t writeTxPayload(uint8_t *buf, size_t bufSize) {
+
+}
+
+uint8_t readRxPayloadWidth(uint8_t *buf, size_t bufSize, uint8_t width) {
+
+}
+
+uint8_t writeTxPayloadAck(uint8_t *buf, size_t bufSize) {
+
+}
+
+uint8_t writeTxPayloadNoAck(uint8_t *buf, size_t bufSize) {
+
+}
+
+uint8_t flushTx() {
+
+}
+
+uint8_t flushRx() {
+
+}
+
+void reuseTxPayload() {
+
+}
 
 
 /**
