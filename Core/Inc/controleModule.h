@@ -7,6 +7,7 @@
 #define SPI_TIMEOUT 10
 
 extern SPI_HandleTypeDef hspi1;
+extern TIM_HandleTypeDef htim1;
 
 /* CSN, CE lines drive functions */
 void csnLow();  //TODO: in future create macro
@@ -18,22 +19,9 @@ void ceHigh();  //TODO: in future create macro
 uint8_t readRegister(uint8_t addr);
 void writeRegister(uint8_t addr, uint8_t val);
 
-/* Read/write single bit funtions */
-uint8_t readBit(uint8_t addr, bitNum_t bit);
-void setBit(uint8_t addr, bitNum_t bit);
-void resetBit(uint8_t addr, bitNum_t bit);
-
 /* Multi bytes read/write register functions */
 void multiRead(uint8_t addr, uint8_t *buf, size_t bufSize);
 void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize);
-
-/* Turn on and turn off module */
-void powerUp(); //Fixed
-void powerDown();
-
-/* Additional feature functions */
-uint8_t getStatus();
-
 
 /*
  * TX and RX payloads access functions
@@ -109,9 +97,27 @@ uint8_t flushRx();
  */
 void reuseTxPayload();
 
+/* Additional feature functions */
+uint8_t getStatus();
+
+/* Read/write single bit funtions */
+uint8_t readBit(uint8_t addr, bitNum_t bit);
+void setBit(uint8_t addr, bitNum_t bit);
+void resetBit(uint8_t addr, bitNum_t bit);
+
+/* Turn on and turn off module */
+void powerUp(); //Fixed
+void powerDown();
 
 
-
+/*
+ * Important
+ * Delay function to make gap between SPI command and data.
+ * Create delay_us function which use timer.
+ * This function enable micro seconds delay.
+ * Also HAL_Delay can be use, but changes in code are necessary.
+ */
+void DelayUs(uint16_t time);
 
 
 

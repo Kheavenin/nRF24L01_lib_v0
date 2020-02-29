@@ -34,7 +34,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-void DelayUs(uint16_t time);
+//void DelayUs(uint16_t time);
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -192,13 +192,7 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void DelayUs(uint16_t time) {
 
-	__HAL_TIM_SET_COUNTER(&htim1, 0);	//Set star value as 0
-	while (__HAL_TIM_GET_COUNTER(&htim1) < time)
-		;
-	
-}
 
 
 /* USER CODE END 4 */
