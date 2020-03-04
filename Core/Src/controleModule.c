@@ -83,7 +83,6 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	csnHigh();
 }
 
-
 /* Multi bytes read/write register functions */
 void multiRead(uint8_t addr, uint8_t *buf, size_t bufSize) {
 	uint8_t cmd = R_REGISTER | addr;
@@ -114,20 +113,165 @@ void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize) {
 	csnHigh();
 }
 
+/* Payload functions*/
+uint8_t readRxPayload(uint8_t *buf, size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
 
+	uint8_t cmd = R_RX_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
 
-/**
- * @Brief	Turn on nRF24L01+ module
- */
-void powerUp() {
-	setBit( CONFIG, PWR_UP);
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	DelayUs(50);
+	HAL_SPI_Receive(&hspi1, buf, bufSize, SPI_TIMEOUT);			//read payload
+
+	csnHigh();
+	return OK_CODE;
+}
+
+uint8_t writeTxPayload(uint8_t *buf, size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
+
+	uint8_t cmd = W_TX_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	DelayUs(50);
+	HAL_SPI_Transmit(&hspi1, buf, bufSize, SPI_TIMEOUT);		//read payload
+
+	csnHigh();
+	return OK_CODE;
+}
+
+uint8_t readRxPayloadWidth(uint8_t *buf, size_t bufSize, uint8_t width) {
+	if (bufSize < 1)
+		return ERR_CODE;	//invalid buffer size
+	if (width < 1)
+		return ERR_CODE;	//invaild number of bytes
+	if (bufSize > 32)
+		bufSize = 32;		//to big buffer size
+	if (width > 32) 		//to bi width of fifo to read
+		width = 32;
+	if (bufSize < width)
+		width = bufSize;
+
+	uint8_t cmd = R_RX_PL_WID;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	DelayUs(50);
+	HAL_SPI_Receive(&hspi1, buf, width, SPI_TIMEOUT);			//read payload
+
+	csnHigh();
+	return OK_CODE;
+}
+
+uint8_t writeTxPayloadAck(uint8_t *buf, size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
+
+	uint8_t cmd = W_ACK_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	DelayUs(50);
+	HAL_SPI_Transmit(&hspi1, buf, bufSize, SPI_TIMEOUT);		//read payload
+
+	csnHigh();
+	return OK_CODE;
+}
+
+uint8_t writeTxPayloadNoAck(uint8_t *buf, size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
+
+	uint8_t cmd = W_TX_PAYLOAD_NO_ACK;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	DelayUs(50);
+	HAL_SPI_Transmit(&hspi1, buf, bufSize, SPI_TIMEOUT);		//read payload
+
+	csnHigh();
+	return OK_CODE;
+}
+
+uint8_t flushTx() {
+	uint8_t cmd = FLUSH_TX;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	//DelayUs(50);
+
+	csnHigh();
+	return OK_CODE;
+}
+
+uint8_t flushRx() {
+	uint8_t cmd = FLUSH_RX;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	//DelayUs(50);
+
+	csnHigh();
+	return OK_CODE;
+}
+
+void reuseTxPayload() {
+	uint8_t cmd = REUSE_TX_PL;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);	//send command
+	//DelayUs(50);
+
+	csnHigh();
 }
 
 /**
- * @Brief Turn off nRF24L01+ module
+ * @Brief	Get Status Register.
+ * @Retval	Return value of Status Register
  */
-void powerDown() {
-	resetBit(CONFIG, PWR_UP);
+uint8_t getStatus() {
+	uint8_t cmd = NOP;
+	uint8_t *pCmd = &cmd;
+
+	uint8_t reg = 0;
+	uint8_t *pReg = &reg;
+
+	csnLow();
+
+	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);
+	DelayUs(50);
+	HAL_SPI_Receive(&hspi1, pReg, sizeof(reg), SPI_TIMEOUT);
+
+	csnHigh();
+	return reg;
 }
 
 /**
@@ -154,6 +298,20 @@ void resetBit(uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readRegister(addr);
 	tmp &= 0 << bit;		//zmieniono OR na AND
 	writeRegister(addr, tmp);
+}
+
+/**
+ * @Brief	Turn on nRF24L01+ module
+ */
+void powerUp() {
+	setBit( CONFIG, PWR_UP);
+}
+
+/**
+ * @Brief Turn off nRF24L01+ module
+ */
+void powerDown() {
+	resetBit(CONFIG, PWR_UP);
 }
 
 /**
@@ -184,27 +342,10 @@ void ceHigh() {
 	HAL_GPIO_WritePin(CE_GPIO_Port, CE_Pin, GPIO_PIN_SET);
 }
 
-/**
- * @Brief	Get Status Register.
- * @Retval	Return value of Status Register
- */
-uint8_t getStatus() {
-	uint8_t cmd = NOP;
-	uint8_t *pCmd = &cmd;
-	size_t cmdSize = sizeof(cmd);
+void DelayUs(uint16_t time) {
 
-	uint8_t reg = 0;
-	uint8_t *pReg = &reg;
-	size_t regSize = sizeof(reg);
+	__HAL_TIM_SET_COUNTER(&htim1, 0);	//Set star value as 0
+	while (__HAL_TIM_GET_COUNTER(&htim1) < time)
+		;
 
-	csnLow();
-
-	HAL_StatusTypeDef statusRead;
-	HAL_StatusTypeDef statusCmd;
-	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-	HAL_Delay(1);
-	statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
-
-	csnHigh();
-	return reg;
 }

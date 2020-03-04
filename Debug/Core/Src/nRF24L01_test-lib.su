@@ -14,3 +14,5 @@ nRF24L01_test-lib.c:318:6:test_STATUS	16	static
 nRF24L01_test-lib.c:340:6:test_RX_PW	24	static
 nRF24L01_test-lib.c:367:6:test_DYNPD	16	static
 nRF24L01_test-lib.c:385:6:test_FEATURE	16	static
+nRF24L01_test-lib.c:403:6:test_RxPayload	4	static
+nRF24L01_test-lib.c:407:6:test_TxPayload	64	dynamic

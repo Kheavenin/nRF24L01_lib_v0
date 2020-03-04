@@ -33,4 +33,7 @@ bool test_RX_PW();
 bool test_DYNPD();
 bool test_FEATURE();
 
+bool test_RxPayload();
+bool test_TxPayload();
+
 #endif /* INC_NRF24L01_TEST_LIB_H_ */
