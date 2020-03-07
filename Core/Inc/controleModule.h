@@ -9,6 +9,8 @@
 extern SPI_HandleTypeDef hspi1;
 extern TIM_HandleTypeDef htim1;
 
+
+
 /* CSN, CE lines drive functions */
 void csnLow();  //TODO: in future create macro
 void csnHigh(); //TODO: in future create macro

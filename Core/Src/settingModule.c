@@ -1,5 +1,10 @@
 #include "settingModule.h"
 
+static settingsStruct_t setStruct;
+static addrresStruct_t addrStruct;
+static fifoStruct_t fifoStruct;
+
+
 /**
  * @Brief	Switch radio module to Receiver (PRX) mode
  * @Retval	None

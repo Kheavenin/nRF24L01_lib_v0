@@ -14,9 +14,12 @@ c:/st/stm32cubeide_1.2.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externalt
 Allocating common symbols
 Common symbol       size              file
 
+addrStruct          0x13              Core/Src/settingModule.o
+setStruct           0x1f              Core/Src/settingModule.o
 addrRead            0x5               Core/Src/main.o
 uwTick              0x4               Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o
 pFlash              0x20              Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.o
+fifoStruct          0x1               Core/Src/settingModule.o
 htim1               0x40              Core/Src/tim.o
 hspi1               0x58              Core/Src/spi.o
 
@@ -333,7 +336,7 @@ Discarded input sections
                 0x0000000000000000        0xe Core/Src/nRF24L01_test-lib.o
  .text.test_TxPayload
                 0x0000000000000000      0x128 Core/Src/nRF24L01_test-lib.o
- .data.size32.6362
+ .data.size32.6397
                 0x0000000000000000        0x4 Core/Src/nRF24L01_test-lib.o
  .debug_macro   0x0000000000000000      0xa5a Core/Src/nRF24L01_test-lib.o
  .debug_macro   0x0000000000000000      0x21b Core/Src/nRF24L01_test-lib.o
@@ -507,8 +510,8 @@ Discarded input sections
                 0x0000000000000000       0x10 Core/Src/settingModule.o
  .text.enableDynamicAck
                 0x0000000000000000       0x10 Core/Src/settingModule.o
- .debug_info    0x0000000000000000      0xf8b Core/Src/settingModule.o
- .debug_abbrev  0x0000000000000000      0x29a Core/Src/settingModule.o
+ .debug_info    0x0000000000000000     0x1171 Core/Src/settingModule.o
+ .debug_abbrev  0x0000000000000000      0x2c0 Core/Src/settingModule.o
  .debug_aranges
                 0x0000000000000000      0x198 Core/Src/settingModule.o
  .debug_ranges  0x0000000000000000      0x188 Core/Src/settingModule.o
@@ -550,12 +553,13 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x83 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000       0x52 Core/Src/settingModule.o
  .debug_macro   0x0000000000000000      0x2a6 Core/Src/settingModule.o
- .debug_line    0x0000000000000000      0xa16 Core/Src/settingModule.o
- .debug_str     0x0000000000000000    0x6b345 Core/Src/settingModule.o
+ .debug_line    0x0000000000000000      0xa19 Core/Src/settingModule.o
+ .debug_str     0x0000000000000000    0x6b454 Core/Src/settingModule.o
  .comment       0x0000000000000000       0x7c Core/Src/settingModule.o
  .debug_frame   0x0000000000000000      0x614 Core/Src/settingModule.o
  .ARM.attributes
                 0x0000000000000000       0x33 Core/Src/settingModule.o
+ COMMON         0x0000000000000000       0x35 Core/Src/settingModule.o
  .group         0x0000000000000000        0xc Core/Src/spi.o
  .group         0x0000000000000000        0xc Core/Src/spi.o
  .group         0x0000000000000000        0xc Core/Src/spi.o
