@@ -27,7 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 //#include "controleModule.h"
-//#include "settingModule.h" //TODO: commented to include in test block
+#include "settingModule.h" //TODO: commented to include in test block
 
 #include "nRF24L01_test-lib.h"
 /* USER CODE END Includes */
@@ -39,6 +39,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define TEST_ENABLE 0
+
 #define TEST_0 1
 #define TEST_LIB 0
 #define TEST_LIB1 1
@@ -139,7 +141,7 @@ int main(void)
 		testVal = test_TransmitAddress();
 
 #endif
-#ifdef TEST_LIB1
+#if TEST_ENABLE
 
 		uint8_t testVal = test_ReadWriteSingleRegisters();
 

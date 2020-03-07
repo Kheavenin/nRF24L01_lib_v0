@@ -45,6 +45,11 @@ typedef struct {
 	uint8_t txEmpty :1;
 } fifoStruct_t;
 
+typedef struct {
+	settingsStruct_t setStruct;
+	addrresStruct_t addrStruct;
+	fifoStruct_t fifoStruct;
+} nrfStruct_t;
 
 /* Modes */
 void modeRX();

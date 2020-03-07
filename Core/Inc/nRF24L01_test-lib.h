@@ -5,6 +5,8 @@
  *      Author: Khevenin
  */
 
+
+#if TEST_ENABLE
 #ifndef INC_NRF24L01_TEST_LIB_H_
 #define INC_NRF24L01_TEST_LIB_H_
 
@@ -37,3 +39,4 @@ bool test_RxPayload();
 bool test_TxPayload();
 
 #endif /* INC_NRF24L01_TEST_LIB_H_ */
+#endif

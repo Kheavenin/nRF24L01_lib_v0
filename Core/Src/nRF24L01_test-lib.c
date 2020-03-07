@@ -4,7 +4,7 @@
  *  Created on: 22 lut 2020
  *      Author: Khevenin
  */
-
+#if TEST_ENABLE
 #include "nRF24L01_test-lib.h"
 
 bool test_RFchannel(void)
@@ -437,3 +437,4 @@ bool test_TxPayload() {
 
 }
 
+#endif

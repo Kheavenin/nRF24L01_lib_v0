@@ -1,8 +1,6 @@
 #include "settingModule.h"
 
-static settingsStruct_t setStruct;
-static addrresStruct_t addrStruct;
-static fifoStruct_t fifoStruct;
+
 
 
 /**

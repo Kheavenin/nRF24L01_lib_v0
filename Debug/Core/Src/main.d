@@ -24,9 +24,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  ../Core/Inc/spi.h ../Core/Inc/main.h ../Core/Inc/tim.h \
- ../Core/Inc/gpio.h ../Core/Inc/nRF24L01_test-lib.h \
- ../Core/Inc/settingModule.h ../Core/Inc/controleModule.h \
- ../Core/Inc/regCmd.h
+ ../Core/Inc/gpio.h ../Core/Inc/settingModule.h \
+ ../Core/Inc/controleModule.h ../Core/Inc/regCmd.h \
+ ../Core/Inc/nRF24L01_test-lib.h
 
 ../Core/Inc/main.h:
 
@@ -86,10 +86,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Core/Inc/gpio.h:
 
-../Core/Inc/nRF24L01_test-lib.h:
-
 ../Core/Inc/settingModule.h:
 
 ../Core/Inc/controleModule.h:
 
 ../Core/Inc/regCmd.h:
+
+../Core/Inc/nRF24L01_test-lib.h:
