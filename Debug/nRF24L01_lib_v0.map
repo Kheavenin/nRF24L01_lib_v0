@@ -177,6 +177,101 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x88b Core/Src/gpio.o
  .debug_macro   0x0000000000000000       0x83 Core/Src/gpio.o
  .debug_macro   0x0000000000000000       0x52 Core/Src/gpio.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .group         0x0000000000000000        0xc Core/Src/highLevelModule.o
+ .text          0x0000000000000000        0x0 Core/Src/highLevelModule.o
+ .data          0x0000000000000000        0x0 Core/Src/highLevelModule.o
+ .bss           0x0000000000000000        0x0 Core/Src/highLevelModule.o
+ .text.nRF_Init
+                0x0000000000000000       0x20 Core/Src/highLevelModule.o
+ .data.pnRFMainStruct.6210
+                0x0000000000000000        0x4 Core/Src/highLevelModule.o
+ .bss.nRFMainStruct.6209
+                0x0000000000000000       0x33 Core/Src/highLevelModule.o
+ .debug_info    0x0000000000000000      0xbc4 Core/Src/highLevelModule.o
+ .debug_abbrev  0x0000000000000000      0x188 Core/Src/highLevelModule.o
+ .debug_aranges
+                0x0000000000000000       0x20 Core/Src/highLevelModule.o
+ .debug_ranges  0x0000000000000000       0x10 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x1d6 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0xa5a Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x21b Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x2e Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x22 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x22 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x8e Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x51 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0xef Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x6a Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x1df Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x1c Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x22 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0xc3 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0xd23 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000     0xe09e Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x43 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x174 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x5a Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x5be Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x289 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x1cb Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x114 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x1b2 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x27 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x136 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x1bc Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x34 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x3c Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x57 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x88 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x241 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x141 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x217 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x88b Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x83 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000       0x52 Core/Src/highLevelModule.o
+ .debug_macro   0x0000000000000000      0x2a6 Core/Src/highLevelModule.o
+ .debug_line    0x0000000000000000      0x679 Core/Src/highLevelModule.o
+ .debug_str     0x0000000000000000    0x6b13b Core/Src/highLevelModule.o
+ .comment       0x0000000000000000       0x7c Core/Src/highLevelModule.o
+ .debug_frame   0x0000000000000000       0x38 Core/Src/highLevelModule.o
+ .ARM.attributes
+                0x0000000000000000       0x33 Core/Src/highLevelModule.o
  .group         0x0000000000000000        0xc Core/Src/main.o
  .group         0x0000000000000000        0xc Core/Src/main.o
  .group         0x0000000000000000        0xc Core/Src/main.o
@@ -2873,6 +2968,7 @@ LOAD c:/st/stm32cubeide_1.2.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
 LOAD c:/st/stm32cubeide_1.2.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.7-2018-q2-update.win32_1.0.0.201904181610/tools/bin/../lib/gcc/arm-none-eabi/7.3.1/../../../../arm-none-eabi/lib/thumb/v7-m/crt0.o
 LOAD Core/Src/controleModule.o
 LOAD Core/Src/gpio.o
+LOAD Core/Src/highLevelModule.o
 LOAD Core/Src/main.o
 LOAD Core/Src/nRF24L01_test-lib.o
 LOAD Core/Src/settingModule.o

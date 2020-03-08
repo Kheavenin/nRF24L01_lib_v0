@@ -27,7 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 //#include "controleModule.h"
-#include "settingModule.h" //TODO: commented to include in test block
+#include "settingModule.h"
 
 #include "nRF24L01_test-lib.h"
 /* USER CODE END Includes */
