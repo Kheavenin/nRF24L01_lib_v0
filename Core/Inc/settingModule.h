@@ -49,6 +49,14 @@ typedef struct {
 	settingsStruct_t setStruct;
 	addrresStruct_t addrStruct;
 	fifoStruct_t fifoStruct;
+
+	SPI_HandleTypeDef *nRFspi;
+	TIM_HandleTypeDef *nRFtim;
+
+	GPIO_TypeDef *nRFportCSN;
+	uint16_t nRFpinCSN;
+	GPIO_TypeDef *nRFportCE;
+	uint16_t nRFpinCE;
 } nrfStruct_t;
 
 /* Modes */
