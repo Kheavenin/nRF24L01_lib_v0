@@ -77,10 +77,10 @@
 #define DF_RX_ADDR_P5 0xC6
 
 #define DF_TX_ADDR_0 0xE7
-#define DF_TX_ADDR_1  0xE7
-#define DF_TX_ADDR_2  0xE7
+#define DF_TX_ADDR_1 0xE7
+#define DF_TX_ADDR_2 0xE7
 #define DF_TX_ADDR_3 0xE7
-#define DF_TX_ADDR_4  0xE7
+#define DF_TX_ADDR_4 0xE7
 
 #define DF_RX_PW_P0 0x00
 #define DF_RX_PW_P1 0x00
