@@ -4,6 +4,53 @@
 
 #include "controleModule.h"
 
+/* Structures */
+typedef struct {
+	uint8_t rxMode :1;
+	uint8_t channel;
+	dataRate_t dataRate;
+	powerRF_t powerRF;
+
+	uint8_t ard;	//automatic retransmissions
+	uint8_t arc;	//auto retransmit count
+
+	uint8_t pipeEn[6];
+	uint8_t pipeACK[6];
+	uint8_t pipeDPL[6];
+	uint8_t pipePayLen[6];
+
+	uint8_t enableDPL :1;
+	uint8_t enableAckPay :1;
+	uint8_t enableDynACK :1;
+} settingsStruct_t;
+
+typedef struct {
+	uint8_t txAddr[5];	//5 byte register
+
+	uint8_t rxAddr0[5];	//5 byte register
+	uint8_t rxAddr1[5];	//5 byte register
+	uint8_t rxAddr2;	//1 byte registers
+	uint8_t rxAddr3;
+	uint8_t rxAddr4;
+	uint8_t rxAddr5;
+} addrresStruct_t;
+
+typedef struct {
+	uint8_t rxRead :1;
+	uint8_t rxFull :1;
+	uint8_t rxEmpty :1;
+
+	uint8_t txSend :1;
+	uint8_t txFull :1;
+	uint8_t txEmpty :1;
+} fifoStruct_t;
+
+typedef struct {
+	settingsStruct_t setStruct;
+	addrresStruct_t addrStruct;
+	fifoStruct_t fifoStruct;
+} nrfStruct_t;
+
 /* Modes */
 void modeRX();
 void modeTX();
