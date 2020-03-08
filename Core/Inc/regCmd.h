@@ -48,7 +48,6 @@
 /**
  * Deafult values of registers
  **/
-
 #define DF_CONFIG 0x08
 #define DF_EN_AA 0x3F //DEX - 63
 #define DF_RXADDR 0x03
@@ -60,14 +59,28 @@
 #define DF_OBSERVE_TX 0x00 //read only
 #define DF_RPD 0x00		   //read only
 
-#define DF_RX_ADDR_P0 0xE7E7E7E7E7
-#define DF_RX_ADDR_P1 0xC2C2C2C2C2
+#define DF_RX_ADDR_P0_0 0xE7
+#define DF_RX_ADDR_P0_1 0xE7
+#define DF_RX_ADDR_P0_2 0xE7
+#define DF_RX_ADDR_P0_3 0xE7
+#define DF_RX_ADDR_P0_4 0xE7
+
+#define DF_RX_ADDR_P1_0 0xC2
+#define DF_RX_ADDR_P1_1 0xC2
+#define DF_RX_ADDR_P1_2 0xC2
+#define DF_RX_ADDR_P1_3 0xC2
+#define DF_RX_ADDR_P1_4 0xC2
+
 #define DF_RX_ADDR_P2 0xC3
 #define DF_RX_ADDR_P3 0xC4
 #define DF_RX_ADDR_P4 0xC5
 #define DF_RX_ADDR_P5 0xC6
 
-#define DF_TX_ADDR 0xE7E7E7E7E7
+#define DF_TX_ADDR_0 0xE7
+#define DF_TX_ADDR_1  0xE7
+#define DF_TX_ADDR_2  0xE7
+#define DF_TX_ADDR_3 0xE7
+#define DF_TX_ADDR_4  0xE7
 
 #define DF_RX_PW_P0 0x00
 #define DF_RX_PW_P1 0x00

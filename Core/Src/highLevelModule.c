@@ -66,6 +66,15 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	nRFMainStruct.setStruct.enableAckPay = 1;
 	nRFMainStruct.setStruct.enableDynACK = 1;	//enable NO_ACK command
 
+	/* Init address struct */
+	for (i = 0; i < 5; i++) {
+		nRFMainStruct.addrStruct.txAddr[i] = DF_TX_ADDR_0;
+	}
+	for (i = 0; i < 5; ++i) {
+		nRFMainStruct.addrStruct.rxAddr0[i] = DF_RX_ADDR_P0_0;
+	}
+
+
 	/* Put pointer of SPI and TIM structures to nRF alias */
 	pnRFMainStruct->nRFspi = HAL_SPIx;
 	pnRFMainStruct->nRFtim = HAL_TIMx;
@@ -75,6 +84,13 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	pnRFMainStruct->nRFpinCSN = HAL_GPIO_Pin_CSN;
 	pnRFMainStruct->nRFportCE = HAL_GPIO_CE;
 	pnRFMainStruct->nRFpinCE = HAL_GPIO_Pin_CE;
+
+
+
+
+
+
+
 
 	return pnRFMainStruct;
 
