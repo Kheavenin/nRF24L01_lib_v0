@@ -1,4 +1,4 @@
 highLevelModule.c:10:6:settingStruct_Init	24	static
 highLevelModule.c:45:6:addressStruct_Init	24	static
 highLevelModule.c:63:6:fifoStruct_Init	16	static
-highLevelModule.c:70:14:nRF_Init	32	static
+highLevelModule.c:77:14:nRF_Init	24	static
