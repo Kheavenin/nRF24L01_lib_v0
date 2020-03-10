@@ -7,17 +7,51 @@
 
 #include "highLevelModule.h"
 
-void fifoStruct_Init() {
+void settingStruct_Init(nrfStruct_t *nrfStruct) {
+	/* Init settigns struct */
+	nrfStruct->setStruct.rxMode = 0;			//set as receiver
+	nrfStruct->setStruct.channel = 0; 				//set channel np. 0
+	nrfStruct->setStruct.dataRate = RF_DataRate_2M;  //lowest data rate
+	nrfStruct->setStruct.powerRF = RF_PWR_0dBm;		//-12dBm power
+
+	nrfStruct->setStruct.ard = 0;		//auto retr. delay 250us
+	nrfStruct->setStruct.arc = 3;		//auto retr. counter
+	/* Pipe Enable - defult pipe 0 enable only */
+	uint8_t i;
+	for (i = 0; i < 6; i++) {
+		if (i == 0 || i == 1) {
+			nrfStruct->setStruct.pipeEn[i] = 1;
+		}
+		nrfStruct->setStruct.pipeEn[i] = 0;
+	}
+	/* Pipe ACK enable - default pipe 0 ACK enable only */
+	for (i = 0; i < 6; i++) {
+		nrfStruct->setStruct.pipeACK[i] = 1;
+	}
+	/* Pipe Dynamic Payload enable - default pipe 0 DPL enable only */
+	for (i = 0; i < 6; i++) {
+		nrfStruct->setStruct.pipeDPL[i] = 0;
+	}
+	/* Pipe RX Payload Lenght  */
+	for (i = 0; i < 6; i++) {
+		nrfStruct->setStruct.pipePayLen[i] = 0;
+	}
+
+	nrfStruct->setStruct.enableDPL = 0;
+	nrfStruct->setStruct.enableAckPay = 0;
+	nrfStruct->setStruct.enableDynACK = 0;	//enable NO_ACK command
+}
+
+void addressStruct_Init(nrfStruct_t *nrfStruct) {
 
 }
 
-void addressStruct_Init() {
+void fifoStruct_Init(nrfStruct_t *nrfStruct) {
 
 }
 
-void settingStruct_Init() {
 
-}
+
 
 nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 		GPIO_TypeDef *HAL_GPIO_CSN, uint16_t HAL_GPIO_Pin_CSN,
@@ -28,6 +62,11 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	static nrfStruct_t *pnRFMainStruct = &nRFMainStruct;
 
 	/* Init settigns struct */
+	uint8_t i;
+	settingStruct_Init(pnRFMainStruct);
+
+#define	INIT_TEST_STRUCT 0
+#if INIT_TEST_STRUCT
 	nRFMainStruct.setStruct.rxMode = 0;			//set as receiver
 	nRFMainStruct.setStruct.channel = 0; 				//set channel np. 0
 	nRFMainStruct.setStruct.dataRate = RF_DataRate_2M;  //lowest data rate
@@ -59,7 +98,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	nRFMainStruct.setStruct.enableDPL = 0;
 	nRFMainStruct.setStruct.enableAckPay = 0;
 	nRFMainStruct.setStruct.enableDynACK = 0;	//enable NO_ACK command
-
+#endif
 	/* Init address struct */
 	for (i = 0; i < 5; i++) {
 		nRFMainStruct.addrStruct.txAddr[i] = DF_TX_ADDR_0;
