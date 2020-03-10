@@ -98,6 +98,10 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	/* Init settigns struct */
 
 	settingStruct_Init(pnRFMainStruct);
+	addressStruct_Init(pnRFMainStruct);
+	fifoStruct_Init(pnRFMainStruct);
+	hardware_Init(pnRFMainStruct, HAL_SPIx, HAL_TIMx, HAL_GPIO_CSN,
+			HAL_GPIO_Pin_CSN, HAL_GPIO_CE, HAL_GPIO_Pin_CE);
 
 #define	INIT_TEST_STRUCT 0
 #if INIT_TEST_STRUCT
@@ -161,7 +165,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	nRFMainStruct.fifoStruct.txFull = 0;
 	nRFMainStruct.fifoStruct.txEmpty = 1;
 #endif
-
+#if INIT_TEST_STRUCT
 	/* Put pointer of SPI and TIM structures to nRF alias */
 	pnRFMainStruct->nRFspi = HAL_SPIx;
 	pnRFMainStruct->nRFtim = HAL_TIMx;
@@ -171,7 +175,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	pnRFMainStruct->nRFpinCSN = HAL_GPIO_Pin_CSN;
 	pnRFMainStruct->nRFportCE = HAL_GPIO_CE;
 	pnRFMainStruct->nRFpinCE = HAL_GPIO_Pin_CE;
-
+#endif
 	return pnRFMainStruct;
 
 }
