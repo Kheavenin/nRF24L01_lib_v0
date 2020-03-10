@@ -43,7 +43,21 @@ void settingStruct_Init(nrfStruct_t *nrfStruct) {
 }
 
 void addressStruct_Init(nrfStruct_t *nrfStruct) {
-
+	/* Init address struct */
+	uint8_t i;
+	for (i = 0; i < 5; i++) {
+		nrfStruct->addrStruct.txAddr[i] = DF_TX_ADDR_0;
+	}
+	for (i = 0; i < 5; ++i) {
+		nrfStruct->addrStruct.rxAddr0[i] = DF_RX_ADDR_P0_0;
+	}
+	for (i = 0; i < 5; ++i) {
+		nrfStruct->addrStruct.rxAddr1[i] = DF_RX_ADDR_P1_0;
+	}
+	nrfStruct->addrStruct.rxAddr2 = DF_RX_ADDR_P2;
+	nrfStruct->addrStruct.rxAddr3 = DF_RX_ADDR_P3;
+	nrfStruct->addrStruct.rxAddr4 = DF_RX_ADDR_P4;
+	nrfStruct->addrStruct.rxAddr5 = DF_RX_ADDR_P5;
 }
 
 void fifoStruct_Init(nrfStruct_t *nrfStruct) {
@@ -99,6 +113,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	nRFMainStruct.setStruct.enableAckPay = 0;
 	nRFMainStruct.setStruct.enableDynACK = 0;	//enable NO_ACK command
 #endif
+
 	/* Init address struct */
 	for (i = 0; i < 5; i++) {
 		nRFMainStruct.addrStruct.txAddr[i] = DF_TX_ADDR_0;
