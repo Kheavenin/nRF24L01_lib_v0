@@ -71,7 +71,20 @@ void fifoStruct_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->fifoStruct.txEmpty = 1;
 }
 
+void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
+		TIM_HandleTypeDef *HAL_TIMx, GPIO_TypeDef *HAL_GPIO_CSN,
+		uint16_t HAL_GPIO_Pin_CSN, GPIO_TypeDef *HAL_GPIO_CE,
+		uint16_t HAL_GPIO_Pin_CE) {
+	/* Put pointer of SPI and TIM structures to nRF alias */
+	nrfStruct->nRFspi = HAL_SPIx;
+	nrfStruct->nRFtim = HAL_TIMx;
 
+	/* Put GPIO port pointer and pin number to structure's alias */
+	nrfStruct->nRFportCSN = HAL_GPIO_CSN;
+	nrfStruct->nRFpinCSN = HAL_GPIO_Pin_CSN;
+	nrfStruct->nRFportCE = HAL_GPIO_CE;
+	nrfStruct->nRFpinCE = HAL_GPIO_Pin_CE;
+}
 
 
 nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
