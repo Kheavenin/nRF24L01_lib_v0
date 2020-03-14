@@ -103,8 +103,71 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	hardware_Init(pnRFMainStruct, HAL_SPIx, HAL_TIMx, HAL_GPIO_CSN,
 			HAL_GPIO_Pin_CSN, HAL_GPIO_CE, HAL_GPIO_Pin_CE);
 
+	writeReg(pnRFMainStruct, CONFIG, 0x02);
+	uint8_t tmp = readReg(pnRFMainStruct, CONFIG);
 
+	pwrDown(pnRFMainStruct);
+	pwrUp(pnRFMainStruct);
+	tmp = readReg(pnRFMainStruct, CONFIG);
+	tmp = readReg(pnRFMainStruct, RF_SETUP);
 	return pnRFMainStruct;
 
+}
+
+void csnL(nrfStruct_t *nrfStruct) {
+	HAL_GPIO_WritePin((nrfStruct->nRFportCSN), (nrfStruct->nRFpinCSN),
+			GPIO_PIN_RESET);
+}
+void csnH(nrfStruct_t *nrfStruct) {
+	HAL_GPIO_WritePin((nrfStruct->nRFportCSN), (nrfStruct->nRFpinCSN),
+			GPIO_PIN_SET);
+}
+void ceL(nrfStruct_t *nrfStruct) {
+	HAL_GPIO_WritePin((nrfStruct->nRFportCE), (nrfStruct->nRFpinCE),
+			GPIO_PIN_RESET);
+}
+void ceH(nrfStruct_t *nrfStruct) {
+	HAL_GPIO_WritePin((nrfStruct->nRFportCE), (nrfStruct->nRFpinCE),
+			GPIO_PIN_SET);
+}
+
+uint8_t readReg(nrfStruct_t *nrfStruct, uint8_t addr) {
+	uint8_t cmd = R_REGISTER | addr;
+	uint8_t reg;
+	uint8_t *pCmd = &cmd;
+	uint8_t *pReg = &reg;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
+	DelayUs(50);
+	HAL_SPI_Receive((nrfStruct->nRFspi), pReg, sizeof(reg), SPI_TIMEOUT);
+
+	csnH(nrfStruct);
+	return reg;
+}
+
+void writeReg(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t val) {
+	uint8_t cmd = W_REGISTER | addr;
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
+	DelayUs(50);
+	HAL_SPI_Transmit((nrfStruct->nRFspi), &val, sizeof(val), SPI_TIMEOUT);
+
+	csnH(nrfStruct);
+}
+
+void pwrUp(nrfStruct_t *nrfStruct) {
+	uint8_t tmp = readReg(nrfStruct, CONFIG);
+	tmp |= (1 << 1);
+	writeReg(nrfStruct, CONFIG, tmp);
+}
+void pwrDown(nrfStruct_t *nrfStruct) {
+	uint8_t tmp = readReg(nrfStruct, CONFIG);
+	tmp &= (0 << 1);		//zmieniono OR na AND
+	writeRegister(CONFIG, tmp);
 }
 

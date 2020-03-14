@@ -17,6 +17,8 @@ void csnHigh(); //TODO: in future create macro
 void ceLow();   //TODO: in future create macro
 void ceHigh();  //TODO: in future create macro
 
+
+
 /* Read/write register functions */
 uint8_t readRegister(uint8_t addr);
 void writeRegister(uint8_t addr, uint8_t val);
@@ -108,7 +110,7 @@ void setBit(uint8_t addr, bitNum_t bit);
 void resetBit(uint8_t addr, bitNum_t bit);
 
 /* Turn on and turn off module */
-void powerUp(); //Fixed
+void powerUp();
 void powerDown();
 
 

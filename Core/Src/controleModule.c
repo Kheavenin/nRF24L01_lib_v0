@@ -9,6 +9,9 @@
  * @Param	addr - address of register to read.
  * @Ratval	return read register content.
  */
+
+
+
 uint8_t readRegister(uint8_t addr) {
 	uint8_t cmd = R_REGISTER | addr;
 	uint8_t reg;
@@ -19,29 +22,7 @@ uint8_t readRegister(uint8_t addr) {
 
 	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);
 	DelayUs(50);
-	//HAL_Delay(1);
 	HAL_SPI_Receive(&hspi1, pReg, sizeof(reg), SPI_TIMEOUT);
-	/*
-#if 0
-	HAL_StatusTypeDef statusSend;
-	HAL_StatusTypeDef statusRead;
-	while (!statusRead) {
-		statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-		if (statusSend) {
-			statusRead = HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
-		}
-	}
-#endif
-#if 0
-	HAL_StatusTypeDef statusRead;
-	HAL_StatusTypeDef statusCmd;
-	statusRead = HAL_SPI_TransmitReceive(&hspi1, pCmd, pReg, cmdSize,
-	SPI_TIMEOUT);
-#endif
-#if 0
-	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT))
-		HAL_SPI_Receive(&hspi1, pReg, regSize, SPI_TIMEOUT);
-	 #endif */
 
 	csnHigh();
 	return reg;
@@ -59,27 +40,9 @@ void writeRegister(uint8_t addr, uint8_t val) {
 	csnLow();
 
 	HAL_SPI_Transmit(&hspi1, pCmd, sizeof(cmd), SPI_TIMEOUT);
-	//HAL_Delay(1);
 	DelayUs(50);
 	HAL_SPI_Transmit(&hspi1, &val, sizeof(val), SPI_TIMEOUT);
 
-	/*
-#if 0
-	HAL_StatusTypeDef statusSend;
-	HAL_StatusTypeDef statusRead;
-	while (!statusRead) {
-		statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
-		if (statusSend) {
-			statusRead = HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
-		}
-	}
-#endif
-#if 0
-	if (HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT)) {
-		HAL_SPI_Transmit(&hspi1, &val, valSize, SPI_TIMEOUT);
-	}
-#endif
-	 */
 	csnHigh();
 }
 
