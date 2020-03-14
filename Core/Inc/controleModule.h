@@ -104,11 +104,6 @@ void reuseTxPayload();
 /* Additional feature functions */
 uint8_t getStatus();
 
-/* Read/write single bit funtions */
-uint8_t readBit(uint8_t addr, bitNum_t bit);
-void setBit(uint8_t addr, bitNum_t bit);
-void resetBit(uint8_t addr, bitNum_t bit);
-
 /* Turn on and turn off module */
 void powerUp();
 void powerDown();

@@ -6,6 +6,13 @@
 
 /* Structures */
 typedef struct {
+	uint8_t dataReadIrq :1;
+	uint8_t dataSendIrq :1;
+	uint8_t maxRetr :1;
+	uint8_t pipeNumber :3;
+} statusStruct_t;
+
+typedef struct {
 	uint8_t rxMode :1;
 	uint8_t channel;
 	dataRate_t dataRate;
@@ -14,9 +21,9 @@ typedef struct {
 	uint8_t ard;	//automatic retransmissions
 	uint8_t arc;	//auto retransmit count
 
-	uint8_t pipeEn[6];
-	uint8_t pipeACK[6];
-	uint8_t pipeDPL[6];
+	uint8_t pipeEn;
+	uint8_t pipeACK;
+	uint8_t pipeDPL;
 	uint8_t pipePayLen[6];
 
 	uint8_t enableDPL :1;
@@ -49,6 +56,7 @@ typedef struct {
 	settingsStruct_t setStruct;
 	addrresStruct_t addrStruct;
 	fifoStruct_t fifoStruct;
+	statusStruct_t statusStruct;
 
 	SPI_HandleTypeDef *nRFspi;
 	TIM_HandleTypeDef *nRFtim;

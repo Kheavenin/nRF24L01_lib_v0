@@ -113,7 +113,7 @@ typedef enum
 #define EN_CRC bit3
 #define CRCO bit2
 #define PWR_UP bit1
-#define NPRIM_RX bit0
+#define PRIM_RX bit0
 
 /* RF setup register */
 #define CONT_WAVE bit7

@@ -7,6 +7,21 @@
 
 #include "highLevelModule.h"
 
+static uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
+static void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
+static void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
+static void delayUs(nrfStruct_t *nrfStruct, uint16_t time);
+
+static void statusStrcut_Init(nrfStruct_t *nrfStruct);
+
+
+static void statusStrcut_Init(nrfStruct_t *nrfStruct) {
+	nrfStruct->statusStruct.dataReadIrq = 0;
+	nrfStruct->statusStruct.dataSendIrq = 0;
+	nrfStruct->statusStruct.maxRetr = 0;
+	nrfStruct->statusStruct.pipeNumber = RX_FIFO_EMPTY;
+}
+
 void settingStruct_Init(nrfStruct_t *nrfStruct) {
 	/* Init settigns struct */
 	nrfStruct->setStruct.rxMode = 0;			//set as receiver
@@ -18,23 +33,14 @@ void settingStruct_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->setStruct.arc = 3;		//auto retr. counter
 	/* Pipe Enable - defult pipe 0 enable only */
 	uint8_t i;
-	for (i = 0; i < 6; i++) {
-		if (i == 0 || i == 1)
-			nrfStruct->setStruct.pipeEn[i] = 1;
-		else
-			nrfStruct->setStruct.pipeEn[i] = 0;
-	}
-	/* Pipe ACK enable - default pipe 0 ACK enable only */
-	for (i = 0; i < 6; i++) {
-		nrfStruct->setStruct.pipeACK[i] = 1;
-	}
-	/* Pipe Dynamic Payload enable - default pipe 0 DPL enable only */
-	for (i = 0; i < 6; i++) {
-		nrfStruct->setStruct.pipeDPL[i] = 0;
-	}
+
+	nrfStruct->setStruct.pipeEn = DF_RXADDR;
+	nrfStruct->setStruct.pipeACK = DF_EN_AA;
+	nrfStruct->setStruct.pipeDPL = DF_DYNPD;
+
 	/* Pipe RX Payload Lenght  */
 	for (i = 0; i < 6; i++) {
-		nrfStruct->setStruct.pipePayLen[i] = 0;
+		nrfStruct->setStruct.pipePayLen[i] = DF_RX_PW_P0;
 	}
 
 	nrfStruct->setStruct.enableDPL = 0;
@@ -96,7 +102,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	static nrfStruct_t *pnRFMainStruct = &nRFMainStruct;
 
 	/* Init settigns struct */
-
+	statusStrcut_Init(pnRFMainStruct);
 	settingStruct_Init(pnRFMainStruct);
 	addressStruct_Init(pnRFMainStruct);
 	fifoStruct_Init(pnRFMainStruct);
@@ -104,11 +110,40 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 			HAL_GPIO_Pin_CSN, HAL_GPIO_CE, HAL_GPIO_Pin_CE);
 
 //	pwrDown(pnRFMainStruct);
+	/* Turn on modul */
 	pwrUp(pnRFMainStruct);
 
-	uint8_t tmp = readReg(pnRFMainStruct, EN_AA);
-	tmp = readReg(pnRFMainStruct, SETUP_AW);
-	tmp = readReg(pnRFMainStruct, SETUP_RETR);
+	/* Set default settings */
+	setBit(pnRFMainStruct, CONFIG, PRIM_RX);
+	writeReg(pnRFMainStruct, EN_AA, (pnRFMainStruct->setStruct.pipeACK));
+	writeReg(pnRFMainStruct, EN_RXADDR, (pnRFMainStruct->setStruct.pipeEn));
+	writeReg(pnRFMainStruct, SETUP_AW, DF_SETUP_AW);
+	writeReg(pnRFMainStruct, SETUP_RETR, DF_SETUP_RETR);
+	writeReg(pnRFMainStruct, RF_CH, DF_RF_CH);
+	writeReg(pnRFMainStruct, RF_SETUP, DF_RF_SETUP);
+	writeReg(pnRFMainStruct, OBSERVE_TX, DF_OBSERVE_TX);
+	writeReg(pnRFMainStruct, STATUS, DF_STATUS);
+	writeReg(pnRFMainStruct, DYNPD, (pnRFMainStruct->setStruct.pipeDPL));
+
+	uint8_t i;
+	for (i = 0; i < 6; i++) {
+		writeReg(pnRFMainStruct, (RX_PW_P0 + i),
+				(pnRFMainStruct->setStruct.pipePayLen[i]));
+	}
+	writeReg(pnRFMainStruct, FEATURE, DF_FEATURE);
+
+	/* Set default address */
+	writeRegX(pnRFMainStruct, TX_ADDR, (pnRFMainStruct->addrStruct.txAddr),
+			sizeof(pnRFMainStruct->addrStruct.txAddr));
+	writeRegX(pnRFMainStruct, RX_ADDR_P0, (pnRFMainStruct->addrStruct.rxAddr0),
+			sizeof(pnRFMainStruct->addrStruct.rxAddr0));
+	writeRegX(pnRFMainStruct, RX_ADDR_P1, (pnRFMainStruct->addrStruct.rxAddr1),
+			sizeof(pnRFMainStruct->addrStruct.rxAddr1));
+	writeReg(pnRFMainStruct, RX_ADDR_P2, (pnRFMainStruct->addrStruct.rxAddr2));
+	writeReg(pnRFMainStruct, RX_ADDR_P3, (pnRFMainStruct->addrStruct.rxAddr3));
+	writeReg(pnRFMainStruct, RX_ADDR_P4, (pnRFMainStruct->addrStruct.rxAddr4));
+	writeReg(pnRFMainStruct, RX_ADDR_P5, (pnRFMainStruct->addrStruct.rxAddr5));
+
 
 
 	return pnRFMainStruct;
@@ -161,6 +196,37 @@ void writeReg(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t val) {
 	csnH(nrfStruct);
 }
 
+void readRegX(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
+		size_t bufSize) {
+	uint8_t cmd = R_REGISTER | addr;
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
+	delayUs(nrfStruct, 50);
+	HAL_SPI_Receive((nrfStruct->nRFspi), buf, bufSize,
+			SPI_TIMEOUT);
+
+	csnH(nrfStruct);
+}
+
+void writeRegX(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
+		size_t bufSize) {
+	uint8_t cmd = W_REGISTER | addr;
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
+	delayUs(nrfStruct, 50);
+	HAL_SPI_Receive((nrfStruct->nRFspi), buf, bufSize,
+	SPI_TIMEOUT);
+
+	csnHigh();
+}
+
+
 void pwrUp(nrfStruct_t *nrfStruct) {
 	uint8_t tmp = readReg(nrfStruct, CONFIG);
 	tmp |= (1 << 1);
@@ -171,6 +237,24 @@ void pwrDown(nrfStruct_t *nrfStruct) {
 	tmp &= (0 << 1);		//zmieniono OR na AND
 	writeRegister(CONFIG, tmp);
 }
+
+static uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
+	uint8_t reg = readReg(nrfStruct, addr);
+	return ((reg >> bit) & 0x01);
+}
+
+static void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
+	uint8_t tmp = readReg(nrfStruct, addr);
+	tmp &= 0 << bit;		//zmieniono OR na AND
+	writeReg(nrfStruct, addr, tmp);
+}
+
+static void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
+	uint8_t tmp = readReg(nrfStruct, addr);
+	tmp |= 1 << bit;
+	writeReg(nrfStruct, addr, tmp);
+}
+
 
 static void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
 

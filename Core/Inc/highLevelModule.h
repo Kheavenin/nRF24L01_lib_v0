@@ -31,8 +31,10 @@ void ceH(nrfStruct_t *nrfStruct);  //TODO: in future create macro
 
 uint8_t readReg(nrfStruct_t *nrfStruct, uint8_t addr);
 void writeReg(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t val);
-
-
+void readRegX(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
+		size_t bufSize);
+void writeRegX(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
+		size_t bufSize);
 
 
 
@@ -40,7 +42,7 @@ void writeReg(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t val);
 void pwrUp(nrfStruct_t *nrfStruct);
 void pwrDown(nrfStruct_t *nrfStruct);
 
-static void delayUs(nrfStruct_t *nrfStruct, uint16_t time);
+
 
 
 

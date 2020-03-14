@@ -9,8 +9,9 @@
  * @Param	addr - address of register to read.
  * @Ratval	return read register content.
  */
-
-
+uint8_t readBit(uint8_t addr, bitNum_t bit);
+static void setBit(uint8_t addr, bitNum_t bit);
+static void resetBit(uint8_t addr, bitNum_t bit);
 
 uint8_t readRegister(uint8_t addr) {
 	uint8_t cmd = R_REGISTER | addr;
@@ -53,11 +54,9 @@ void multiRead(uint8_t addr, uint8_t *buf, size_t bufSize) {
 	size_t cmdSize = sizeof(cmd);
 	csnLow();
 
-	HAL_StatusTypeDef statusRead;
-	HAL_StatusTypeDef statusCmd;
-	statusCmd = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
 	HAL_Delay(1);
-	statusRead = HAL_SPI_Receive(&hspi1, buf, bufSize, SPI_TIMEOUT);
+	HAL_SPI_Receive(&hspi1, buf, bufSize, SPI_TIMEOUT);
 
 	csnHigh();
 }
@@ -67,11 +66,9 @@ void multiWrite(uint8_t addr, uint8_t *buf, size_t bufSize) {
 	size_t cmdSize = sizeof(cmd);
 	csnLow();
 
-	HAL_StatusTypeDef statusSend;
-	HAL_StatusTypeDef statusRead;
-	statusSend = HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
+	HAL_SPI_Transmit(&hspi1, pCmd, cmdSize, SPI_TIMEOUT);
 	HAL_Delay(1);
-	statusRead = HAL_SPI_Transmit(&hspi1, buf, bufSize, SPI_TIMEOUT);
+	HAL_SPI_Transmit(&hspi1, buf, bufSize, SPI_TIMEOUT);
 
 	csnHigh();
 }
@@ -248,7 +245,7 @@ uint8_t readBit(uint8_t addr, bitNum_t bit) {
 /**
  * @Brief	Set logic '1' on selected position
  */
-void setBit(uint8_t addr, bitNum_t bit) {
+static void setBit(uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readRegister(addr);
 	tmp |= 1 << bit;
 	writeRegister(addr, tmp);
@@ -257,7 +254,7 @@ void setBit(uint8_t addr, bitNum_t bit) {
 /**
  * @Brief	Set logic '0' on selected position
  */
-void resetBit(uint8_t addr, bitNum_t bit) {
+static void resetBit(uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readRegister(addr);
 	tmp &= 0 << bit;		//zmieniono OR na AND
 	writeRegister(addr, tmp);
