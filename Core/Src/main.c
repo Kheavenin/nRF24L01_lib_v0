@@ -27,9 +27,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 //#include "controleModule.h"
-#include "settingModule.h"
-
-#include "nRF24L01_test-lib.h"
+//#include "settingModule.h"
+//#include "nRF24L01_test-lib.h"
+#include "highLevelModule.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,9 +42,8 @@
 #define TEST_ENABLE 0
 
 #define TEST_0 1
-#define TEST_LIB 0
-#define TEST_LIB1 1
-#define TEST_3 0
+#define TEST_LIB 1
+#define TEST_LIB1
 
 #define addrBufSize 5
 /* USER CODE END PD */
@@ -130,22 +129,17 @@ int main(void)
 #if 1
 	writeRegister(CONFIG, 0x02);
 	regTmp = readRegister(CONFIG);
+	nrfStruct_t *testStruct;
+	testStruct = nRF_Init(&hspi1, &htim1, CSN_GPIO_Port, CSN_Pin, CE_GPIO_Port,
+			CE_Pin);
 #endif
 
 	while (1) {
 #if TEST_LIB
-		uint8_t testVal = test_RFchannel();
-		testVal = test_RFpower();
-		testVal = test_RFdataRate();
-		testVal = test_ReciveAddress();
-		testVal = test_TransmitAddress();
+
 
 #endif
-#if TEST_ENABLE
 
-		uint8_t testVal = test_ReadWriteSingleRegisters();
-
-#endif
 
     /* USER CODE END WHILE */
 
