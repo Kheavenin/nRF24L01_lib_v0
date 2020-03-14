@@ -103,13 +103,14 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	hardware_Init(pnRFMainStruct, HAL_SPIx, HAL_TIMx, HAL_GPIO_CSN,
 			HAL_GPIO_Pin_CSN, HAL_GPIO_CE, HAL_GPIO_Pin_CE);
 
-	writeReg(pnRFMainStruct, CONFIG, 0x02);
-	uint8_t tmp = readReg(pnRFMainStruct, CONFIG);
-
-	pwrDown(pnRFMainStruct);
+//	pwrDown(pnRFMainStruct);
 	pwrUp(pnRFMainStruct);
-	tmp = readReg(pnRFMainStruct, CONFIG);
-	tmp = readReg(pnRFMainStruct, RF_SETUP);
+
+	uint8_t tmp = readReg(pnRFMainStruct, EN_AA);
+	tmp = readReg(pnRFMainStruct, SETUP_AW);
+	tmp = readReg(pnRFMainStruct, SETUP_RETR);
+
+
 	return pnRFMainStruct;
 
 }
@@ -140,7 +141,7 @@ uint8_t readReg(nrfStruct_t *nrfStruct, uint8_t addr) {
 	csnL(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
-	DelayUs(50);
+	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), pReg, sizeof(reg), SPI_TIMEOUT);
 
 	csnH(nrfStruct);
@@ -154,7 +155,7 @@ void writeReg(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t val) {
 	csnL(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
-	DelayUs(50);
+	delayUs(nrfStruct, 50);
 	HAL_SPI_Transmit((nrfStruct->nRFspi), &val, sizeof(val), SPI_TIMEOUT);
 
 	csnH(nrfStruct);
@@ -171,3 +172,10 @@ void pwrDown(nrfStruct_t *nrfStruct) {
 	writeRegister(CONFIG, tmp);
 }
 
+static void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
+
+	__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);	//Set star value as 0
+	while (__HAL_TIM_GET_COUNTER(nrfStruct->nRFtim) < time)
+		;
+
+}
