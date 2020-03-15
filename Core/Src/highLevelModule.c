@@ -345,7 +345,40 @@ uint8_t writeTxPayloadNoAck(nrfStruct_t *nrfStruct, uint8_t *buf,
 	return OK_CODE;
 }
 
+uint8_t flushTx(nrfStruct_t *nrfStruct) {
+	uint8_t cmd = FLUSH_TX;	//set command mask
+	uint8_t *pCmd = &cmd;
 
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
+	delayUs(nrfStruct, 10);
+	if (!readBit(nrfStruct, FIFO_STATUS, bit4)) {	//check FIFO status
+		csnHigh();
+		nrfStruct->fifoStruct.txEmpty = 0;
+		return ERR_CODE;
+	}
+	csnH(nrfStruct);
+	nrfStruct->fifoStruct.txEmpty = 1;
+	return OK_CODE;
+}
+uint8_t flushRx(nrfStruct_t *nrfStruct) {
+	uint8_t cmd = FLUSH_RX;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
+	delayUs(nrfStruct, 10);
+	if (!readBit(nrfStruct, FIFO_STATUS, bit0)) {	//check FIFO status
+		csnHigh();
+		nrfStruct->fifoStruct.rxEmpty = 0;
+		return ERR_CODE;
+	}
+	csnH(nrfStruct);
+	nrfStruct->fifoStruct.rxEmpty = 1;
+	return OK_CODE;
+}
 
 
 
