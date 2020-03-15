@@ -18,10 +18,10 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 
 
 /* CE snd CSN control funtions's */
-void csnL(nrfStruct_t *nrfStruct);  //TODO: in future create macro
-void csnH(nrfStruct_t *nrfStruct); //TODO: in future create macro
-void ceL(nrfStruct_t *nrfStruct);   //TODO: in future create macro
-void ceH(nrfStruct_t *nrfStruct);  //TODO: in future create macro
+void csnLow(nrfStruct_t *nrfStruct);  //TODO: in future create macro
+void csnHigh(nrfStruct_t *nrfStruct); //TODO: in future create macro
+void ceLow(nrfStruct_t *nrfStruct);   //TODO: in future create macro
+void ceHigh(nrfStruct_t *nrfStruct);  //TODO: in future create macro
 
 /* Elementary functions base on nRf24L01+ SPI commands */
 /* Read and write registers funtions's */

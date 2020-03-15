@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "controleModule.h"
+//#include "controleModule.h"
 
 /* Structures */
 typedef struct {
@@ -68,14 +68,14 @@ typedef struct {
 } nrfStruct_t;
 
 /* Modes */
-void modeRX();
-void modeTX();
-void modeStandby();
+void modeRX(nrfStruct_t *nrfStruct);
+void modeTX(nrfStruct_t *nrfStruct);
+void modeStandby(nrfStruct_t *nrfStruct);
 
 /* Interrupts */
-void disableTXinterrupt(); //mask data send interrupt
-void disableRXinterrupt(); //mask data receive interrupt
-void disableRTinterrupt(); //mask data retransmition interrupt
+void disableTXinterrupt(nrfStruct_t *nrfStruct); //mask data send interrupt
+void disableRXinterrupt(nrfStruct_t *nrfStruct); //mask data receive interrupt
+void disableRTinterrupt(nrfStruct_t *nrfStruct); //mask data retransmition interrupt
 
 void enableTXinterrupt(); //dont mask data send interrupt
 void enableRXinterrupt(); //dont mask data receive interrupt

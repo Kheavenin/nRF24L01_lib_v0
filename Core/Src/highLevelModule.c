@@ -163,19 +163,19 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 
 
 /* CE snd CSN control funtions's */
-void csnL(nrfStruct_t *nrfStruct) {
+void csnLow(nrfStruct_t *nrfStruct) {
 	HAL_GPIO_WritePin((nrfStruct->nRFportCSN), (nrfStruct->nRFpinCSN),
 			GPIO_PIN_RESET);
 }
-void csnH(nrfStruct_t *nrfStruct) {
+void csnHigh(nrfStruct_t *nrfStruct) {
 	HAL_GPIO_WritePin((nrfStruct->nRFportCSN), (nrfStruct->nRFpinCSN),
 			GPIO_PIN_SET);
 }
-void ceL(nrfStruct_t *nrfStruct) {
+void ceLow(nrfStruct_t *nrfStruct) {
 	HAL_GPIO_WritePin((nrfStruct->nRFportCE), (nrfStruct->nRFpinCE),
 			GPIO_PIN_RESET);
 }
-void ceH(nrfStruct_t *nrfStruct) {
+void ceHigh(nrfStruct_t *nrfStruct) {
 	HAL_GPIO_WritePin((nrfStruct->nRFportCE), (nrfStruct->nRFpinCE),
 			GPIO_PIN_SET);
 }
@@ -188,13 +188,13 @@ uint8_t readReg(nrfStruct_t *nrfStruct, uint8_t addr) {
 	uint8_t *pCmd = &cmd;
 	uint8_t *pReg = &reg;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), pReg, sizeof(reg), SPI_TIMEOUT);
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	return reg;
 }
 
@@ -202,13 +202,13 @@ void writeReg(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t val) {
 	uint8_t cmd = W_REGISTER | addr;
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Transmit((nrfStruct->nRFspi), &val, sizeof(val), SPI_TIMEOUT);
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 }
 
 /* Extended read and write functions - R/W few registers */
@@ -217,14 +217,14 @@ void readRegExt(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
 	uint8_t cmd = R_REGISTER | addr;
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), buf, bufSize,
 			SPI_TIMEOUT);
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 }
 
 void writeRegExt(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
@@ -232,14 +232,14 @@ void writeRegExt(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
 	uint8_t cmd = W_REGISTER | addr;
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), buf, bufSize,
 	SPI_TIMEOUT);
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 }
 
 /* Payload's functions */
@@ -252,13 +252,13 @@ uint8_t readRxPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
 	uint8_t cmd = R_RX_PAYLOAD;	//set command mask
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), buf, bufSize, SPI_TIMEOUT);//read payload
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	return OK_CODE;
 }
 
@@ -271,13 +271,13 @@ uint8_t writeTxPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
 	uint8_t cmd = W_TX_PAYLOAD;	//set command mask
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Transmit((nrfStruct->nRFspi), buf, bufSize, SPI_TIMEOUT);//read payload
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	return OK_CODE;
 }
 
@@ -297,12 +297,12 @@ uint8_t readRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize,
 	uint8_t cmd = R_RX_PL_WID;	//set command mask
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), buf, width, SPI_TIMEOUT);//read payload
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	return OK_CODE;
 }
 
@@ -315,13 +315,13 @@ uint8_t writeTxPayloadAck(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) 
 	uint8_t cmd = W_ACK_PAYLOAD;	//set command mask
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Transmit((nrfStruct->nRFspi), buf, bufSize, SPI_TIMEOUT);//read payload
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	return OK_CODE;
 }
 
@@ -335,13 +335,13 @@ uint8_t writeTxPayloadNoAck(nrfStruct_t *nrfStruct, uint8_t *buf,
 	uint8_t cmd = W_TX_PAYLOAD_NO_ACK;	//set command mask
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Transmit((nrfStruct->nRFspi), buf, bufSize, SPI_TIMEOUT);//read payload
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	return OK_CODE;
 }
 /* Flush functions */
@@ -349,16 +349,16 @@ uint8_t flushTx(nrfStruct_t *nrfStruct) {
 	uint8_t cmd = FLUSH_TX;	//set command mask
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 10);
 	if (!readBit(nrfStruct, FIFO_STATUS, bit4)) {	//check FIFO status
-		csnHigh();
+		csnHighigh();
 		nrfStruct->fifoStruct.txEmpty = 0;
 		return ERR_CODE;
 	}
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	nrfStruct->fifoStruct.txEmpty = 1;
 	return OK_CODE;
 }
@@ -366,16 +366,16 @@ uint8_t flushRx(nrfStruct_t *nrfStruct) {
 	uint8_t cmd = FLUSH_RX;	//set command mask
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 10);
 	if (!readBit(nrfStruct, FIFO_STATUS, bit0)) {	//check FIFO status
-		csnHigh();
+		csnHighigh();
 		nrfStruct->fifoStruct.rxEmpty = 0;
 		return ERR_CODE;
 	}
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	nrfStruct->fifoStruct.rxEmpty = 1;
 	return OK_CODE;
 }
@@ -385,10 +385,10 @@ void reuseTxPayload(nrfStruct_t *nrfStruct) {
 	uint8_t cmd = REUSE_TX_PL;	//set command mask
 	uint8_t *pCmd = &cmd;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 }
 
 uint8_t getStatus(nrfStruct_t *nrfStruct) {
@@ -397,13 +397,13 @@ uint8_t getStatus(nrfStruct_t *nrfStruct) {
 	uint8_t reg = 0;
 	uint8_t *pReg = &reg;
 
-	csnL(nrfStruct);
+	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), pReg, sizeof(reg), SPI_TIMEOUT);
 
-	csnH(nrfStruct);
+	csnHigh(nrfStruct);
 	return reg;
 
 }

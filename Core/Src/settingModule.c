@@ -1,47 +1,47 @@
 #include "settingModule.h"
 
 
-
+//	nrfStruct_t *nrfStruct
 
 /**
  * @Brief	Switch radio module to Receiver (PRX) mode
  * @Retval	None
  */
-void modeRX()
+void modeRX(nrfStruct_t *nrfStruct)
 {
-	ceHigh(); //set high on CE line
+	ceHigh(nrfStruct); //set high on CE line
 	setBit(CONFIG, bit0);
 }
 
 /**
  *@Brief	Switch radio module to Transmitter (PTX) mode
  */
-void modeTX()
+void modeTX(nrfStruct_t *nrfStruct)
 {
-	ceHigh();
+	ceHigh(nrfStruct);
 	resetBit(CONFIG, bit0);
 }
 
 /**
  * @Brief	Switch radio module to Standby-I mode
  */
-void modeStandby()
+void modeStandby(nrfStruct_t *nrfStruct)
 {
-	ceLow();
+	ceLow(nrfStruct);
 }
 
 /* Interrupts functions */
-void disableRXinterrupt()
+void disableRXinterrupt(nrfStruct_t *nrfStruct)
 {
-	resetBit(CONFIG, bit6); //disable RX_IRQ in Config register
+	resetBit(nrfStruct, CONFIG, bit6); //disable RX_IRQ in Config register
 }
-void disableTXinterrupt()
+void disableTXinterrupt(nrfStruct_t *nrfStruct)
 {
-	resetBit(CONFIG, bit5);
+	resetBit(nrfStruct, CONFIG, bit5);
 }
-void disableRTinterrupt()
+void disableRTinterrupt(nrfStruct_t *nrfStruct)
 {
-	resetBit(CONFIG, bit4);
+	resetBit(nrfStruct, CONFIG, bit4);
 }
 
 void enableRXinterrupt()
