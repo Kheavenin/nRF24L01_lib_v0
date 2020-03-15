@@ -12,7 +12,15 @@ static void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
 static void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
 static void delayUs(nrfStruct_t *nrfStruct, uint16_t time);
 
+static void settingStruct_Init(nrfStruct_t *nrfStruct);
+static void addressStruct_Init(nrfStruct_t *nrfStruct);
+static void fifoStruct_Init(nrfStruct_t *nrfStruct);
 static void statusStrcut_Init(nrfStruct_t *nrfStruct);
+static void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
+		TIM_HandleTypeDef *HAL_TIMx, GPIO_TypeDef *HAL_GPIO_CSN,
+		uint16_t HAL_GPIO_Pin_CSN, GPIO_TypeDef *HAL_GPIO_CE,
+		uint16_t HAL_GPIO_Pin_CE);
+
 
 
 static void statusStrcut_Init(nrfStruct_t *nrfStruct) {
@@ -22,7 +30,7 @@ static void statusStrcut_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->statusStruct.pipeNumber = RX_FIFO_EMPTY;
 }
 
-void settingStruct_Init(nrfStruct_t *nrfStruct) {
+static void settingStruct_Init(nrfStruct_t *nrfStruct) {
 	/* Init settigns struct */
 	nrfStruct->setStruct.rxMode = 0;			//set as receiver
 	nrfStruct->setStruct.channel = 0; 				//set channel np. 0
@@ -48,7 +56,7 @@ void settingStruct_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->setStruct.enableDynACK = 0;	//enable NO_ACK command
 }
 
-void addressStruct_Init(nrfStruct_t *nrfStruct) {
+static void addressStruct_Init(nrfStruct_t *nrfStruct) {
 	/* Init address struct */
 	uint8_t i;
 	for (i = 0; i < 5; i++) {
@@ -66,7 +74,7 @@ void addressStruct_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->addrStruct.rxAddr5 = DF_RX_ADDR_P5;
 }
 
-void fifoStruct_Init(nrfStruct_t *nrfStruct) {
+static void fifoStruct_Init(nrfStruct_t *nrfStruct) {
 	/* Init fifo struct */
 	nrfStruct->fifoStruct.rxRead = 0;
 	nrfStruct->fifoStruct.rxFull = 0;
@@ -77,7 +85,7 @@ void fifoStruct_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->fifoStruct.txEmpty = 1;
 }
 
-void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
+static void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
 		TIM_HandleTypeDef *HAL_TIMx, GPIO_TypeDef *HAL_GPIO_CSN,
 		uint16_t HAL_GPIO_Pin_CSN, GPIO_TypeDef *HAL_GPIO_CE,
 		uint16_t HAL_GPIO_Pin_CE) {
@@ -150,6 +158,11 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 
 }
 
+
+
+
+
+/* CE snd CSN control funtions's */
 void csnL(nrfStruct_t *nrfStruct) {
 	HAL_GPIO_WritePin((nrfStruct->nRFportCSN), (nrfStruct->nRFpinCSN),
 			GPIO_PIN_RESET);
@@ -167,6 +180,8 @@ void ceH(nrfStruct_t *nrfStruct) {
 			GPIO_PIN_SET);
 }
 
+/* Elementary functions base on nRf24L01+ SPI commands */
+/* Read and write registers funtions's */
 uint8_t readReg(nrfStruct_t *nrfStruct, uint8_t addr) {
 	uint8_t cmd = R_REGISTER | addr;
 	uint8_t reg;
@@ -196,7 +211,8 @@ void writeReg(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t val) {
 	csnH(nrfStruct);
 }
 
-void readRegX(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
+/* Extended read and write functions - R/W few registers */
+void readRegExt(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
 		size_t bufSize) {
 	uint8_t cmd = R_REGISTER | addr;
 	uint8_t *pCmd = &cmd;
@@ -211,7 +227,7 @@ void readRegX(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
 	csnH(nrfStruct);
 }
 
-void writeRegX(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
+void writeRegExt(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
 		size_t bufSize) {
 	uint8_t cmd = W_REGISTER | addr;
 	uint8_t *pCmd = &cmd;
@@ -223,10 +239,118 @@ void writeRegX(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
 	HAL_SPI_Receive((nrfStruct->nRFspi), buf, bufSize,
 	SPI_TIMEOUT);
 
-	csnHigh();
+	csnH(nrfStruct);
+}
+
+/* Payload's functions */
+uint8_t readRxPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
+
+	uint8_t cmd = R_RX_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
+	delayUs(nrfStruct, 50);
+	HAL_SPI_Receive((nrfStruct->nRFspi), buf, bufSize, SPI_TIMEOUT);//read payload
+
+	csnH(nrfStruct);
+	return OK_CODE;
+}
+
+uint8_t writeTxPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
+
+	uint8_t cmd = W_TX_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
+	delayUs(nrfStruct, 50);
+	HAL_SPI_Transmit((nrfStruct->nRFspi), buf, bufSize, SPI_TIMEOUT);//read payload
+
+	csnH(nrfStruct);
+	return OK_CODE;
+}
+
+uint8_t readRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize,
+		uint8_t width) {
+	if (bufSize < 1)
+		return ERR_CODE;	//invalid buffer size
+	if (width < 1)
+		return ERR_CODE;	//invaild number of bytes
+	if (bufSize > 32)
+		bufSize = 32;		//to big buffer size
+	if (width > 32) 		//to bi width of fifo to read
+		width = 32;
+	if (bufSize < width)
+		width = bufSize;
+
+	uint8_t cmd = R_RX_PL_WID;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
+	delayUs(nrfStruct, 50);
+	HAL_SPI_Receive((nrfStruct->nRFspi), buf, width, SPI_TIMEOUT);//read payload
+	csnH(nrfStruct);
+	return OK_CODE;
+}
+
+uint8_t writeTxPayloadAck(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
+
+	uint8_t cmd = W_ACK_PAYLOAD;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
+	delayUs(nrfStruct, 50);
+	HAL_SPI_Transmit((nrfStruct->nRFspi), buf, bufSize, SPI_TIMEOUT);//read payload
+
+	csnH(nrfStruct);
+	return OK_CODE;
+}
+
+uint8_t writeTxPayloadNoAck(nrfStruct_t *nrfStruct, uint8_t *buf,
+		size_t bufSize) {
+	if (bufSize < 1)
+		return ERR_CODE;
+	if (bufSize > 32)
+		bufSize = 32;
+
+	uint8_t cmd = W_TX_PAYLOAD_NO_ACK;	//set command mask
+	uint8_t *pCmd = &cmd;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
+	delayUs(nrfStruct, 50);
+	HAL_SPI_Transmit((nrfStruct->nRFspi), buf, bufSize, SPI_TIMEOUT);//read payload
+
+	csnH(nrfStruct);
+	return OK_CODE;
 }
 
 
+
+
+
+
+/* Power control */
 void pwrUp(nrfStruct_t *nrfStruct) {
 	uint8_t tmp = readReg(nrfStruct, CONFIG);
 	tmp |= (1 << 1);
@@ -255,7 +379,7 @@ static void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	writeReg(nrfStruct, addr, tmp);
 }
 
-
+/* Micro sencods delay - necessary to SPI transmittion  */
 static void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
 
 	__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);	//Set star value as 0

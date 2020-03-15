@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  00020010  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000b7e4  00000000  00000000  00020039  2**0
+ 12 .debug_info   0000b7e9  00000000  00000000  00020039  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00001d5c  00000000  00000000  0002b81d  2**0
+ 13 .debug_abbrev 00001d90  00000000  00000000  0002b822  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000ca0  00000000  00000000  0002d580  2**3
+ 14 .debug_aranges 00000ca0  00000000  00000000  0002d5b8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000b98  00000000  00000000  0002e220  2**3
+ 15 .debug_ranges 00000b98  00000000  00000000  0002e258  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  000140ba  00000000  00000000  0002edb8  2**0
+ 16 .debug_macro  000140ba  00000000  00000000  0002edf0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00009396  00000000  00000000  00042e72  2**0
+ 17 .debug_line   00009396  00000000  00000000  00042eaa  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0006dde5  00000000  00000000  0004c208  2**0
+ 18 .debug_str    0006dde5  00000000  00000000  0004c240  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000b9fed  2**0
+ 19 .comment      0000007b  00000000  00000000  000ba025  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003350  00000000  00000000  000ba068  2**2
+ 20 .debug_frame  00003350  00000000  00000000  000ba0a0  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -480,8 +480,8 @@ void MX_GPIO_Init(void)
  80003ac:	40011400 	.word	0x40011400
 
 080003b0 <statusStrcut_Init>:
-static void delayUs(nrfStruct_t *nrfStruct, uint16_t time);
-
+		uint16_t HAL_GPIO_Pin_CSN, GPIO_TypeDef *HAL_GPIO_CE,
+		uint16_t HAL_GPIO_Pin_CE);
 static void statusStrcut_Init(nrfStruct_t *nrfStruct);
 
 
