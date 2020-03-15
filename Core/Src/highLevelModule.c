@@ -380,7 +380,32 @@ uint8_t flushRx(nrfStruct_t *nrfStruct) {
 	return OK_CODE;
 }
 
+void reuseTxPayload(nrfStruct_t *nrfStruct) {
+	uint8_t cmd = REUSE_TX_PL;	//set command mask
+	uint8_t *pCmd = &cmd;
 
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
+	csnH(nrfStruct);
+}
+
+uint8_t getStatus(nrfStruct_t *nrfStruct) {
+	uint8_t cmd = NOP;
+	uint8_t *pCmd = &cmd;
+	uint8_t reg = 0;
+	uint8_t *pReg = &reg;
+
+	csnL(nrfStruct);
+
+	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
+	delayUs(nrfStruct, 50);
+	HAL_SPI_Receive((nrfStruct->nRFspi), pReg, sizeof(reg), SPI_TIMEOUT);
+
+	csnH(nrfStruct);
+	return reg;
+
+}
 
 
 /* Power control */
