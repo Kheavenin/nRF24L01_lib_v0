@@ -52,7 +52,9 @@ uint8_t getStatus(nrfStruct_t *nrfStruct);
 void pwrUp(nrfStruct_t *nrfStruct);
 void pwrDown(nrfStruct_t *nrfStruct);
 
-
+uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
+void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
+void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
 
 
 

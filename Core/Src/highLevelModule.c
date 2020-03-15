@@ -8,9 +8,7 @@
 #include "highLevelModule.h"
 #include "regCmd.h"
 
-static uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
-static void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
-static void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
+
 static void delayUs(nrfStruct_t *nrfStruct, uint16_t time);
 
 static void settingStruct_Init(nrfStruct_t *nrfStruct);
@@ -34,7 +32,7 @@ static void statusStrcut_Init(nrfStruct_t *nrfStruct) {
 static void settingStruct_Init(nrfStruct_t *nrfStruct) {
 	/* Init settigns struct */
 	nrfStruct->setStruct.rxMode = 0;			//set as receiver
-	nrfStruct->setStruct.channel = 0; 				//set channel np. 0
+	nrfStruct->setStruct.channel = 0x02; 				//set channel np. 0
 	nrfStruct->setStruct.dataRate = RF_DataRate_2M;  //lowest data rate
 	nrfStruct->setStruct.powerRF = RF_PWR_0dBm;		//-12dBm power
 
@@ -66,6 +64,7 @@ static void settingStruct_Init(nrfStruct_t *nrfStruct) {
 
 static void addressStruct_Init(nrfStruct_t *nrfStruct) {
 	/* Init address struct */
+	nrfStruct->addrStruct.addrWidth = longWidth;
 	uint8_t i;
 	for (i = 0; i < 5; i++) {
 		nrfStruct->addrStruct.txAddr[i] = DF_TX_ADDR_0;
@@ -429,18 +428,18 @@ void pwrDown(nrfStruct_t *nrfStruct) {
 	writeRegister(CONFIG, tmp);
 }
 
-static uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
+uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	uint8_t reg = readReg(nrfStruct, addr);
 	return ((reg >> bit) & 0x01);
 }
 
-static void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
+void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readReg(nrfStruct, addr);
 	tmp &= 0 << bit;		//zmieniono OR na AND
 	writeReg(nrfStruct, addr, tmp);
 }
 
-static void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
+void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readReg(nrfStruct, addr);
 	tmp |= 1 << bit;
 	writeReg(nrfStruct, addr, tmp);

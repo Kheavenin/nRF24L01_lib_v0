@@ -156,26 +156,28 @@ if (checkPipe(nrfStruct, pipe))
 }
 
 /* Address Width */
-void setAddrWidth(addressWidth_t width)
+void setAddrWidth(nrfStruct_t *nrfStruct, addressWidth_t width)
 {
-	writeRegister(SETUP_AW, width);
+	writeReg(nrfStruct, SETUP_AW, width);
+	nrfStruct->addrStruct.addrWidth = width;
 }
 
 /* Setup retransmission */
-uint8_t setAutoRetrCount(uint8_t count)
+uint8_t setAutoRetrCount(nrfStruct_t *nrfStruct, uint8_t count)
 {
 	if (count >= 0x00 && count <= 0x0F)
-	{											//check count val
-		uint8_t tmp = readRegister(SETUP_RETR); //read reg. val
-		tmp = tmp & 0xF0;						// reset LSB and save MSB
-		tmp |= count;							//add tmp and count
-		writeRegister(SETUP_RETR, tmp);			//write to SETUP_RETR
+	{					//check count val
+		uint8_t tmp = readReg(nrfStruct, SETUP_RETR); 	//read reg. val
+		tmp = tmp & 0xF0;							// reset LSB and save MSB
+		tmp |= count;									//add tmp and count
+		writeReg(nrfStruct, SETUP_RETR, tmp);			//write to SETUP_RETR
+		nrfStruct->setStruct.arc = count;
 		return OK_CODE;
 	}
 	return ERR_CODE;
 }
 
-uint8_t setAutoRetrDelay(uint8_t delay)
+uint8_t setAutoRetrDelay(nrfStruct_t *nrfStruct, uint8_t delay)
 {
 	if (delay > 0x0F)
 	{						//if delay in MSB format
@@ -183,21 +185,23 @@ uint8_t setAutoRetrDelay(uint8_t delay)
 	}
 	if (delay >= 0x00 && delay <= 0x0F)
 	{
-		uint8_t tmp = readRegister(SETUP_RETR);
+		uint8_t tmp = readReg(nrfStruct, SETUP_RETR);
 		tmp = tmp & 0x0F;	//save LSB, reset MSB
 		tmp |= (delay << 8); //add tmp and delay
-		writeRegister(SETUP_RETR, tmp);
+		writeReg(nrfStruct, SETUP_RETR, tmp);
+		nrfStruct->setStruct.ard = delay;
 		return OK_CODE;
 	}
 	return ERR_CODE;
 }
 
 /* RF channel */
-uint8_t setChannel(uint8_t channel)
+uint8_t setChannel(nrfStruct_t *nrfStruct, uint8_t channel)
 {
 	if (channel >= 0 && channel <= 125)
 	{
-		writeRegister(RF_CH, channel); //Maximum channel limited to 125 by hardware
+		writeReg(nrfStruct, RF_CH, channel); //Maximum channel limited to 125 by hardware
+		nrfStruct->setStruct.channel = channel;
 		return OK_CODE;
 	}
 	return ERR_CODE;

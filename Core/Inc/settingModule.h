@@ -39,6 +39,7 @@ typedef struct {
 } settingsStruct_t;
 
 typedef struct {
+	addressWidth_t addrWidth;
 	uint8_t txAddr[5];	//5 byte register
 
 	uint8_t rxAddr0[5];	//5 byte register
@@ -106,14 +107,14 @@ uint8_t enableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe);
 uint8_t disableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe);
 
 /* Address Width */
-void setAddrWidth(addressWidth_t width);
+void setAddrWidth(nrfStruct_t *nrfStruct, addressWidth_t width);
 
 /* Setup retransmission */
-uint8_t setAutoRetrCount(uint8_t count);
-uint8_t setAutoRetrDelay(uint8_t delay);
+uint8_t setAutoRetrCount(nrfStruct_t *nrfStruct, uint8_t count);
+uint8_t setAutoRetrDelay(nrfStruct_t *nrfStruct, uint8_t delay);
 
 /* RF channel */
-uint8_t setChannel(uint8_t channel);
+uint8_t setChannel(nrfStruct_t *nrfStruct, uint8_t channel);
 
 /* RF setup */
 /*
