@@ -39,6 +39,10 @@ static void settingStruct_Init(nrfStruct_t *nrfStruct) {
 
 	nrfStruct->setStruct.ard = 0;		//auto retr. delay 250us
 	nrfStruct->setStruct.arc = 3;		//auto retr. counter
+
+	nrfStruct->setStruct.enableTxIrq = 0;
+	nrfStruct->setStruct.enableRxIrq = 0;
+	nrfStruct->setStruct.enableMaxRtIrq = 0;
 	/* Pipe Enable - defult pipe 0 enable only */
 	uint8_t i;
 

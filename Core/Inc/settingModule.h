@@ -26,6 +26,10 @@ typedef struct {
 	uint8_t pipeDPL;
 	uint8_t pipePayLen[6];
 
+	uint8_t enableTxIrq :1;
+	uint8_t enableRxIrq :1;
+	uint8_t enableMaxRtIrq :1;
+
 	uint8_t enableDPL :1;
 	uint8_t enableAckPay :1;
 	uint8_t enableDynACK :1;
@@ -75,11 +79,11 @@ void modeStandby(nrfStruct_t *nrfStruct);
 /* Interrupts */
 void disableTXinterrupt(nrfStruct_t *nrfStruct); //mask data send interrupt
 void disableRXinterrupt(nrfStruct_t *nrfStruct); //mask data receive interrupt
-void disableRTinterrupt(nrfStruct_t *nrfStruct); //mask data retransmition interrupt
+void disableMaxRTinterrupt(nrfStruct_t *nrfStruct); //mask data retransmition interrupt
 
-void enableTXinterrupt(); //dont mask data send interrupt
-void enableRXinterrupt(); //dont mask data receive interrupt
-void enableRTinterrupt(); //dont mask data retransmition interrupt
+void enableTXinterrupt(nrfStruct_t *nrfStruct); //dont mask data send interrupt
+void enableRXinterrupt(nrfStruct_t *nrfStruct); //dont mask data receive interrupt
+void enableRTinterrupt(nrfStruct_t *nrfStruct); //dont mask data retransmition interrupt
 
 void clearRX_DR(); //clear irt bits in Status Register
 void clearTX_DS();

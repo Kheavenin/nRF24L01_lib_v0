@@ -34,27 +34,34 @@ void modeStandby(nrfStruct_t *nrfStruct)
 void disableRXinterrupt(nrfStruct_t *nrfStruct)
 {
 	resetBit(nrfStruct, CONFIG, bit6); //disable RX_IRQ in Config register
+	nrfStruct->setStruct.enableRxIrq = 0;
 }
 void disableTXinterrupt(nrfStruct_t *nrfStruct)
 {
+
 	resetBit(nrfStruct, CONFIG, bit5);
+	nrfStruct->setStruct.enableTxIrq = 0;
 }
-void disableRTinterrupt(nrfStruct_t *nrfStruct)
+void disableMaxRTinterrupt(nrfStruct_t *nrfStruct)
 {
 	resetBit(nrfStruct, CONFIG, bit4);
+	nrfStruct->setStruct.enableMaxRtIrq = 0;
 }
 
-void enableRXinterrupt()
+void enableRXinterrupt(nrfStruct_t *nrfStruct)
 {
 	setBit(CONFIG, bit6);
+	nrfStruct->setStruct.enableRxIrq = 1;
 }
-void enableTXinterrupt()
+void enableTXinterrupt(nrfStruct_t *nrfStruct)
 {
 	setBit(CONFIG, bit5);
+	nrfStruct->setStruct.enableTxIrq = 1;
 }
-void enableRTinterrupt()
+void enableRTinterrupt(nrfStruct_t *nrfStruct)
 {
 	setBit(CONFIG, bit4);
+	nrfStruct->setStruct.enableMaxRtIrq = 1;
 }
 
 void clearRX_DR()
