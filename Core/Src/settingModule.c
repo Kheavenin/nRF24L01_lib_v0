@@ -112,20 +112,22 @@ uint8_t checkPipe(uint8_t pipe)
 		return 1;
 	return 0;
 }
-uint8_t enableAutoAckPipe(uint8_t pipe)
+uint8_t enableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (checkPipe(pipe))
 	{
-		setBit(EN_AA, pipe);
+		setBit(nrfStruct, EN_AA, pipe);
+		nrfStruct->setStruct.pipeACK |= (1 << pipe);
 		return 1;
 	}
 	return 0;
 }
-uint8_t disableAutoAckPipe(uint8_t pipe)
+uint8_t disableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (checkPipe(pipe))
 	{
-		resetBit(EN_AA, pipe);
+		resetBit(nrfStruct, EN_AA, pipe);
+		nrfStruct->setStruct.pipeACK |= 0 << pipe;
 		return 1;
 	}
 	return 0;

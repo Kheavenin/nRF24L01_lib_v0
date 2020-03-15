@@ -98,8 +98,8 @@ void setCRC(nrfStruct_t *nrfStruct, widthCRC_t w);
 
 /* Auto ACK */
 uint8_t checkPipe(uint8_t pipe);
-uint8_t enableAutoAckPipe(uint8_t pipe);
-uint8_t disableAutoAckPipe(uint8_t pipe);
+uint8_t enableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe);
+uint8_t disableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe);
 
 /* RX addresses */
 uint8_t enableRxAddr(uint8_t pipe);
