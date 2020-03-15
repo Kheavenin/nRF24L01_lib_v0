@@ -44,10 +44,11 @@ uint8_t writeTxPayloadNoAck(nrfStruct_t *nrfStruct, uint8_t *buf,
 /* Flush functions */
 uint8_t flushTx(nrfStruct_t *nrfStruct);
 uint8_t flushRx(nrfStruct_t *nrfStruct);
+/* Others */
+void reuseTxPayload(nrfStruct_t *nrfStruct);
+uint8_t getStatus(nrfStruct_t *nrfStruct);
 
-
-
-
+/* Power control */
 void pwrUp(nrfStruct_t *nrfStruct);
 void pwrDown(nrfStruct_t *nrfStruct);
 

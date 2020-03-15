@@ -344,7 +344,7 @@ uint8_t writeTxPayloadNoAck(nrfStruct_t *nrfStruct, uint8_t *buf,
 	csnH(nrfStruct);
 	return OK_CODE;
 }
-
+/* Flush functions */
 uint8_t flushTx(nrfStruct_t *nrfStruct) {
 	uint8_t cmd = FLUSH_TX;	//set command mask
 	uint8_t *pCmd = &cmd;
@@ -380,6 +380,7 @@ uint8_t flushRx(nrfStruct_t *nrfStruct) {
 	return OK_CODE;
 }
 
+/* Others */
 void reuseTxPayload(nrfStruct_t *nrfStruct) {
 	uint8_t cmd = REUSE_TX_PL;	//set command mask
 	uint8_t *pCmd = &cmd;
