@@ -85,9 +85,9 @@ void enableTXinterrupt(nrfStruct_t *nrfStruct); //dont mask data send interrupt
 void enableRXinterrupt(nrfStruct_t *nrfStruct); //dont mask data receive interrupt
 void enableRTinterrupt(nrfStruct_t *nrfStruct); //dont mask data retransmition interrupt
 
-void clearRX_DR(); //clear irt bits in Status Register
-void clearTX_DS();
-void clearMAX_RT();
+void clearRX_DR(nrfStruct_t *nrfStruct); //clear irt bits in Status Register
+void clearTX_DS(nrfStruct_t *nrfStruct);
+void clearMAX_RT(nrfStruct_t *nrfStruct);
 
 /* CRC */
 void enableCRC();

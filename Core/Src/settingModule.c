@@ -38,7 +38,6 @@ void disableRXinterrupt(nrfStruct_t *nrfStruct)
 }
 void disableTXinterrupt(nrfStruct_t *nrfStruct)
 {
-
 	resetBit(nrfStruct, CONFIG, bit5);
 	nrfStruct->setStruct.enableTxIrq = 0;
 }
@@ -50,31 +49,34 @@ void disableMaxRTinterrupt(nrfStruct_t *nrfStruct)
 
 void enableRXinterrupt(nrfStruct_t *nrfStruct)
 {
-	setBit(CONFIG, bit6);
+	setBit(nrfStruct, CONFIG, bit6);
 	nrfStruct->setStruct.enableRxIrq = 1;
 }
 void enableTXinterrupt(nrfStruct_t *nrfStruct)
 {
-	setBit(CONFIG, bit5);
+	setBit(nrfStruct, CONFIG, bit5);
 	nrfStruct->setStruct.enableTxIrq = 1;
 }
 void enableRTinterrupt(nrfStruct_t *nrfStruct)
 {
-	setBit(CONFIG, bit4);
+	setBit(nrfStruct, CONFIG, bit4);
 	nrfStruct->setStruct.enableMaxRtIrq = 1;
 }
 
-void clearRX_DR()
+void clearRX_DR(nrfStruct_t *nrfStruct)
 { //clear irt bits in Status Register
-	setBit(STATUS, bit6);
+	setBit(nrfStruct, STATUS, bit6);
+	nrfStruct->statusStruct.dataReadIrq = 0;
 }
-void clearTX_DS()
+void clearTX_DS(nrfStruct_t *nrfStruct)
 {
-	setBit(STATUS, bit5);
+	setBit(nrfStruct, STATUS, bit5);
+	nrfStruct->statusStruct.dataSendIrq = 0;
 }
-void clearMAX_RT()
+void clearMAX_RT(nrfStruct_t *nrfStruct)
 {
-	setBit(STATUS, bit4);
+	setBit(nrfStruct, STATUS, bit4);
+	nrfStruct->statusStruct.maxRetr = 0;
 }
 
 /* CRC functions */
