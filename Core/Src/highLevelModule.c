@@ -40,17 +40,20 @@ static void settingStruct_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->setStruct.ard = 0;		//auto retr. delay 250us
 	nrfStruct->setStruct.arc = 3;		//auto retr. counter
 
+	nrfStruct->setStruct.enableCRC = 1;
+	nrfStruct->setStruct.codingCRC = 0;
+
 	nrfStruct->setStruct.enableTxIrq = 0;
 	nrfStruct->setStruct.enableRxIrq = 0;
 	nrfStruct->setStruct.enableMaxRtIrq = 0;
-	/* Pipe Enable - defult pipe 0 enable only */
-	uint8_t i;
 
+	/* Pipe Enable - defult pipe 0 enable only */
 	nrfStruct->setStruct.pipeEn = DF_RXADDR;
 	nrfStruct->setStruct.pipeACK = DF_EN_AA;
 	nrfStruct->setStruct.pipeDPL = DF_DYNPD;
 
 	/* Pipe RX Payload Lenght  */
+	uint8_t i;
 	for (i = 0; i < 6; i++) {
 		nrfStruct->setStruct.pipePayLen[i] = DF_RX_PW_P0;
 	}

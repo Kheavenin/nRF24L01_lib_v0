@@ -184,6 +184,7 @@ typedef enum
 	RF_DataRate_2M = 0x01
 } dataRate_t;
 
+/* CRC coding */
 typedef enum
 {
 	CRC_8_bits = 0,

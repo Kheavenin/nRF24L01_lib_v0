@@ -26,6 +26,9 @@ typedef struct {
 	uint8_t pipeDPL;
 	uint8_t pipePayLen[6];
 
+	uint8_t enableCRC :1;
+	uint8_t codingCRC :1;
+
 	uint8_t enableTxIrq :1;
 	uint8_t enableRxIrq :1;
 	uint8_t enableMaxRtIrq :1;
@@ -90,8 +93,8 @@ void clearTX_DS(nrfStruct_t *nrfStruct);
 void clearMAX_RT(nrfStruct_t *nrfStruct);
 
 /* CRC */
-void enableCRC();
-void setCRC(widthCRC_t w);
+void enableCRC(nrfStruct_t *nrfStruct);
+void setCRC(nrfStruct_t *nrfStruct, widthCRC_t w);
 
 /* Auto ACK */
 uint8_t checkPipe(uint8_t pipe);

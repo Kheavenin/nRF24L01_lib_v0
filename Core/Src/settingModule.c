@@ -80,19 +80,28 @@ void clearMAX_RT(nrfStruct_t *nrfStruct)
 }
 
 /* CRC functions */
-void enableCRC()
+void enableCRC(nrfStruct_t *nrfStruct)
 {
-	setBit(CONFIG, bit3);
+	setBit(nrfStruct, CONFIG, bit3);
+	nrfStruct->setStruct.enableCRC = 1;
 }
-void setCRC(widthCRC_t w)
+
+void disableCRC(nrfStruct_t *nrfStruct) {
+	resetBit(nrfStruct, CONFIG, bit3);
+	nrfStruct->setStruct.enableCRC = 0;
+}
+
+void setCRC(nrfStruct_t *nrfStruct, widthCRC_t w)
 {
 	if (w)
 	{
-		setBit(CONFIG, bit2);
+		setBit(nrfStruct, CONFIG, bit2);
+		nrfStruct->setStruct.codingCRC = 1;
 	}
 	else
 	{
-		resetBit(CONFIG, bit2);
+		resetBit(nrfStruct, CONFIG, bit2);
+		nrfStruct->setStruct.codingCRC = 0;
 	}
 }
 
