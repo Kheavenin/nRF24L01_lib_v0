@@ -6,6 +6,7 @@
  */
 
 #include "highLevelModule.h"
+#include "regCmd.h"
 
 static uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
 static void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);

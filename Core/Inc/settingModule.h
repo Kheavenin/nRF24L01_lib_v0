@@ -102,8 +102,8 @@ uint8_t enableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe);
 uint8_t disableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe);
 
 /* RX addresses */
-uint8_t enableRxAddr(uint8_t pipe);
-uint8_t disableRxAddr(uint8_t pipe);
+uint8_t enableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe);
+uint8_t disableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe);
 
 /* Address Width */
 void setAddrWidth(addressWidth_t width);

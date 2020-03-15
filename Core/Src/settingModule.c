@@ -1,5 +1,5 @@
 #include "settingModule.h"
-
+#include "highLevelModule.h"
 
 //	nrfStruct_t *nrfStruct
 
@@ -134,20 +134,22 @@ uint8_t disableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 }
 
 /* RX addresses */
-uint8_t enableRxAddr(uint8_t pipe)
+uint8_t enableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (checkPipe(pipe))
 	{
-		setBit(EN_AA, pipe);
+		setBit(nrfStruct, EN_RXADDR, pipe);
+		nrfStruct->setStruct.pipeEn |= (1 << pipe);
 		return 1;
 	}
 	return 0;
 }
-uint8_t disableRxAddr(uint8_t pipe)
+uint8_t disableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
-	if (checkPipe(pipe))
+if (checkPipe(nrfStruct, pipe))
 	{
-		resetBit(EN_AA, pipe);
+		resetBit(nrfStruct, EN_RXADDR, pipe);
+		nrfStruct->setStruct.pipeEn |= (0 << pipe);
 		return 1;
 	}
 	return 0;
