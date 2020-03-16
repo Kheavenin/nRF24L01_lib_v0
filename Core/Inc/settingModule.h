@@ -120,10 +120,10 @@ uint8_t setChannel(nrfStruct_t *nrfStruct, uint8_t channel);
 /*
  * @Brief enableContCarrier and enableLockPLL should be use only to RF test
  */
-void enableContCarrier();
-void disableContCarrier();
-void enableLockPLL();
-void diableLockPLL();
+void enableContCarrier(nrfStruct_t *nrfStruct);
+void disableContCarrier(nrfStruct_t *nrfStruct);
+void enableLockPLL(nrfStruct_t *nrfStruct);
+void diableLockPLL(nrfStruct_t *nrfStruct);
 
 void setRFpower(powerRF_t power);
 void setDataRate(dataRate_t rate); //TODO: to test

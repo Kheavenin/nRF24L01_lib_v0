@@ -211,21 +211,21 @@ uint8_t setChannel(nrfStruct_t *nrfStruct, uint8_t channel)
 /*
  * @Brief enableContCarrier and enableLockPLL should be use only to RF test
  */
-void enableContCarrier()
+void enableContCarrier(nrfStruct_t *nrfStruct)
 {
-	setBit(RF_SETUP, bit7);
+	setBit(nrfStruct, RF_SETUP, bit7);
 }
-void disableContCarrier()
+void disableContCarrier(nrfStruct_t *nrfStruct)
 {
-	resetBit(RF_SETUP, bit7);
+	resetBit(nrfStruct, RF_SETUP, bit7);
 }
-void enableLockPLL()
+void enableLockPLL(nrfStruct_t *nrfStruct)
 {
-	setBit(RF_SETUP, bit4);
+	setBit(nrfStructRF_SETUP, bit4);
 }
-void diableLockPLL()
+void diableLockPLL(nrfStruct_t *nrfStruct)
 {
-	resetBit(RF_SETUP, bit4);
+	resetBit(nrfStruct, RF_SETUP, bit4);
 }
 
 void setRFpower(powerRF_t power)
