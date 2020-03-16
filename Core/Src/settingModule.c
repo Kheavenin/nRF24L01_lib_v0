@@ -292,7 +292,7 @@ uint8_t lostPacketsCount(nrfStruct_t *nrfStruct)
 {
 	uint8_t tmp = readRegister(nrfStruct, OBSERVE_TX);
 	tmp = (tmp >> 4);
-	nrfStruct->statusStruct.packageLost = tmp;
+	nrfStruct->statusStruct.packetsLost = tmp;
 	return tmp;
 }
 
@@ -300,7 +300,7 @@ uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 {
 	uint8_t tmp = readRegister(nrfStruct, OBSERVE_TX);
 	tmp = (tmp & 0xF0);
-	nrfStruct->statusStruct.packageRetr = tmp;
+	nrfStruct->statusStruct.packetsRetr = tmp;
 	return tmp;
 }
 
@@ -322,33 +322,50 @@ uint8_t checkRPD(nrfStruct_t *nrfStruct)
  * @Note	Remember that addresses registers for pipes from 2 to 5 are 1 byte only.
  * 			Also registers for pipe 0 and 1 can have size of from 3 to 5 bytes.
  */
-uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addrBuf,
-							  size_t addrBufSize)
+uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
+		uint8_t *addrBuf, addressWidth_t addrBufSize)
 {
-	if (!checkPipe(pipe))
-	{ //if checkPipe return 0 - end fun. by return 0.
+	if (!checkPipe(pipe)) { //if checkPipe return 0 - end fun. by return 0.
 		return ERR_CODE;
 	}
-	uint8_t addr = RX_ADDR_P0 + pipe; //if pipe = 0 -> write Receive address pipe 0
-	if (pipe >= 2 && pipe <= 5)
-	{
-		if (addrBufSize != 1)
-		{
-			return ERR_CODE;
-		}
+	switch (addrBufSize) {	//check addrBufSize
+	case shortWidth:
+		size_t bufSize = 0x03;
+		break;
+	case mediumWidth:
+		size_t bufSize = 0x04;
+		break;
+	case longWidth:
+		size_t bufSize = 0x05;
+		break;
+	default:
+		return ERR_CODE;
+		break;
 	}
-	multiWrite(addr, addrBuf, addrBufSize);
+	uint8_t addr = RX_ADDR_P0 + pipe; //if pipe = 0 -> write Receive address pipe 0
+	writeRegExt(nrfStruct, addr, addrBuf, bufSize);
 	return OK_CODE;
 }
 
 /* Transmit address data pipe */
-uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize)
+uint8_t setTransmitPipeAddress(nrfStruct_t *nrfStruct, uint8_t *addrBuf,
+		addressWidth_t addrBufSize)
 {
-	if (addrBufSize != 5)
-	{
-		return ERR_CODE; //if addrBufSize isn't 5 bytes retun 0
+	switch (addrBufSize) {	//check addrBufSize
+	case shortWidth:
+		size_t bufSize = 0x03;
+		break;
+	case mediumWidth:
+		size_t bufSize = 0x04;
+		break;
+	case longWidth:
+		size_t bufSize = 0x05;
+		break;
+	default:
+		return ERR_CODE;
+		break;
 	}
-	multiWrite(TX_ADDR, addrBuf, addrBufSize);
+	writeRegExt(nrfStruct, TX_ADDR, addrBuf, bufSize);
 	return OK_CODE;
 }
 

@@ -13,8 +13,8 @@ typedef struct {
 	uint8_t pipeNumber :3;
 	uint8_t txFull :1;
 
-	uint8_t packageLost;
-	uint8_t packageRetr;
+	uint8_t packetsLost;
+	uint8_t packetsRetr;
 } statusStruct_t;
 
 typedef struct {
@@ -145,10 +145,12 @@ uint8_t retrPacketsCount(nrfStruct_t *nrfStruct); //TODO: to tests
 uint8_t checkRPD(nrfStruct_t *nrfStruct);
 
 /* Receive Address data pipe */
-uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addr, size_t addrBufSize); //TODO: to tests
+uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
+		uint8_t *addr, addressWidth_t addrBufSize); //TODO: to tests
 
 /* Transmit address data pipe */
-uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize); //TODO: to tests
+uint8_t setTransmitPipeAddress(nrfStruct_t *nrfStruct, uint8_t *addrBuf,
+		addressWidth_t addrBufSize); //TODO: to tests
 
 /* Payload width of each pipes */
 uint8_t getRxPayloadWidth(uint8_t pipe);				//TODO: to tests

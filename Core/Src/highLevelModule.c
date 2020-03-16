@@ -29,8 +29,8 @@ static void statusStrcut_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->statusStruct.pipeNumber = RX_FIFO_EMPTY;
 	nrfStruct->statusStruct.txFull = 0;
 
-	nrfStruct->statusStruct.packageLost = 0;
-	nrfStruct->statusStruct.packageRetr = 0;
+	nrfStruct->statusStruct.packetsLost = 0;
+	nrfStruct->statusStruct.packetsRetr = 0;
 }
 
 static void settingStruct_Init(nrfStruct_t *nrfStruct) {
