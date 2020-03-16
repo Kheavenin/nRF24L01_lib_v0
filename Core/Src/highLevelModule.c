@@ -87,6 +87,8 @@ static void addressStruct_Init(nrfStruct_t *nrfStruct) {
 
 static void fifoStruct_Init(nrfStruct_t *nrfStruct) {
 	/* Init fifo struct */
+	nrfStruct->fifoStruct.txReUse = 0;
+
 	nrfStruct->fifoStruct.rxRead = 0;
 	nrfStruct->fifoStruct.rxFull = 0;
 	nrfStruct->fifoStruct.rxEmpty = 1;

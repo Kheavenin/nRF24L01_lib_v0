@@ -491,7 +491,8 @@ uint8_t tmp = readReg(FIFO_STATUS);
  **/
 uint8_t getTxReuse(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readBit(FIFO_STATUS, TX_REUSE);
+	uint8_t tmp = readBit(nrfStruct, FIFO_STATUS, TX_REUSE);
+	nrfStruct->fifoStruct.txReUse = tmp;
 	if (tmp == 0x01)
 	{
 		return TX_REUSE_USED;
@@ -500,48 +501,50 @@ uint8_t getTxReuse(nrfStruct_t *nrfStruct)
 }
 
 /* Dynamic Payload Lenggth */
-uint8_t enableDynamicPayloadLengthPipe(uint8_t pipe)
+uint8_t enableDynamicPayloadLengthPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (!checkPipe(pipe))
 	{
 		return ERR_CODE;
 	}
-	setBit(DYNPD, pipe);
+	setBit(nrfStruct, DYNPD, pipe);
+	nrfStruct->setStruct.pipeDPL |= (1 << pipe);
 	return OK_CODE;
 }
 
-uint8_t disableDynamicPayloadLengthPipe(uint8_t pipe)
+uint8_t disableDynamicPayloadLengthPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (!checkPipe(pipe))
 	{
 		return ERR_CODE;
 	}
-	resetBit(DYNPD, pipe);
+	resetBit(nrfStruct, DYNPD, pipe);
+	nrfStruct->setStruct.pipeDPL |= (0 << pipe);
 	return OK_CODE;
 }
 /* Feature */
-void enableDynamicPayloadLength()
+void enableDynamicPayloadLength(nrfStruct_t *nrfStruct)
 {
-	setBit(FEATURE, EN_DPL);
+	setBit(nrfStruct, FEATURE, EN_DPL);
 }
-void disableDynamicPayloadLength()
+void disableDynamicPayloadLength(nrfStruct_t *nrfStruct)
 {
-	resetBit(FEATURE, EN_DPL);
+	resetBit(nrfStruct, FEATURE, EN_DPL);
 }
 
-void enableAckPayload()
+void enableAckPayload(nrfStruct_t *nrfStruct)
 {
-	setBit(FEATURE, EN_ACK_PAY);
+	setBit(nrfStruct, FEATURE, EN_ACK_PAY);
 }
-void disableAckPayload()
+void disableAckPayload(nrfStruct_t *nrfStruct)
 {
-  resetBit (FEATURE, EN_ACK_PAY);
+	resetBit(nrfStruct, FEATURE, EN_ACK_PAY);
 }
 
 /**
  * @Brief	Enable W_TX_PAYLOAD_NOACK command 
  * */
-void enableDynamicAck()
+void enableDynamicAck(nrfStruct_t *nrfStruct)
 {
-	setBit(FEATURE, EN_DYN_ACK);
+	setBit(nrfStruct, FEATURE, EN_DYN_ACK);
 }

@@ -56,6 +56,8 @@ typedef struct {
 } addrresStruct_t;
 
 typedef struct {
+	uint8_t txReUse :1;
+
 	uint8_t rxRead :1;
 	uint8_t rxFull :1;
 	uint8_t rxEmpty :1;
@@ -162,14 +164,14 @@ uint8_t getTxStatusFIFO(nrfStruct_t *nrfStruct,);  //TODO: to tests
 uint8_t getTxReuse(nrfStruct_t *nrfStruct,);       //TODO: to tests
 
 /* DYNPD */
-uint8_t enableDynamicPayloadLengthPipe(uint8_t pipe);  //TODO: to tests
-uint8_t disableDynamicPayloadLengthPipe(uint8_t pipe); //TODO: to tests
+uint8_t enableDynamicPayloadLengthPipe(nrfStruct_t *nrfStruct, uint8_t pipe); //TODO: to tests
+uint8_t disableDynamicPayloadLengthPipe(nrfStruct_t *nrfStruct, uint8_t pipe); //TODO: to tests
 
 /* Feature */
-void enableDynamicPayloadLength();  //TODO: to tests
-void disableDynamicPayloadLength(); //TODO: to tests
+void enableDynamicPayloadLength(nrfStruct_t *nrfStruct);  //TODO: to tests
+void disableDynamicPayloadLength(nrfStruct_t *nrfStruct); //TODO: to tests
 
-void enableAckPayload();  //TODO: to tests
-void disableAckPayload(); //TODO: to tests
+void enableAckPayload(nrfStruct_t *nrfStruct);  //TODO: to tests
+void disableAckPayload(nrfStruct_t *nrfStruct); //TODO: to tests
 
-void enableDynamicAck(); //TODO: to tests
+void enableDynamicAck(nrfStruct_t *nrfStruct); //TODO: to tests
