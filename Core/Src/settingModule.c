@@ -288,22 +288,26 @@ uint8_t getPipeStatusRxFIFO(nrfStruct_t *nrfStruct)
 }
 
 /* Transmit observe */
-uint8_t lostPacketsCount()
+uint8_t lostPacketsCount(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(OBSERVE_TX);
-	return (tmp >> 4);
+	uint8_t tmp = readRegister(nrfStruct, OBSERVE_TX);
+	tmp = (tmp >> 4);
+	nrfStruct->statusStruct.packageLost = tmp;
+	return tmp;
 }
 
-uint8_t retrPacketsCount()
+uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(OBSERVE_TX);
-	return (tmp & 0xF0);
+	uint8_t tmp = readRegister(nrfStruct, OBSERVE_TX);
+	tmp = (tmp & 0xF0);
+	nrfStruct->statusStruct.packageRetr = tmp;
+	return tmp;
 }
 
 /* RPD - for test use only */
-uint8_t checkRPD()
+uint8_t checkRPD(nrfStruct_t *nrfStruct)
 {
-	if (readRegister(RPD))
+	if (readRegister(nrfStruct, RPD))
 		return 1;
 	else
 		return 0;

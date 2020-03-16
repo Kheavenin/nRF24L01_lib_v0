@@ -1,8 +1,9 @@
 #include <main.h>
 #include <stdint.h>
 #include <stddef.h>
-
+#include "highLevelModule.h"
 //#include "controleModule.h"
+
 
 /* Structures */
 typedef struct {
@@ -11,6 +12,9 @@ typedef struct {
 	uint8_t maxRetr :1;
 	uint8_t pipeNumber :3;
 	uint8_t txFull :1;
+
+	uint8_t packageLost;
+	uint8_t packageRetr;
 } statusStruct_t;
 
 typedef struct {
@@ -134,11 +138,11 @@ uint8_t getStatusFullTxFIFO(nrfStruct_t *nrfStruct); //TODO: to tests
 uint8_t getPipeStatusRxFIFO(nrfStruct_t *nrfStruct); //TODO: to tests
 
 /* Transmit observe */
-uint8_t lostPacketsCount(); //TODO: to tests
-uint8_t retrPacketsCount(); //TODO: to tests
+uint8_t lostPacketsCount(nrfStruct_t *nrfStruct); //TODO: to tests
+uint8_t retrPacketsCount(nrfStruct_t *nrfStruct); //TODO: to tests
 
 /* RPD - for RF test use only */
-uint8_t checkRPD();
+uint8_t checkRPD(nrfStruct_t *nrfStruct);
 
 /* Receive Address data pipe */
 uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addr, size_t addrBufSize); //TODO: to tests
