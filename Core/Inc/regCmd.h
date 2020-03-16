@@ -200,7 +200,7 @@ typedef enum
 } addressWidth_t;
 
 /*
- * Funtions return codes
+ * Functions return codes
  */
 #define OK_CODE 0x01
 #define ERR_CODE 0xFF

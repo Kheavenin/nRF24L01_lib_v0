@@ -146,20 +146,20 @@ uint8_t checkRPD(nrfStruct_t *nrfStruct);
 
 /* Receive Address data pipe */
 uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
-		uint8_t *addr, addressWidth_t addrBufSize); //TODO: to tests
+		uint8_t *addr, size_t addrBufSize); //TODO: to tests
 
 /* Transmit address data pipe */
 uint8_t setTransmitPipeAddress(nrfStruct_t *nrfStruct, uint8_t *addrBuf,
 		addressWidth_t addrBufSize); //TODO: to tests
 
 /* Payload width of each pipes */
-uint8_t getRxPayloadWidth(uint8_t pipe);				//TODO: to tests
-uint8_t setRxPayload(uint8_t pipe, uint8_t width);		//TODO: to tests
+uint8_t getRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe);//TODO: to tests
+uint8_t setRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe, uint8_t width); //TODO: to tests
 
 /* TX and RX FIFO */
-uint8_t getkRxStatusFIFO(); //TODO: to tests
-uint8_t getTxStatusFIFO();  //TODO: to tests
-uint8_t getTxReuse();       //TODO: to tests
+uint8_t getkRxStatusFIFO(nrfStruct_t *nrfStruct,); //TODO: to tests
+uint8_t getTxStatusFIFO(nrfStruct_t *nrfStruct,);  //TODO: to tests
+uint8_t getTxReuse(nrfStruct_t *nrfStruct,);       //TODO: to tests
 
 /* DYNPD */
 uint8_t enableDynamicPayloadLengthPipe(uint8_t pipe);  //TODO: to tests

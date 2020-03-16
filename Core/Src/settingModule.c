@@ -233,20 +233,20 @@ void setRFpower(nrfStruct_t *nrfStruct, powerRF_t power)
 	/*
 	if (power > RF_PWR_0dBm && power < RF_PWR_18dBm)
 	 return ERR_CODE;*/
-	uint8_t tmp = readRegister(nrfStruct, RF_SETUP); //
+	uint8_t tmp = readReg(nrfStruct, RF_SETUP); //
 	tmp = tmp & 0xF8;					  //0xF8 - 1111 1000B reset 3 LSB
 	tmp = tmp | (power << 1);			  //combining tmp and shifted power
-	writeRegister(nrfStruct, RF_SETUP, tmp);
+	writeReg(nrfStruct, RF_SETUP, tmp);
 	nrfStruct->setStruct.powerRF = power;
 
 }
 
 void setDataRate(nrfStruct_t *nrfStruct, dataRate_t rate)
 {
-	uint8_t tmp = readRegister(nrfStruct, RF_SETUP); 	//
+	uint8_t tmp = readReg(nrfStruct, RF_SETUP); 	//
 	tmp = tmp & 0x06;//0x06 = 0000 0110B - reset data rate's bits - Also this line reset PLL_LOCK and CONT_WAVE bits
 	tmp = tmp | (rate << 3);			  //combining tmp and shifted data rate
-	writeRegister(nrfStruct, RF_SETUP, tmp);
+	writeReg(nrfStruct, RF_SETUP, tmp);
 	nrfStruct->setStruct.dataRate = rate;
 }
 
@@ -268,7 +268,7 @@ uint8_t getStatusFullTxFIFO(nrfStruct_t *nrfStruct)
  * */
 uint8_t getPipeStatusRxFIFO(nrfStruct_t *nrfStruct)
 { //Zmieniono na kody bledow
-	uint8_t tmp = readRegister(nrfStruct, STATUS);
+	uint8_t tmp = readReg(nrfStruct, STATUS);
 	tmp &= 0x0E; //save only pipe number bits
 	tmp = tmp >> 1;
 	if (checkPipe(tmp)) {
@@ -290,7 +290,7 @@ uint8_t getPipeStatusRxFIFO(nrfStruct_t *nrfStruct)
 /* Transmit observe */
 uint8_t lostPacketsCount(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(nrfStruct, OBSERVE_TX);
+	uint8_t tmp = readReg(nrfStruct, OBSERVE_TX);
 	tmp = (tmp >> 4);
 	nrfStruct->statusStruct.packetsLost = tmp;
 	return tmp;
@@ -298,7 +298,7 @@ uint8_t lostPacketsCount(nrfStruct_t *nrfStruct)
 
 uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(nrfStruct, OBSERVE_TX);
+	uint8_t tmp = readReg(nrfStruct, OBSERVE_TX);
 	tmp = (tmp & 0xF0);
 	nrfStruct->statusStruct.packetsRetr = tmp;
 	return tmp;
@@ -307,7 +307,7 @@ uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 /* RPD - for test use only */
 uint8_t checkRPD(nrfStruct_t *nrfStruct)
 {
-	if (readRegister(nrfStruct, RPD))
+	if (readReg(nrfStruct, RPD))
 		return 1;
 	else
 		return 0;
@@ -323,27 +323,62 @@ uint8_t checkRPD(nrfStruct_t *nrfStruct)
  * 			Also registers for pipe 0 and 1 can have size of from 3 to 5 bytes.
  */
 uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
-		uint8_t *addrBuf, addressWidth_t addrBufSize)
+		uint8_t *addrBuf, size_t addrBufSize)
 {
 	if (!checkPipe(pipe)) { //if checkPipe return 0 - end fun. by return 0.
 		return ERR_CODE;
 	}
-	switch (addrBufSize) {	//check addrBufSize
-	case shortWidth:
-		size_t bufSize = 0x03;
-		break;
-	case mediumWidth:
-		size_t bufSize = 0x04;
-		break;
-	case longWidth:
-		size_t bufSize = 0x05;
-		break;
-	default:
-		return ERR_CODE;
-		break;
+	if (pipe == 0 || pipe == 1) {	//if pipe 0 or 1 check bufer width
+		switch (addrBufSize) {	//check addrBufSize
+		case 3:
+			size_t bufSize = 0x03;
+			break;
+		case 4:
+			size_t bufSize = 0x04;
+			break;
+		case 5:
+			size_t bufSize = 0x05;
+			break;
+		default:
+			return ERR_CODE;
+			break;
+		}
+		if (pipe == 0) {	//check pipe and write addr to struct
+			uint8_t i;
+			for (i = 0; i < addrBufSize; i++) {
+				nrfStruct->addrStruct.rxAddr0[i] = addrBuf[i];
+			}
+		}
+		if (pipe == 1) {
+			uint8_t i;
+			for (i = 0; i < addrBufSize; i++) {
+				nrfStruct->addrStruct.rxAddr1[i] = addrBuf[i];
+			}
+		}
+	} else {
+		if (addrBufSize == 1)
+			size_t bufSize = 0x01;
+		switch (pipe) {	//check pipe and write addr to struct
+		case 2:
+			nrfStruct->addrStruct.rxAddr2 = addrBuf;
+			break;
+		case 3:
+			nrfStruct->addrStruct.rxAddr3 = addrBuf;
+			break;
+		case 4:
+			nrfStruct->addrStruct.rxAddr4 = addrBuf;
+			break;
+		case 5:
+			nrfStruct->addrStruct.rxAddr5 = addrBuf;
+			break;
+		default:
+			return ERR_CODE;
+			break;
+		}
 	}
 	uint8_t addr = RX_ADDR_P0 + pipe; //if pipe = 0 -> write Receive address pipe 0
 	writeRegExt(nrfStruct, addr, addrBuf, bufSize);
+
 	return OK_CODE;
 }
 
@@ -365,52 +400,65 @@ uint8_t setTransmitPipeAddress(nrfStruct_t *nrfStruct, uint8_t *addrBuf,
 		return ERR_CODE;
 		break;
 	}
+	uint8_t i;
+	for (i = 0; i < addrBufSize; i++) {	//write to struct
+		nrfStruct->addrStruct.txAddr[i] = addrBuf[i];
+	}
 	writeRegExt(nrfStruct, TX_ADDR, addrBuf, bufSize);
 	return OK_CODE;
 }
 
 /* RX Payload width */
-uint8_t getRxPayloadWidth(uint8_t pipe) {
+uint8_t getRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe) {
 	if (checkPipe(pipe))
 	{
 		uint8_t addr = RX_PW_P0 + pipe;
-		return readRegister(addr);
+		return readReg(nrfStruct, addr);
 	}
-  return ERR_CODE;
+	return ERR_CODE;
 }
 
-uint8_t setRxPayload(uint8_t pipe, uint8_t width)
+uint8_t setRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe, uint8_t width)
 {
 	if (checkPipe(pipe))
 	{
-		if (width < 1 && width > 32)
-		{ //check width correct value
-	  return ERR_CODE;
+		if (width < 1 && width > 32) { //check width correct value
+			return ERR_CODE;
 		}
-      uint8_t addr = RX_PW_P0 + pipe;
-		writeRegister(addr, width);
-		return 1;
+		uint8_t addr = RX_PW_P0 + pipe;
+		writeReg(nrfStruct, addr, width);
+		nrfStruct->addrStruct.addrWidth = width;
+		return OK_CODE;
 	}
-  return ERR_CODE;
+	return ERR_CODE;
 }
 
 /* FIFO status */
 /**
  * @Brief	Return status of RX FIFO buffer by check bits in FIFO Status Register 
  * */
-uint8_t getRxStatusFIFO()
+uint8_t getRxStatusFIFO(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(FIFO_STATUS);
+	uint8_t tmp = readReg(nrfStruct, FIFO_STATUS);
 	if ((tmp & 0x03) == RX_FIFO_MASK_EMPTY)
 	{
+		nrfStruct->fifoStruct.rxEmpty = 1;
+		nrfStruct->fifoStruct.rxFull = 0;
+		nrfStruct->fifoStruct.rxRead = 0;
 		return RX_FIFO_MASK_EMPTY; //RX FIFO register buffer is empty
 	}
 	if ((tmp & 0x03) == RX_FIFO_MASK_FULL)
 	{
+		nrfStruct->fifoStruct.rxEmpty = 0;
+		nrfStruct->fifoStruct.rxFull = 1;
+		nrfStruct->fifoStruct.rxRead = 1;
 		return RX_FIFO_MASK_FULL; ////RX FIFO register buffer is full
 	}
 	if ((tmp & 0x03) == RX_FIFO_MASK_DATA)
 	{
+		nrfStruct->fifoStruct.rxEmpty = 0;
+		nrfStruct->fifoStruct.rxFull = 0;
+		nrfStruct->fifoStruct.rxRead = 1;
 		return RX_FIFO_MASK_DATA; //RX FIFO register buffer has some data but isn't full
 	}
 	return ERR_CODE;
@@ -418,9 +466,9 @@ uint8_t getRxStatusFIFO()
 /**
  * @Brief	Return status of TX FIFO buffer by check bits in FIFO Status Register 
  * */
-uint8_t getTxStatusFIFO()
+uint8_t getTxStatusFIFO(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(FIFO_STATUS);
+uint8_t tmp = readReg(FIFO_STATUS);
 	tmp = tmp >> 4;
 	if ((tmp & 0x03) == TX_FIFO_MASK_EMPTY)
 	{
@@ -441,7 +489,7 @@ uint8_t getTxStatusFIFO()
  * @Retval	TX_REUSE_USED mean that nRF24 module reuse to send again same package
  * 			TX_REUSE_UNUSED mena that nRF24 module doeasn't reuse to send again same package
  **/
-uint8_t getTxReuse()
+uint8_t getTxReuse(nrfStruct_t *nrfStruct)
 {
 	uint8_t tmp = readBit(FIFO_STATUS, TX_REUSE);
 	if (tmp == 0x01)
