@@ -10,7 +10,7 @@
 void modeRX(nrfStruct_t *nrfStruct)
 {
 	ceHigh(nrfStruct); //set high on CE line
-	setBit(CONFIG, bit0);
+	setBit(nrfStruct, CONFIG, bit0);
 }
 
 /**
@@ -19,7 +19,7 @@ void modeRX(nrfStruct_t *nrfStruct)
 void modeTX(nrfStruct_t *nrfStruct)
 {
 	ceHigh(nrfStruct);
-	resetBit(CONFIG, bit0);
+	resetBit(nrfStruct, CONFIG, bit0);
 }
 
 /**
@@ -146,7 +146,7 @@ uint8_t enableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe)
 }
 uint8_t disableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
-if (checkPipe(nrfStruct, pipe))
+	if (checkPipe(pipe))
 	{
 		resetBit(nrfStruct, EN_RXADDR, pipe);
 		nrfStruct->setStruct.pipeEn |= (0 << pipe);
@@ -221,7 +221,7 @@ void disableContCarrier(nrfStruct_t *nrfStruct)
 }
 void enableLockPLL(nrfStruct_t *nrfStruct)
 {
-	setBit(nrfStructRF_SETUP, bit4);
+	setBit(nrfStruct, RF_SETUP, bit4);
 }
 void diableLockPLL(nrfStruct_t *nrfStruct)
 {
@@ -328,16 +328,17 @@ uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
 	if (!checkPipe(pipe)) { //if checkPipe return 0 - end fun. by return 0.
 		return ERR_CODE;
 	}
+	size_t bufSize = 0x05;
 	if (pipe == 0 || pipe == 1) {	//if pipe 0 or 1 check bufer width
 		switch (addrBufSize) {	//check addrBufSize
 		case 3:
-			size_t bufSize = 0x03;
+			bufSize = 0x03;
 			break;
 		case 4:
-			size_t bufSize = 0x04;
+			bufSize = 0x04;
 			break;
 		case 5:
-			size_t bufSize = 0x05;
+			bufSize = 0x05;
 			break;
 		default:
 			return ERR_CODE;
@@ -357,7 +358,7 @@ uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
 		}
 	} else {
 		if (addrBufSize == 1)
-			size_t bufSize = 0x01;
+			bufSize = 0x01;
 		switch (pipe) {	//check pipe and write addr to struct
 		case 2:
 			nrfStruct->addrStruct.rxAddr2 = addrBuf;
@@ -386,15 +387,16 @@ uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
 uint8_t setTransmitPipeAddress(nrfStruct_t *nrfStruct, uint8_t *addrBuf,
 		addressWidth_t addrBufSize)
 {
+	size_t bufSize = 0x05;
 	switch (addrBufSize) {	//check addrBufSize
 	case shortWidth:
-		size_t bufSize = 0x03;
+		bufSize = 0x03;
 		break;
 	case mediumWidth:
-		size_t bufSize = 0x04;
+		bufSize = 0x04;
 		break;
 	case longWidth:
-		size_t bufSize = 0x05;
+		bufSize = 0x05;
 		break;
 	default:
 		return ERR_CODE;
@@ -468,7 +470,7 @@ uint8_t getRxStatusFIFO(nrfStruct_t *nrfStruct)
  * */
 uint8_t getTxStatusFIFO(nrfStruct_t *nrfStruct)
 {
-uint8_t tmp = readReg(FIFO_STATUS);
+	uint8_t tmp = readReg(nrfStruct, FIFO_STATUS);
 	tmp = tmp >> 4;
 	if ((tmp & 0x03) == TX_FIFO_MASK_EMPTY)
 	{

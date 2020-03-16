@@ -6,7 +6,7 @@
  */
 
 #include "highLevelModule.h"
-#include "regCmd.h"
+
 
 
 static void delayUs(nrfStruct_t *nrfStruct, uint16_t time);
@@ -112,68 +112,6 @@ static void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
 	nrfStruct->nRFportCE = HAL_GPIO_CE;
 	nrfStruct->nRFpinCE = HAL_GPIO_Pin_CE;
 }
-
-
-nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
-		GPIO_TypeDef *HAL_GPIO_CSN, uint16_t HAL_GPIO_Pin_CSN,
-		GPIO_TypeDef *HAL_GPIO_CE, uint16_t HAL_GPIO_Pin_CE) {
-
-	/* Create main nRF structure	 */
-	static nrfStruct_t nRFMainStruct;
-	static nrfStruct_t *pnRFMainStruct = &nRFMainStruct;
-
-	/* Init settigns struct */
-	statusStrcut_Init(pnRFMainStruct);
-	settingStruct_Init(pnRFMainStruct);
-	addressStruct_Init(pnRFMainStruct);
-	fifoStruct_Init(pnRFMainStruct);
-	hardware_Init(pnRFMainStruct, HAL_SPIx, HAL_TIMx, HAL_GPIO_CSN,
-			HAL_GPIO_Pin_CSN, HAL_GPIO_CE, HAL_GPIO_Pin_CE);
-
-//	pwrDown(pnRFMainStruct);
-	/* Turn on modul */
-	pwrUp(pnRFMainStruct);
-
-	/* Set default settings */
-	setBit(pnRFMainStruct, CONFIG, PRIM_RX);
-	writeReg(pnRFMainStruct, EN_AA, (pnRFMainStruct->setStruct.pipeACK));
-	writeReg(pnRFMainStruct, EN_RXADDR, (pnRFMainStruct->setStruct.pipeEn));
-	writeReg(pnRFMainStruct, SETUP_AW, DF_SETUP_AW);
-	writeReg(pnRFMainStruct, SETUP_RETR, DF_SETUP_RETR);
-	writeReg(pnRFMainStruct, RF_CH, DF_RF_CH);
-	writeReg(pnRFMainStruct, RF_SETUP, DF_RF_SETUP);
-	writeReg(pnRFMainStruct, OBSERVE_TX, DF_OBSERVE_TX);
-	writeReg(pnRFMainStruct, STATUS, DF_STATUS);
-	writeReg(pnRFMainStruct, DYNPD, (pnRFMainStruct->setStruct.pipeDPL));
-
-	uint8_t i;
-	for (i = 0; i < 6; i++) {
-		writeReg(pnRFMainStruct, (RX_PW_P0 + i),
-				(pnRFMainStruct->setStruct.pipePayLen[i]));
-	}
-	writeReg(pnRFMainStruct, FEATURE, DF_FEATURE);
-
-	/* Set default address */
-	writeRegX(pnRFMainStruct, TX_ADDR, (pnRFMainStruct->addrStruct.txAddr),
-			sizeof(pnRFMainStruct->addrStruct.txAddr));
-	writeRegX(pnRFMainStruct, RX_ADDR_P0, (pnRFMainStruct->addrStruct.rxAddr0),
-			sizeof(pnRFMainStruct->addrStruct.rxAddr0));
-	writeRegX(pnRFMainStruct, RX_ADDR_P1, (pnRFMainStruct->addrStruct.rxAddr1),
-			sizeof(pnRFMainStruct->addrStruct.rxAddr1));
-	writeReg(pnRFMainStruct, RX_ADDR_P2, (pnRFMainStruct->addrStruct.rxAddr2));
-	writeReg(pnRFMainStruct, RX_ADDR_P3, (pnRFMainStruct->addrStruct.rxAddr3));
-	writeReg(pnRFMainStruct, RX_ADDR_P4, (pnRFMainStruct->addrStruct.rxAddr4));
-	writeReg(pnRFMainStruct, RX_ADDR_P5, (pnRFMainStruct->addrStruct.rxAddr5));
-
-
-
-	return pnRFMainStruct;
-
-}
-
-
-
-
 
 /* CE snd CSN control funtions's */
 void csnLow(nrfStruct_t *nrfStruct) {
@@ -367,7 +305,7 @@ uint8_t flushTx(nrfStruct_t *nrfStruct) {
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 10);
 	if (!readBit(nrfStruct, FIFO_STATUS, bit4)) {	//check FIFO status
-		csnHighigh();
+		csnHigh(nrfStruct);
 		nrfStruct->fifoStruct.txEmpty = 0;
 		return ERR_CODE;
 	}
@@ -384,7 +322,7 @@ uint8_t flushRx(nrfStruct_t *nrfStruct) {
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 10);
 	if (!readBit(nrfStruct, FIFO_STATUS, bit0)) {	//check FIFO status
-		csnHighigh();
+		csnHigh(nrfStruct);
 		nrfStruct->fifoStruct.rxEmpty = 0;
 		return ERR_CODE;
 	}
@@ -431,7 +369,7 @@ void pwrUp(nrfStruct_t *nrfStruct) {
 void pwrDown(nrfStruct_t *nrfStruct) {
 	uint8_t tmp = readReg(nrfStruct, CONFIG);
 	tmp &= (0 << 1);		//zmieniono OR na AND
-	writeRegister(CONFIG, tmp);
+	writeReg(nrfStruct, CONFIG, tmp);
 }
 
 uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
@@ -457,5 +395,69 @@ static void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
 	__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);	//Set star value as 0
 	while (__HAL_TIM_GET_COUNTER(nrfStruct->nRFtim) < time)
 		;
+}
+
+nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
+		GPIO_TypeDef *HAL_GPIO_CSN, uint16_t HAL_GPIO_Pin_CSN,
+		GPIO_TypeDef *HAL_GPIO_CE, uint16_t HAL_GPIO_Pin_CE) {
+
+	/* Create main nRF structure	 */
+	static nrfStruct_t nRFMainStruct;
+	static nrfStruct_t *pnRFMainStruct = &nRFMainStruct;
+
+	/* Init settigns struct */
+	statusStrcut_Init(pnRFMainStruct);
+	settingStruct_Init(pnRFMainStruct);
+	addressStruct_Init(pnRFMainStruct);
+	fifoStruct_Init(pnRFMainStruct);
+	hardware_Init(pnRFMainStruct, HAL_SPIx, HAL_TIMx, HAL_GPIO_CSN,
+			HAL_GPIO_Pin_CSN, HAL_GPIO_CE, HAL_GPIO_Pin_CE);
+
+//	pwrDown(pnRFMainStruct);
+	/* Turn on modul */
+	pwrUp(pnRFMainStruct);
+
+	/* Set default settings */
+	setBit(pnRFMainStruct, CONFIG, PRIM_RX);
+	writeReg(pnRFMainStruct, EN_AA, (pnRFMainStruct->setStruct.pipeACK));
+	writeReg(pnRFMainStruct, EN_RXADDR, (pnRFMainStruct->setStruct.pipeEn));
+	writeReg(pnRFMainStruct, SETUP_AW, DF_SETUP_AW);
+	writeReg(pnRFMainStruct, SETUP_RETR, DF_SETUP_RETR);
+	writeReg(pnRFMainStruct, RF_CH, DF_RF_CH);
+	writeReg(pnRFMainStruct, RF_SETUP, DF_RF_SETUP);
+	writeReg(pnRFMainStruct, OBSERVE_TX, DF_OBSERVE_TX);
+	writeReg(pnRFMainStruct, STATUS, DF_STATUS);
+	writeReg(pnRFMainStruct, DYNPD, (pnRFMainStruct->setStruct.pipeDPL));
+
+	uint8_t i;
+	for (i = 0; i < 6; i++) {
+		writeReg(pnRFMainStruct, (RX_PW_P0 + i),
+				(pnRFMainStruct->setStruct.pipePayLen[i]));
+	}
+	writeReg(pnRFMainStruct, FEATURE, DF_FEATURE);
+
+	/* Set default address */
+	writeRegExt(pnRFMainStruct, TX_ADDR, (pnRFMainStruct->addrStruct.txAddr),
+			sizeof(pnRFMainStruct->addrStruct.txAddr));
+	writeRegExt(pnRFMainStruct, RX_ADDR_P0,
+			(pnRFMainStruct->addrStruct.rxAddr0),
+			sizeof(pnRFMainStruct->addrStruct.rxAddr0));
+	writeRegExt(pnRFMainStruct, RX_ADDR_P1,
+			(pnRFMainStruct->addrStruct.rxAddr1),
+			sizeof(pnRFMainStruct->addrStruct.rxAddr1));
+	writeReg(pnRFMainStruct, RX_ADDR_P2, (pnRFMainStruct->addrStruct.rxAddr2));
+	writeReg(pnRFMainStruct, RX_ADDR_P3, (pnRFMainStruct->addrStruct.rxAddr3));
+	writeReg(pnRFMainStruct, RX_ADDR_P4, (pnRFMainStruct->addrStruct.rxAddr4));
+	writeReg(pnRFMainStruct, RX_ADDR_P5, (pnRFMainStruct->addrStruct.rxAddr5));
+
+
+
+	return pnRFMainStruct;
 
 }
+
+
+
+
+
+

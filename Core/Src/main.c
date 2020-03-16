@@ -126,8 +126,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-#if 1
-	writeRegister(CONFIG, 0x02);
+#if 0
+	writeRe(CONFIG, 0x02);
 	regTmp = readRegister(CONFIG);
 	nrfStruct_t *testStruct;
 	testStruct = nRF_Init(&hspi1, &htim1, CSN_GPIO_Port, CSN_Pin, CE_GPIO_Port,
