@@ -10,6 +10,7 @@ typedef struct {
 	uint8_t dataSendIrq :1;
 	uint8_t maxRetr :1;
 	uint8_t pipeNumber :3;
+	uint8_t txFull :1;
 } statusStruct_t;
 
 typedef struct {
@@ -125,12 +126,12 @@ void disableContCarrier(nrfStruct_t *nrfStruct);
 void enableLockPLL(nrfStruct_t *nrfStruct);
 void diableLockPLL(nrfStruct_t *nrfStruct);
 
-void setRFpower(powerRF_t power);
-void setDataRate(dataRate_t rate); //TODO: to test
+void setRFpower(nrfStruct_t *nrfStruct, powerRF_t power);
+void setDataRate(nrfStruct_t *nrfStruct, dataRate_t rate); //TODO: to test
 
 /* Status */
-uint8_t getStatusFullTxFIFO(); //TODO: to tests
-uint8_t getPipeStatusRxFIFO(); //TODO: to tests
+uint8_t getStatusFullTxFIFO(nrfStruct_t *nrfStruct); //TODO: to tests
+uint8_t getPipeStatusRxFIFO(nrfStruct_t *nrfStruct); //TODO: to tests
 
 /* Transmit observe */
 uint8_t lostPacketsCount(); //TODO: to tests

@@ -27,6 +27,7 @@ static void statusStrcut_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->statusStruct.dataSendIrq = 0;
 	nrfStruct->statusStruct.maxRetr = 0;
 	nrfStruct->statusStruct.pipeNumber = RX_FIFO_EMPTY;
+	nrfStruct->statusStruct.txFull = 0;
 }
 
 static void settingStruct_Init(nrfStruct_t *nrfStruct) {

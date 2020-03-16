@@ -228,50 +228,62 @@ void diableLockPLL(nrfStruct_t *nrfStruct)
 	resetBit(nrfStruct, RF_SETUP, bit4);
 }
 
-void setRFpower(powerRF_t power)
+void setRFpower(nrfStruct_t *nrfStruct, powerRF_t power)
 {
 	/*
 	if (power > RF_PWR_0dBm && power < RF_PWR_18dBm)
 	 return ERR_CODE;*/
-	uint8_t tmp = readRegister(RF_SETUP); //
+	uint8_t tmp = readRegister(nrfStruct, RF_SETUP); //
 	tmp = tmp & 0xF8;					  //0xF8 - 1111 1000B reset 3 LSB
 	tmp = tmp | (power << 1);			  //combining tmp and shifted power
-	writeRegister(RF_SETUP, tmp);
-	/* return OK_CODE; */
+	writeRegister(nrfStruct, RF_SETUP, tmp);
+	nrfStruct->setStruct.powerRF = power;
+
 }
 
-void setDataRate(dataRate_t rate)
+void setDataRate(nrfStruct_t *nrfStruct, dataRate_t rate)
 {
-	uint8_t tmp = readRegister(RF_SETUP); 	//
+	uint8_t tmp = readRegister(nrfStruct, RF_SETUP); 	//
 	tmp = tmp & 0x06;//0x06 = 0000 0110B - reset data rate's bits - Also this line reset PLL_LOCK and CONT_WAVE bits
 	tmp = tmp | (rate << 3);			  //combining tmp and shifted data rate
-	writeRegister(RF_SETUP, tmp);
+	writeRegister(nrfStruct, RF_SETUP, tmp);
+	nrfStruct->setStruct.dataRate = rate;
 }
 
 /* Status */
 /**
  * @Brief check fill of TX FIFO 
  * */
-uint8_t getStatusFullTxFIFO()
+uint8_t getStatusFullTxFIFO(nrfStruct_t *nrfStruct)
 {
-	if (readBit(STATUS, bit0))
-		return 0; //TX FIFO full
-	return 1;	 //Available locations in TX FIFO
+	if (readBit(nrfStruct, STATUS, bit0)) {
+		nrfStruct->statusStruct.txFull = 1;
+		return 1; //TX FIFO full
+	}
+	nrfStruct->statusStruct.txFull = 0;
+	return 0;	 //Available locations in TX FIFO
 }
 /**
  * @Brief	Check pipe number with data to read 
  * */
-uint8_t getPipeStatusRxFIFO()
+uint8_t getPipeStatusRxFIFO(nrfStruct_t *nrfStruct)
 { //Zmieniono na kody bledow
-	uint8_t tmp = readRegister(STATUS);
+	uint8_t tmp = readRegister(nrfStruct, STATUS);
 	tmp &= 0x0E; //save only pipe number bits
 	tmp = tmp >> 1;
-	if (checkPipe(tmp))
+	if (checkPipe(tmp)) {
+		nrfStruct->statusStruct.pipeNumber = tmp;
 		return tmp;
-	if (tmp == 0x07) //RX FIFO empty
+	}
+	if (tmp == 0x07) { //RX FIFO empty
+		nrfStruct->statusStruct.pipeNumber = RX_FIFO_EMPTY;
 		return RX_FIFO_EMPTY;
-	if (tmp == 0x06)		   //110B - mean not used
+	}
+
+	if (tmp == 0x06) { //110B - mean not used
+		nrfStruct->statusStruct.pipeNumber = RX_FIFO_UNUSED;
 		return RX_FIFO_UNUSED; //return ERR
+	}
 	return ERR_CODE;
 }
 
