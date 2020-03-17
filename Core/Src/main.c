@@ -43,7 +43,7 @@
 
 #define TEST_0 1
 #define TEST_LIB 1
-#define TEST_LIB1
+
 
 #define addrBufSize 5
 /* USER CODE END PD */
@@ -56,20 +56,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint32_t thr1 = 1000;
-uint32_t thr2 = 2000;
-uint32_t thr3 = 3000;
-uint32_t thr4 = 3000;
-
 uint32_t testCounter = 0;
-uint8_t statRegTmp = 0;
-uint8_t confRegTmp = 0;
-uint8_t obrvRegTmp = 0;
-uint8_t retrRegTmp = 0;
-
-uint16_t regAddrMax = 0x1D;
-uint8_t regTmp = 0;
-
+uint32_t regTmp = 0;
 uint8_t addrRead[addrBufSize];
 uint8_t addrWrite[addrBufSize] = { 'A', 'B', 'C', 'D', 'E' };
 uint8_t *pAddrRead = addrRead;
@@ -126,17 +114,20 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-#if 0
-	writeRe(CONFIG, 0x02);
-	regTmp = readRegister(CONFIG);
+#if 1
+
 	nrfStruct_t *testStruct;
 	testStruct = nRF_Init(&hspi1, &htim1, CSN_GPIO_Port, CSN_Pin, CE_GPIO_Port,
 			CE_Pin);
+	regTmp = readReg(testStruct, CONFIG);
 #endif
 
 	while (1) {
 #if TEST_LIB
-
+		uint16_t i;
+		for (i = 0; i < 30; i++) {
+			regTmp = readReg(testStruct, i);
+		}
 
 #endif
 
