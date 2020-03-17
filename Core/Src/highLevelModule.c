@@ -397,6 +397,7 @@ static void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
 		;
 }
 
+/* Main init function */
 nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 		GPIO_TypeDef *HAL_GPIO_CSN, uint16_t HAL_GPIO_Pin_CSN,
 		GPIO_TypeDef *HAL_GPIO_CE, uint16_t HAL_GPIO_Pin_CE) {
@@ -425,7 +426,6 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	writeReg(pnRFMainStruct, SETUP_RETR, DF_SETUP_RETR);
 	writeReg(pnRFMainStruct, RF_CH, DF_RF_CH);
 	writeReg(pnRFMainStruct, RF_SETUP, DF_RF_SETUP);
-	writeReg(pnRFMainStruct, OBSERVE_TX, DF_OBSERVE_TX);
 	writeReg(pnRFMainStruct, STATUS, DF_STATUS);
 	writeReg(pnRFMainStruct, DYNPD, (pnRFMainStruct->setStruct.pipeDPL));
 
