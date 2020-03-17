@@ -93,18 +93,7 @@
 #define DF_DYNPD 0x00
 #define DF_FEATURE 0x00
 
-/* Bit definitions */
-typedef enum
-{
-	bit7 = 7,
-	bit6 = 6,
-	bit5 = 5,
-	bit4 = 4,
-	bit3 = 3,
-	bit2 = 2,
-	bit1 = 1,
-	bit0 = 0
-} bitNum_t;
+
 
 /* Config register */
 #define MASK_RX_DR bit6
@@ -166,6 +155,18 @@ typedef enum
 #define W_ACK_PAYLOAD 0xA8 //1010 1ppp
 #define W_TX_PAYLOAD_NO_ACK 0xB0
 #define NOP 0xFF
+
+/* Bit definitions */
+typedef enum {
+	bit7 = 7,
+	bit6 = 6,
+	bit5 = 5,
+	bit4 = 4,
+	bit3 = 3,
+	bit2 = 2,
+	bit1 = 1,
+	bit0 = 0
+} bitNum_t;
 
 /* power enum typedef */
 typedef enum

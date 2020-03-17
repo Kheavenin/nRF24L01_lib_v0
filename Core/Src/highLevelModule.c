@@ -370,6 +370,7 @@ void pwrUp(nrfStruct_t *nrfStruct) {
 	writeReg(nrfStruct, CONFIG, tmp);
 }
 void pwrDown(nrfStruct_t *nrfStruct) {
+	ceLow(nrfStruct);
 	uint8_t tmp = readReg(nrfStruct, CONFIG);
 	tmp &= (0 << 1);		//zmieniono OR na AND
 	writeReg(nrfStruct, CONFIG, tmp);

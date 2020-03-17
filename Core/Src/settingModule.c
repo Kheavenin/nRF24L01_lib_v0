@@ -1,7 +1,18 @@
 #include "settingModule.h"
 #include "highLevelModule.h"
 
-void receive(nrfStruct_t *nrfStruct) {
+uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct) {
+	if (getPipeStatusRxFIFO(nrfStruct) == RX_FIFO_MASK_DATA)
+		return 1;
+	return 0;
+}
+
+/* To turn off RX/TX state of module use mode Standby */
+/**
+ * @Brief	Switch radio module to Receiver (PRX) mode
+ * @Retval	None
+ */
+void modeRX(nrfStruct_t *nrfStruct) {
 	if (!readBit(nrfStruct, CONFIG, bit1)) {	//Check state of module
 		pwrUp(nrfStruct);
 		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
@@ -19,10 +30,15 @@ void receive(nrfStruct_t *nrfStruct) {
 	clearMAX_RT(nrfStruct);
 
 	//nRF in Standby-I
-	modeRX(nrfStruct);		//switch to RXX mode and set CE HIGH
+	ceHigh(nrfStruct); //set high on CE line
+	setBit(nrfStruct, CONFIG, bit0);
 }
 
-void transmit(nrfStruct_t *nrfStruct) {
+/**
+ *@Brief	Switch radio module to Transmitter (PTX) mode
+ */
+void modeTX(nrfStruct_t *nrfStruct)
+ {
 	if (!readBit(nrfStruct, CONFIG, bit1)) {	//Check state of module
 		pwrUp(nrfStruct);
 		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
@@ -39,25 +55,6 @@ void transmit(nrfStruct_t *nrfStruct) {
 	clearTX_DS(nrfStruct);
 	clearMAX_RT(nrfStruct);
 
-	modeStandby(nrfStruct);
-}
-
-
-/**
- * @Brief	Switch radio module to Receiver (PRX) mode
- * @Retval	None
- */
-void modeRX(nrfStruct_t *nrfStruct)
-{
-	ceHigh(nrfStruct); //set high on CE line
-	setBit(nrfStruct, CONFIG, bit0);
-}
-
-/**
- *@Brief	Switch radio module to Transmitter (PTX) mode
- */
-void modeTX(nrfStruct_t *nrfStruct)
-{
 	ceHigh(nrfStruct);
 	resetBit(nrfStruct, CONFIG, bit0);
 }
@@ -68,6 +65,7 @@ void modeTX(nrfStruct_t *nrfStruct)
 void modeStandby(nrfStruct_t *nrfStruct)
 {
 	ceLow(nrfStruct);
+	resetBit(nrfStruct, CONFIG, bit0);
 }
 
 /* Interrupts functions */
