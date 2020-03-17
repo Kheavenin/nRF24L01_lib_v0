@@ -397,16 +397,16 @@ uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
 			bufSize = 0x01;
 		switch (pipe) {	//check pipe and write addr to struct
 		case 2:
-			nrfStruct->addrStruct.rxAddr2 = addrBuf;
+			nrfStruct->addrStruct.rxAddr2 = *addrBuf;
 			break;
 		case 3:
-			nrfStruct->addrStruct.rxAddr3 = addrBuf;
+			nrfStruct->addrStruct.rxAddr3 = *addrBuf;
 			break;
 		case 4:
-			nrfStruct->addrStruct.rxAddr4 = addrBuf;
+			nrfStruct->addrStruct.rxAddr4 = *addrBuf;
 			break;
 		case 5:
-			nrfStruct->addrStruct.rxAddr5 = addrBuf;
+			nrfStruct->addrStruct.rxAddr5 = *addrBuf;
 			break;
 		default:
 			return ERR_CODE;

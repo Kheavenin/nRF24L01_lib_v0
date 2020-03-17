@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  00020010  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000ad8e  00000000  00000000  00020039  2**0
+ 12 .debug_info   0000ad45  00000000  00000000  00020039  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_abbrev 00001b1b  00000000  00000000  0002adc7  2**0
+ 13 .debug_abbrev 00001b07  00000000  00000000  0002ad7e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_aranges 00000c20  00000000  00000000  0002c8e8  2**3
+ 14 .debug_aranges 00000c18  00000000  00000000  0002c888  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_ranges 00000b28  00000000  00000000  0002d508  2**3
+ 15 .debug_ranges 00000b20  00000000  00000000  0002d4a0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_macro  00013ed3  00000000  00000000  0002e030  2**0
+ 16 .debug_macro  00013ecc  00000000  00000000  0002dfc0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_line   00008c2d  00000000  00000000  00041f03  2**0
+ 17 .debug_line   00008c0c  00000000  00000000  00041e8c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_str    0006ddbf  00000000  00000000  0004ab30  2**0
+ 18 .debug_str    0006ddbb  00000000  00000000  0004aa98  2**0
                   CONTENTS, READONLY, DEBUGGING
- 19 .comment      0000007b  00000000  00000000  000b88ef  2**0
+ 19 .comment      0000007b  00000000  00000000  000b8853  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003198  00000000  00000000  000b896c  2**2
+ 20 .debug_frame  00003174  00000000  00000000  000b88d0  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -298,10 +298,10 @@ void MX_GPIO_Init(void)
  80002a8:	40011400 	.word	0x40011400
 
 080002ac <statusStrcut_Init>:
+static void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
+		TIM_HandleTypeDef *HAL_TIMx, GPIO_TypeDef *HAL_GPIO_CSN,
 		uint16_t HAL_GPIO_Pin_CSN, GPIO_TypeDef *HAL_GPIO_CE,
 		uint16_t HAL_GPIO_Pin_CE);
-
-
 
 static void statusStrcut_Init(nrfStruct_t *nrfStruct) {
  80002ac:	b480      	push	{r7}
@@ -657,330 +657,331 @@ static void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
  8000504:	bc80      	pop	{r7}
  8000506:	4770      	bx	lr
 
-08000508 <csnLow>:
+08000508 <delayUs>:
+
+/* Micro sencods delay - necessary to SPI transmittion  */
+void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
+ 8000508:	b480      	push	{r7}
+ 800050a:	b083      	sub	sp, #12
+ 800050c:	af00      	add	r7, sp, #0
+ 800050e:	6078      	str	r0, [r7, #4]
+ 8000510:	460b      	mov	r3, r1
+ 8000512:	807b      	strh	r3, [r7, #2]
+
+	__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);	//Set star value as 0
+ 8000514:	687b      	ldr	r3, [r7, #4]
+ 8000516:	6adb      	ldr	r3, [r3, #44]	; 0x2c
+ 8000518:	681b      	ldr	r3, [r3, #0]
+ 800051a:	2200      	movs	r2, #0
+ 800051c:	625a      	str	r2, [r3, #36]	; 0x24
+	while (__HAL_TIM_GET_COUNTER(nrfStruct->nRFtim) < time)
+ 800051e:	bf00      	nop
+ 8000520:	687b      	ldr	r3, [r7, #4]
+ 8000522:	6adb      	ldr	r3, [r3, #44]	; 0x2c
+ 8000524:	681b      	ldr	r3, [r3, #0]
+ 8000526:	6a5a      	ldr	r2, [r3, #36]	; 0x24
+ 8000528:	887b      	ldrh	r3, [r7, #2]
+ 800052a:	429a      	cmp	r2, r3
+ 800052c:	d3f8      	bcc.n	8000520 <delayUs+0x18>
+		;
+}
+ 800052e:	bf00      	nop
+ 8000530:	370c      	adds	r7, #12
+ 8000532:	46bd      	mov	sp, r7
+ 8000534:	bc80      	pop	{r7}
+ 8000536:	4770      	bx	lr
+
+08000538 <csnLow>:
 
 /* CE snd CSN control funtions's */
 void csnLow(nrfStruct_t *nrfStruct) {
- 8000508:	b580      	push	{r7, lr}
- 800050a:	b082      	sub	sp, #8
- 800050c:	af00      	add	r7, sp, #0
- 800050e:	6078      	str	r0, [r7, #4]
+ 8000538:	b580      	push	{r7, lr}
+ 800053a:	b082      	sub	sp, #8
+ 800053c:	af00      	add	r7, sp, #0
+ 800053e:	6078      	str	r0, [r7, #4]
 	HAL_GPIO_WritePin((nrfStruct->nRFportCSN), (nrfStruct->nRFpinCSN),
- 8000510:	687b      	ldr	r3, [r7, #4]
- 8000512:	6b18      	ldr	r0, [r3, #48]	; 0x30
- 8000514:	687b      	ldr	r3, [r7, #4]
- 8000516:	8e9b      	ldrh	r3, [r3, #52]	; 0x34
- 8000518:	2200      	movs	r2, #0
- 800051a:	4619      	mov	r1, r3
- 800051c:	f000 fece 	bl	80012bc <HAL_GPIO_WritePin>
+ 8000540:	687b      	ldr	r3, [r7, #4]
+ 8000542:	6b18      	ldr	r0, [r3, #48]	; 0x30
+ 8000544:	687b      	ldr	r3, [r7, #4]
+ 8000546:	8e9b      	ldrh	r3, [r3, #52]	; 0x34
+ 8000548:	2200      	movs	r2, #0
+ 800054a:	4619      	mov	r1, r3
+ 800054c:	f000 feb6 	bl	80012bc <HAL_GPIO_WritePin>
 			GPIO_PIN_RESET);
 }
- 8000520:	bf00      	nop
- 8000522:	3708      	adds	r7, #8
- 8000524:	46bd      	mov	sp, r7
- 8000526:	bd80      	pop	{r7, pc}
+ 8000550:	bf00      	nop
+ 8000552:	3708      	adds	r7, #8
+ 8000554:	46bd      	mov	sp, r7
+ 8000556:	bd80      	pop	{r7, pc}
 
-08000528 <csnHigh>:
+08000558 <csnHigh>:
 void csnHigh(nrfStruct_t *nrfStruct) {
- 8000528:	b580      	push	{r7, lr}
- 800052a:	b082      	sub	sp, #8
- 800052c:	af00      	add	r7, sp, #0
- 800052e:	6078      	str	r0, [r7, #4]
+ 8000558:	b580      	push	{r7, lr}
+ 800055a:	b082      	sub	sp, #8
+ 800055c:	af00      	add	r7, sp, #0
+ 800055e:	6078      	str	r0, [r7, #4]
 	HAL_GPIO_WritePin((nrfStruct->nRFportCSN), (nrfStruct->nRFpinCSN),
- 8000530:	687b      	ldr	r3, [r7, #4]
- 8000532:	6b18      	ldr	r0, [r3, #48]	; 0x30
- 8000534:	687b      	ldr	r3, [r7, #4]
- 8000536:	8e9b      	ldrh	r3, [r3, #52]	; 0x34
- 8000538:	2201      	movs	r2, #1
- 800053a:	4619      	mov	r1, r3
- 800053c:	f000 febe 	bl	80012bc <HAL_GPIO_WritePin>
+ 8000560:	687b      	ldr	r3, [r7, #4]
+ 8000562:	6b18      	ldr	r0, [r3, #48]	; 0x30
+ 8000564:	687b      	ldr	r3, [r7, #4]
+ 8000566:	8e9b      	ldrh	r3, [r3, #52]	; 0x34
+ 8000568:	2201      	movs	r2, #1
+ 800056a:	4619      	mov	r1, r3
+ 800056c:	f000 fea6 	bl	80012bc <HAL_GPIO_WritePin>
 			GPIO_PIN_SET);
 }
- 8000540:	bf00      	nop
- 8000542:	3708      	adds	r7, #8
- 8000544:	46bd      	mov	sp, r7
- 8000546:	bd80      	pop	{r7, pc}
+ 8000570:	bf00      	nop
+ 8000572:	3708      	adds	r7, #8
+ 8000574:	46bd      	mov	sp, r7
+ 8000576:	bd80      	pop	{r7, pc}
 
-08000548 <readReg>:
+08000578 <readReg>:
 			GPIO_PIN_SET);
 }
 
 /* Elementary functions base on nRf24L01+ SPI commands */
 /* Read and write registers funtions's */
 uint8_t readReg(nrfStruct_t *nrfStruct, uint8_t addr) {
- 8000548:	b580      	push	{r7, lr}
- 800054a:	b086      	sub	sp, #24
- 800054c:	af00      	add	r7, sp, #0
- 800054e:	6078      	str	r0, [r7, #4]
- 8000550:	460b      	mov	r3, r1
- 8000552:	70fb      	strb	r3, [r7, #3]
+ 8000578:	b580      	push	{r7, lr}
+ 800057a:	b086      	sub	sp, #24
+ 800057c:	af00      	add	r7, sp, #0
+ 800057e:	6078      	str	r0, [r7, #4]
+ 8000580:	460b      	mov	r3, r1
+ 8000582:	70fb      	strb	r3, [r7, #3]
 	uint8_t cmd = R_REGISTER | addr;
- 8000554:	78fb      	ldrb	r3, [r7, #3]
- 8000556:	73fb      	strb	r3, [r7, #15]
+ 8000584:	78fb      	ldrb	r3, [r7, #3]
+ 8000586:	73fb      	strb	r3, [r7, #15]
 	uint8_t reg;
 	uint8_t *pCmd = &cmd;
- 8000558:	f107 030f 	add.w	r3, r7, #15
- 800055c:	617b      	str	r3, [r7, #20]
+ 8000588:	f107 030f 	add.w	r3, r7, #15
+ 800058c:	617b      	str	r3, [r7, #20]
 	uint8_t *pReg = &reg;
- 800055e:	f107 030e 	add.w	r3, r7, #14
- 8000562:	613b      	str	r3, [r7, #16]
+ 800058e:	f107 030e 	add.w	r3, r7, #14
+ 8000592:	613b      	str	r3, [r7, #16]
 
 	csnLow(nrfStruct);
- 8000564:	6878      	ldr	r0, [r7, #4]
- 8000566:	f7ff ffcf 	bl	8000508 <csnLow>
+ 8000594:	6878      	ldr	r0, [r7, #4]
+ 8000596:	f7ff ffcf 	bl	8000538 <csnLow>
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
- 800056a:	687b      	ldr	r3, [r7, #4]
- 800056c:	6a98      	ldr	r0, [r3, #40]	; 0x28
- 800056e:	230a      	movs	r3, #10
- 8000570:	2201      	movs	r2, #1
- 8000572:	6979      	ldr	r1, [r7, #20]
- 8000574:	f001 fb27 	bl	8001bc6 <HAL_SPI_Transmit>
+ 800059a:	687b      	ldr	r3, [r7, #4]
+ 800059c:	6a98      	ldr	r0, [r3, #40]	; 0x28
+ 800059e:	230a      	movs	r3, #10
+ 80005a0:	2201      	movs	r2, #1
+ 80005a2:	6979      	ldr	r1, [r7, #20]
+ 80005a4:	f001 fb0f 	bl	8001bc6 <HAL_SPI_Transmit>
 	delayUs(nrfStruct, 50);
- 8000578:	2132      	movs	r1, #50	; 0x32
- 800057a:	6878      	ldr	r0, [r7, #4]
- 800057c:	f000 f8a3 	bl	80006c6 <delayUs>
+ 80005a8:	2132      	movs	r1, #50	; 0x32
+ 80005aa:	6878      	ldr	r0, [r7, #4]
+ 80005ac:	f7ff ffac 	bl	8000508 <delayUs>
 	HAL_SPI_Receive((nrfStruct->nRFspi), pReg, sizeof(reg), SPI_TIMEOUT);
- 8000580:	687b      	ldr	r3, [r7, #4]
- 8000582:	6a98      	ldr	r0, [r3, #40]	; 0x28
- 8000584:	230a      	movs	r3, #10
- 8000586:	2201      	movs	r2, #1
- 8000588:	6939      	ldr	r1, [r7, #16]
- 800058a:	f001 fc50 	bl	8001e2e <HAL_SPI_Receive>
+ 80005b0:	687b      	ldr	r3, [r7, #4]
+ 80005b2:	6a98      	ldr	r0, [r3, #40]	; 0x28
+ 80005b4:	230a      	movs	r3, #10
+ 80005b6:	2201      	movs	r2, #1
+ 80005b8:	6939      	ldr	r1, [r7, #16]
+ 80005ba:	f001 fc38 	bl	8001e2e <HAL_SPI_Receive>
 
 	csnHigh(nrfStruct);
- 800058e:	6878      	ldr	r0, [r7, #4]
- 8000590:	f7ff ffca 	bl	8000528 <csnHigh>
+ 80005be:	6878      	ldr	r0, [r7, #4]
+ 80005c0:	f7ff ffca 	bl	8000558 <csnHigh>
 	return reg;
- 8000594:	7bbb      	ldrb	r3, [r7, #14]
+ 80005c4:	7bbb      	ldrb	r3, [r7, #14]
 }
- 8000596:	4618      	mov	r0, r3
- 8000598:	3718      	adds	r7, #24
- 800059a:	46bd      	mov	sp, r7
- 800059c:	bd80      	pop	{r7, pc}
+ 80005c6:	4618      	mov	r0, r3
+ 80005c8:	3718      	adds	r7, #24
+ 80005ca:	46bd      	mov	sp, r7
+ 80005cc:	bd80      	pop	{r7, pc}
 
-0800059e <writeReg>:
+080005ce <writeReg>:
 
 void writeReg(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t val) {
- 800059e:	b580      	push	{r7, lr}
- 80005a0:	b084      	sub	sp, #16
- 80005a2:	af00      	add	r7, sp, #0
- 80005a4:	6078      	str	r0, [r7, #4]
- 80005a6:	460b      	mov	r3, r1
- 80005a8:	70fb      	strb	r3, [r7, #3]
- 80005aa:	4613      	mov	r3, r2
- 80005ac:	70bb      	strb	r3, [r7, #2]
+ 80005ce:	b580      	push	{r7, lr}
+ 80005d0:	b084      	sub	sp, #16
+ 80005d2:	af00      	add	r7, sp, #0
+ 80005d4:	6078      	str	r0, [r7, #4]
+ 80005d6:	460b      	mov	r3, r1
+ 80005d8:	70fb      	strb	r3, [r7, #3]
+ 80005da:	4613      	mov	r3, r2
+ 80005dc:	70bb      	strb	r3, [r7, #2]
 	uint8_t cmd = W_REGISTER | addr;
- 80005ae:	78fb      	ldrb	r3, [r7, #3]
- 80005b0:	f043 0320 	orr.w	r3, r3, #32
- 80005b4:	b2db      	uxtb	r3, r3
- 80005b6:	72fb      	strb	r3, [r7, #11]
+ 80005de:	78fb      	ldrb	r3, [r7, #3]
+ 80005e0:	f043 0320 	orr.w	r3, r3, #32
+ 80005e4:	b2db      	uxtb	r3, r3
+ 80005e6:	72fb      	strb	r3, [r7, #11]
 	uint8_t *pCmd = &cmd;
- 80005b8:	f107 030b 	add.w	r3, r7, #11
- 80005bc:	60fb      	str	r3, [r7, #12]
+ 80005e8:	f107 030b 	add.w	r3, r7, #11
+ 80005ec:	60fb      	str	r3, [r7, #12]
 
 	csnLow(nrfStruct);
- 80005be:	6878      	ldr	r0, [r7, #4]
- 80005c0:	f7ff ffa2 	bl	8000508 <csnLow>
+ 80005ee:	6878      	ldr	r0, [r7, #4]
+ 80005f0:	f7ff ffa2 	bl	8000538 <csnLow>
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
- 80005c4:	687b      	ldr	r3, [r7, #4]
- 80005c6:	6a98      	ldr	r0, [r3, #40]	; 0x28
- 80005c8:	230a      	movs	r3, #10
- 80005ca:	2201      	movs	r2, #1
- 80005cc:	68f9      	ldr	r1, [r7, #12]
- 80005ce:	f001 fafa 	bl	8001bc6 <HAL_SPI_Transmit>
+ 80005f4:	687b      	ldr	r3, [r7, #4]
+ 80005f6:	6a98      	ldr	r0, [r3, #40]	; 0x28
+ 80005f8:	230a      	movs	r3, #10
+ 80005fa:	2201      	movs	r2, #1
+ 80005fc:	68f9      	ldr	r1, [r7, #12]
+ 80005fe:	f001 fae2 	bl	8001bc6 <HAL_SPI_Transmit>
 	delayUs(nrfStruct, 50);
- 80005d2:	2132      	movs	r1, #50	; 0x32
- 80005d4:	6878      	ldr	r0, [r7, #4]
- 80005d6:	f000 f876 	bl	80006c6 <delayUs>
+ 8000602:	2132      	movs	r1, #50	; 0x32
+ 8000604:	6878      	ldr	r0, [r7, #4]
+ 8000606:	f7ff ff7f 	bl	8000508 <delayUs>
 	HAL_SPI_Transmit((nrfStruct->nRFspi), &val, sizeof(val), SPI_TIMEOUT);
- 80005da:	687b      	ldr	r3, [r7, #4]
- 80005dc:	6a98      	ldr	r0, [r3, #40]	; 0x28
- 80005de:	1cb9      	adds	r1, r7, #2
- 80005e0:	230a      	movs	r3, #10
- 80005e2:	2201      	movs	r2, #1
- 80005e4:	f001 faef 	bl	8001bc6 <HAL_SPI_Transmit>
+ 800060a:	687b      	ldr	r3, [r7, #4]
+ 800060c:	6a98      	ldr	r0, [r3, #40]	; 0x28
+ 800060e:	1cb9      	adds	r1, r7, #2
+ 8000610:	230a      	movs	r3, #10
+ 8000612:	2201      	movs	r2, #1
+ 8000614:	f001 fad7 	bl	8001bc6 <HAL_SPI_Transmit>
 
 	csnHigh(nrfStruct);
- 80005e8:	6878      	ldr	r0, [r7, #4]
- 80005ea:	f7ff ff9d 	bl	8000528 <csnHigh>
+ 8000618:	6878      	ldr	r0, [r7, #4]
+ 800061a:	f7ff ff9d 	bl	8000558 <csnHigh>
 }
- 80005ee:	bf00      	nop
- 80005f0:	3710      	adds	r7, #16
- 80005f2:	46bd      	mov	sp, r7
- 80005f4:	bd80      	pop	{r7, pc}
+ 800061e:	bf00      	nop
+ 8000620:	3710      	adds	r7, #16
+ 8000622:	46bd      	mov	sp, r7
+ 8000624:	bd80      	pop	{r7, pc}
 
-080005f6 <writeRegExt>:
+08000626 <writeRegExt>:
 
 	csnHigh(nrfStruct);
 }
 
 void writeRegExt(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
 		size_t bufSize) {
- 80005f6:	b580      	push	{r7, lr}
- 80005f8:	b086      	sub	sp, #24
- 80005fa:	af00      	add	r7, sp, #0
- 80005fc:	60f8      	str	r0, [r7, #12]
- 80005fe:	607a      	str	r2, [r7, #4]
- 8000600:	603b      	str	r3, [r7, #0]
- 8000602:	460b      	mov	r3, r1
- 8000604:	72fb      	strb	r3, [r7, #11]
+ 8000626:	b580      	push	{r7, lr}
+ 8000628:	b086      	sub	sp, #24
+ 800062a:	af00      	add	r7, sp, #0
+ 800062c:	60f8      	str	r0, [r7, #12]
+ 800062e:	607a      	str	r2, [r7, #4]
+ 8000630:	603b      	str	r3, [r7, #0]
+ 8000632:	460b      	mov	r3, r1
+ 8000634:	72fb      	strb	r3, [r7, #11]
 	uint8_t cmd = W_REGISTER | addr;
- 8000606:	7afb      	ldrb	r3, [r7, #11]
- 8000608:	f043 0320 	orr.w	r3, r3, #32
- 800060c:	b2db      	uxtb	r3, r3
- 800060e:	74fb      	strb	r3, [r7, #19]
+ 8000636:	7afb      	ldrb	r3, [r7, #11]
+ 8000638:	f043 0320 	orr.w	r3, r3, #32
+ 800063c:	b2db      	uxtb	r3, r3
+ 800063e:	74fb      	strb	r3, [r7, #19]
 	uint8_t *pCmd = &cmd;
- 8000610:	f107 0313 	add.w	r3, r7, #19
- 8000614:	617b      	str	r3, [r7, #20]
+ 8000640:	f107 0313 	add.w	r3, r7, #19
+ 8000644:	617b      	str	r3, [r7, #20]
 
 	csnLow(nrfStruct);
- 8000616:	68f8      	ldr	r0, [r7, #12]
- 8000618:	f7ff ff76 	bl	8000508 <csnLow>
+ 8000646:	68f8      	ldr	r0, [r7, #12]
+ 8000648:	f7ff ff76 	bl	8000538 <csnLow>
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);
- 800061c:	68fb      	ldr	r3, [r7, #12]
- 800061e:	6a98      	ldr	r0, [r3, #40]	; 0x28
- 8000620:	230a      	movs	r3, #10
- 8000622:	2201      	movs	r2, #1
- 8000624:	6979      	ldr	r1, [r7, #20]
- 8000626:	f001 face 	bl	8001bc6 <HAL_SPI_Transmit>
+ 800064c:	68fb      	ldr	r3, [r7, #12]
+ 800064e:	6a98      	ldr	r0, [r3, #40]	; 0x28
+ 8000650:	230a      	movs	r3, #10
+ 8000652:	2201      	movs	r2, #1
+ 8000654:	6979      	ldr	r1, [r7, #20]
+ 8000656:	f001 fab6 	bl	8001bc6 <HAL_SPI_Transmit>
 	delayUs(nrfStruct, 50);
- 800062a:	2132      	movs	r1, #50	; 0x32
- 800062c:	68f8      	ldr	r0, [r7, #12]
- 800062e:	f000 f84a 	bl	80006c6 <delayUs>
+ 800065a:	2132      	movs	r1, #50	; 0x32
+ 800065c:	68f8      	ldr	r0, [r7, #12]
+ 800065e:	f7ff ff53 	bl	8000508 <delayUs>
 	HAL_SPI_Receive((nrfStruct->nRFspi), buf, bufSize,
- 8000632:	68fb      	ldr	r3, [r7, #12]
- 8000634:	6a98      	ldr	r0, [r3, #40]	; 0x28
- 8000636:	683b      	ldr	r3, [r7, #0]
- 8000638:	b29a      	uxth	r2, r3
- 800063a:	230a      	movs	r3, #10
- 800063c:	6879      	ldr	r1, [r7, #4]
- 800063e:	f001 fbf6 	bl	8001e2e <HAL_SPI_Receive>
+ 8000662:	68fb      	ldr	r3, [r7, #12]
+ 8000664:	6a98      	ldr	r0, [r3, #40]	; 0x28
+ 8000666:	683b      	ldr	r3, [r7, #0]
+ 8000668:	b29a      	uxth	r2, r3
+ 800066a:	230a      	movs	r3, #10
+ 800066c:	6879      	ldr	r1, [r7, #4]
+ 800066e:	f001 fbde 	bl	8001e2e <HAL_SPI_Receive>
 	SPI_TIMEOUT);
 
 	csnHigh(nrfStruct);
- 8000642:	68f8      	ldr	r0, [r7, #12]
- 8000644:	f7ff ff70 	bl	8000528 <csnHigh>
+ 8000672:	68f8      	ldr	r0, [r7, #12]
+ 8000674:	f7ff ff70 	bl	8000558 <csnHigh>
 }
- 8000648:	bf00      	nop
- 800064a:	3718      	adds	r7, #24
- 800064c:	46bd      	mov	sp, r7
- 800064e:	bd80      	pop	{r7, pc}
+ 8000678:	bf00      	nop
+ 800067a:	3718      	adds	r7, #24
+ 800067c:	46bd      	mov	sp, r7
+ 800067e:	bd80      	pop	{r7, pc}
 
-08000650 <pwrUp>:
+08000680 <pwrUp>:
 
 }
 
 
 /* Power control */
 void pwrUp(nrfStruct_t *nrfStruct) {
- 8000650:	b580      	push	{r7, lr}
- 8000652:	b084      	sub	sp, #16
- 8000654:	af00      	add	r7, sp, #0
- 8000656:	6078      	str	r0, [r7, #4]
+ 8000680:	b580      	push	{r7, lr}
+ 8000682:	b084      	sub	sp, #16
+ 8000684:	af00      	add	r7, sp, #0
+ 8000686:	6078      	str	r0, [r7, #4]
 	uint8_t tmp = readReg(nrfStruct, CONFIG);
- 8000658:	2100      	movs	r1, #0
- 800065a:	6878      	ldr	r0, [r7, #4]
- 800065c:	f7ff ff74 	bl	8000548 <readReg>
- 8000660:	4603      	mov	r3, r0
- 8000662:	73fb      	strb	r3, [r7, #15]
+ 8000688:	2100      	movs	r1, #0
+ 800068a:	6878      	ldr	r0, [r7, #4]
+ 800068c:	f7ff ff74 	bl	8000578 <readReg>
+ 8000690:	4603      	mov	r3, r0
+ 8000692:	73fb      	strb	r3, [r7, #15]
 	tmp |= (1 << 1);
- 8000664:	7bfb      	ldrb	r3, [r7, #15]
- 8000666:	f043 0302 	orr.w	r3, r3, #2
- 800066a:	73fb      	strb	r3, [r7, #15]
+ 8000694:	7bfb      	ldrb	r3, [r7, #15]
+ 8000696:	f043 0302 	orr.w	r3, r3, #2
+ 800069a:	73fb      	strb	r3, [r7, #15]
 	writeReg(nrfStruct, CONFIG, tmp);
- 800066c:	7bfb      	ldrb	r3, [r7, #15]
- 800066e:	461a      	mov	r2, r3
- 8000670:	2100      	movs	r1, #0
- 8000672:	6878      	ldr	r0, [r7, #4]
- 8000674:	f7ff ff93 	bl	800059e <writeReg>
+ 800069c:	7bfb      	ldrb	r3, [r7, #15]
+ 800069e:	461a      	mov	r2, r3
+ 80006a0:	2100      	movs	r1, #0
+ 80006a2:	6878      	ldr	r0, [r7, #4]
+ 80006a4:	f7ff ff93 	bl	80005ce <writeReg>
 }
- 8000678:	bf00      	nop
- 800067a:	3710      	adds	r7, #16
- 800067c:	46bd      	mov	sp, r7
- 800067e:	bd80      	pop	{r7, pc}
+ 80006a8:	bf00      	nop
+ 80006aa:	3710      	adds	r7, #16
+ 80006ac:	46bd      	mov	sp, r7
+ 80006ae:	bd80      	pop	{r7, pc}
 
-08000680 <setBit>:
+080006b0 <setBit>:
 	uint8_t tmp = readReg(nrfStruct, addr);
 	tmp &= 0 << bit;		//zmieniono OR na AND
 	writeReg(nrfStruct, addr, tmp);
 }
 
 void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
- 8000680:	b580      	push	{r7, lr}
- 8000682:	b084      	sub	sp, #16
- 8000684:	af00      	add	r7, sp, #0
- 8000686:	6078      	str	r0, [r7, #4]
- 8000688:	460b      	mov	r3, r1
- 800068a:	70fb      	strb	r3, [r7, #3]
- 800068c:	4613      	mov	r3, r2
- 800068e:	70bb      	strb	r3, [r7, #2]
+ 80006b0:	b580      	push	{r7, lr}
+ 80006b2:	b084      	sub	sp, #16
+ 80006b4:	af00      	add	r7, sp, #0
+ 80006b6:	6078      	str	r0, [r7, #4]
+ 80006b8:	460b      	mov	r3, r1
+ 80006ba:	70fb      	strb	r3, [r7, #3]
+ 80006bc:	4613      	mov	r3, r2
+ 80006be:	70bb      	strb	r3, [r7, #2]
 	uint8_t tmp = readReg(nrfStruct, addr);
- 8000690:	78fb      	ldrb	r3, [r7, #3]
- 8000692:	4619      	mov	r1, r3
- 8000694:	6878      	ldr	r0, [r7, #4]
- 8000696:	f7ff ff57 	bl	8000548 <readReg>
- 800069a:	4603      	mov	r3, r0
- 800069c:	73fb      	strb	r3, [r7, #15]
+ 80006c0:	78fb      	ldrb	r3, [r7, #3]
+ 80006c2:	4619      	mov	r1, r3
+ 80006c4:	6878      	ldr	r0, [r7, #4]
+ 80006c6:	f7ff ff57 	bl	8000578 <readReg>
+ 80006ca:	4603      	mov	r3, r0
+ 80006cc:	73fb      	strb	r3, [r7, #15]
 	tmp |= 1 << bit;
- 800069e:	78bb      	ldrb	r3, [r7, #2]
- 80006a0:	2201      	movs	r2, #1
- 80006a2:	fa02 f303 	lsl.w	r3, r2, r3
- 80006a6:	b25a      	sxtb	r2, r3
- 80006a8:	f997 300f 	ldrsb.w	r3, [r7, #15]
- 80006ac:	4313      	orrs	r3, r2
- 80006ae:	b25b      	sxtb	r3, r3
- 80006b0:	73fb      	strb	r3, [r7, #15]
+ 80006ce:	78bb      	ldrb	r3, [r7, #2]
+ 80006d0:	2201      	movs	r2, #1
+ 80006d2:	fa02 f303 	lsl.w	r3, r2, r3
+ 80006d6:	b25a      	sxtb	r2, r3
+ 80006d8:	f997 300f 	ldrsb.w	r3, [r7, #15]
+ 80006dc:	4313      	orrs	r3, r2
+ 80006de:	b25b      	sxtb	r3, r3
+ 80006e0:	73fb      	strb	r3, [r7, #15]
 	writeReg(nrfStruct, addr, tmp);
- 80006b2:	7bfa      	ldrb	r2, [r7, #15]
- 80006b4:	78fb      	ldrb	r3, [r7, #3]
- 80006b6:	4619      	mov	r1, r3
- 80006b8:	6878      	ldr	r0, [r7, #4]
- 80006ba:	f7ff ff70 	bl	800059e <writeReg>
+ 80006e2:	7bfa      	ldrb	r2, [r7, #15]
+ 80006e4:	78fb      	ldrb	r3, [r7, #3]
+ 80006e6:	4619      	mov	r1, r3
+ 80006e8:	6878      	ldr	r0, [r7, #4]
+ 80006ea:	f7ff ff70 	bl	80005ce <writeReg>
 }
- 80006be:	bf00      	nop
- 80006c0:	3710      	adds	r7, #16
- 80006c2:	46bd      	mov	sp, r7
- 80006c4:	bd80      	pop	{r7, pc}
-
-080006c6 <delayUs>:
-
-/* Micro sencods delay - necessary to SPI transmittion  */
-static void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
- 80006c6:	b480      	push	{r7}
- 80006c8:	b083      	sub	sp, #12
- 80006ca:	af00      	add	r7, sp, #0
- 80006cc:	6078      	str	r0, [r7, #4]
- 80006ce:	460b      	mov	r3, r1
- 80006d0:	807b      	strh	r3, [r7, #2]
-
-	__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);	//Set star value as 0
- 80006d2:	687b      	ldr	r3, [r7, #4]
- 80006d4:	6adb      	ldr	r3, [r3, #44]	; 0x2c
- 80006d6:	681b      	ldr	r3, [r3, #0]
- 80006d8:	2200      	movs	r2, #0
- 80006da:	625a      	str	r2, [r3, #36]	; 0x24
-	while (__HAL_TIM_GET_COUNTER(nrfStruct->nRFtim) < time)
- 80006dc:	bf00      	nop
- 80006de:	687b      	ldr	r3, [r7, #4]
- 80006e0:	6adb      	ldr	r3, [r3, #44]	; 0x2c
- 80006e2:	681b      	ldr	r3, [r3, #0]
- 80006e4:	6a5a      	ldr	r2, [r3, #36]	; 0x24
- 80006e6:	887b      	ldrh	r3, [r7, #2]
- 80006e8:	429a      	cmp	r2, r3
- 80006ea:	d3f8      	bcc.n	80006de <delayUs+0x18>
-		;
-}
- 80006ec:	bf00      	nop
- 80006ee:	370c      	adds	r7, #12
- 80006f0:	46bd      	mov	sp, r7
- 80006f2:	bc80      	pop	{r7}
- 80006f4:	4770      	bx	lr
+ 80006ee:	bf00      	nop
+ 80006f0:	3710      	adds	r7, #16
+ 80006f2:	46bd      	mov	sp, r7
+ 80006f4:	bd80      	pop	{r7, pc}
 	...
 
 080006f8 <nRF_Init>:
+
 
 /* Main init function */
 nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
@@ -1039,7 +1040,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  8000748:	4b59      	ldr	r3, [pc, #356]	; (80008b0 <nRF_Init+0x1b8>)
  800074a:	681b      	ldr	r3, [r3, #0]
  800074c:	4618      	mov	r0, r3
- 800074e:	f7ff ff7f 	bl	8000650 <pwrUp>
+ 800074e:	f7ff ff97 	bl	8000680 <pwrUp>
 
 	/* Set default settings */
 	setBit(pnRFMainStruct, CONFIG, PRIM_RX);
@@ -1048,7 +1049,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  8000756:	2200      	movs	r2, #0
  8000758:	2100      	movs	r1, #0
  800075a:	4618      	mov	r0, r3
- 800075c:	f7ff ff90 	bl	8000680 <setBit>
+ 800075c:	f7ff ffa8 	bl	80006b0 <setBit>
 	writeReg(pnRFMainStruct, EN_AA, (pnRFMainStruct->setStruct.pipeACK));
  8000760:	4b53      	ldr	r3, [pc, #332]	; (80008b0 <nRF_Init+0x1b8>)
  8000762:	6818      	ldr	r0, [r3, #0]
@@ -1057,7 +1058,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  8000768:	79db      	ldrb	r3, [r3, #7]
  800076a:	461a      	mov	r2, r3
  800076c:	2101      	movs	r1, #1
- 800076e:	f7ff ff16 	bl	800059e <writeReg>
+ 800076e:	f7ff ff2e 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, EN_RXADDR, (pnRFMainStruct->setStruct.pipeEn));
  8000772:	4b4f      	ldr	r3, [pc, #316]	; (80008b0 <nRF_Init+0x1b8>)
  8000774:	6818      	ldr	r0, [r3, #0]
@@ -1066,42 +1067,42 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  800077a:	799b      	ldrb	r3, [r3, #6]
  800077c:	461a      	mov	r2, r3
  800077e:	2102      	movs	r1, #2
- 8000780:	f7ff ff0d 	bl	800059e <writeReg>
+ 8000780:	f7ff ff25 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, SETUP_AW, DF_SETUP_AW);
  8000784:	4b4a      	ldr	r3, [pc, #296]	; (80008b0 <nRF_Init+0x1b8>)
  8000786:	681b      	ldr	r3, [r3, #0]
  8000788:	2203      	movs	r2, #3
  800078a:	2103      	movs	r1, #3
  800078c:	4618      	mov	r0, r3
- 800078e:	f7ff ff06 	bl	800059e <writeReg>
+ 800078e:	f7ff ff1e 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, SETUP_RETR, DF_SETUP_RETR);
  8000792:	4b47      	ldr	r3, [pc, #284]	; (80008b0 <nRF_Init+0x1b8>)
  8000794:	681b      	ldr	r3, [r3, #0]
  8000796:	2203      	movs	r2, #3
  8000798:	2104      	movs	r1, #4
  800079a:	4618      	mov	r0, r3
- 800079c:	f7ff feff 	bl	800059e <writeReg>
+ 800079c:	f7ff ff17 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, RF_CH, DF_RF_CH);
  80007a0:	4b43      	ldr	r3, [pc, #268]	; (80008b0 <nRF_Init+0x1b8>)
  80007a2:	681b      	ldr	r3, [r3, #0]
  80007a4:	2202      	movs	r2, #2
  80007a6:	2105      	movs	r1, #5
  80007a8:	4618      	mov	r0, r3
- 80007aa:	f7ff fef8 	bl	800059e <writeReg>
+ 80007aa:	f7ff ff10 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, RF_SETUP, DF_RF_SETUP);
  80007ae:	4b40      	ldr	r3, [pc, #256]	; (80008b0 <nRF_Init+0x1b8>)
  80007b0:	681b      	ldr	r3, [r3, #0]
  80007b2:	220e      	movs	r2, #14
  80007b4:	2106      	movs	r1, #6
  80007b6:	4618      	mov	r0, r3
- 80007b8:	f7ff fef1 	bl	800059e <writeReg>
+ 80007b8:	f7ff ff09 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, STATUS, DF_STATUS);
  80007bc:	4b3c      	ldr	r3, [pc, #240]	; (80008b0 <nRF_Init+0x1b8>)
  80007be:	681b      	ldr	r3, [r3, #0]
  80007c0:	220e      	movs	r2, #14
  80007c2:	2107      	movs	r1, #7
  80007c4:	4618      	mov	r0, r3
- 80007c6:	f7ff feea 	bl	800059e <writeReg>
+ 80007c6:	f7ff ff02 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, DYNPD, (pnRFMainStruct->setStruct.pipeDPL));
  80007ca:	4b39      	ldr	r3, [pc, #228]	; (80008b0 <nRF_Init+0x1b8>)
  80007cc:	6818      	ldr	r0, [r3, #0]
@@ -1110,7 +1111,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  80007d2:	7a1b      	ldrb	r3, [r3, #8]
  80007d4:	461a      	mov	r2, r3
  80007d6:	211c      	movs	r1, #28
- 80007d8:	f7ff fee1 	bl	800059e <writeReg>
+ 80007d8:	f7ff fef9 	bl	80005ce <writeReg>
 
 	uint8_t i;
 	for (i = 0; i < 6; i++) {
@@ -1131,7 +1132,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  80007f2:	4413      	add	r3, r2
  80007f4:	7a5b      	ldrb	r3, [r3, #9]
  80007f6:	461a      	mov	r2, r3
- 80007f8:	f7ff fed1 	bl	800059e <writeReg>
+ 80007f8:	f7ff fee9 	bl	80005ce <writeReg>
 	for (i = 0; i < 6; i++) {
  80007fc:	7dfb      	ldrb	r3, [r7, #23]
  80007fe:	3301      	adds	r3, #1
@@ -1146,7 +1147,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  800080c:	2200      	movs	r2, #0
  800080e:	211d      	movs	r1, #29
  8000810:	4618      	mov	r0, r3
- 8000812:	f7ff fec4 	bl	800059e <writeReg>
+ 8000812:	f7ff fedc 	bl	80005ce <writeReg>
 
 	/* Set default address */
 	writeRegExt(pnRFMainStruct, TX_ADDR, (pnRFMainStruct->addrStruct.txAddr),
@@ -1157,7 +1158,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  800081e:	f103 0211 	add.w	r2, r3, #17
  8000822:	2305      	movs	r3, #5
  8000824:	2110      	movs	r1, #16
- 8000826:	f7ff fee6 	bl	80005f6 <writeRegExt>
+ 8000826:	f7ff fefe 	bl	8000626 <writeRegExt>
 			sizeof(pnRFMainStruct->addrStruct.txAddr));
 	writeRegExt(pnRFMainStruct, RX_ADDR_P0,
  800082a:	4b21      	ldr	r3, [pc, #132]	; (80008b0 <nRF_Init+0x1b8>)
@@ -1169,7 +1170,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	writeRegExt(pnRFMainStruct, RX_ADDR_P0,
  8000836:	2305      	movs	r3, #5
  8000838:	210a      	movs	r1, #10
- 800083a:	f7ff fedc 	bl	80005f6 <writeRegExt>
+ 800083a:	f7ff fef4 	bl	8000626 <writeRegExt>
 			sizeof(pnRFMainStruct->addrStruct.rxAddr0));
 	writeRegExt(pnRFMainStruct, RX_ADDR_P1,
  800083e:	4b1c      	ldr	r3, [pc, #112]	; (80008b0 <nRF_Init+0x1b8>)
@@ -1181,7 +1182,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 	writeRegExt(pnRFMainStruct, RX_ADDR_P1,
  800084a:	2305      	movs	r3, #5
  800084c:	210b      	movs	r1, #11
- 800084e:	f7ff fed2 	bl	80005f6 <writeRegExt>
+ 800084e:	f7ff feea 	bl	8000626 <writeRegExt>
 			sizeof(pnRFMainStruct->addrStruct.rxAddr1));
 	writeReg(pnRFMainStruct, RX_ADDR_P2, (pnRFMainStruct->addrStruct.rxAddr2));
  8000852:	4b17      	ldr	r3, [pc, #92]	; (80008b0 <nRF_Init+0x1b8>)
@@ -1191,7 +1192,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  800085a:	f893 3020 	ldrb.w	r3, [r3, #32]
  800085e:	461a      	mov	r2, r3
  8000860:	210c      	movs	r1, #12
- 8000862:	f7ff fe9c 	bl	800059e <writeReg>
+ 8000862:	f7ff feb4 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, RX_ADDR_P3, (pnRFMainStruct->addrStruct.rxAddr3));
  8000866:	4b12      	ldr	r3, [pc, #72]	; (80008b0 <nRF_Init+0x1b8>)
  8000868:	6818      	ldr	r0, [r3, #0]
@@ -1200,7 +1201,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  800086e:	f893 3021 	ldrb.w	r3, [r3, #33]	; 0x21
  8000872:	461a      	mov	r2, r3
  8000874:	210d      	movs	r1, #13
- 8000876:	f7ff fe92 	bl	800059e <writeReg>
+ 8000876:	f7ff feaa 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, RX_ADDR_P4, (pnRFMainStruct->addrStruct.rxAddr4));
  800087a:	4b0d      	ldr	r3, [pc, #52]	; (80008b0 <nRF_Init+0x1b8>)
  800087c:	6818      	ldr	r0, [r3, #0]
@@ -1209,7 +1210,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  8000882:	f893 3022 	ldrb.w	r3, [r3, #34]	; 0x22
  8000886:	461a      	mov	r2, r3
  8000888:	210e      	movs	r1, #14
- 800088a:	f7ff fe88 	bl	800059e <writeReg>
+ 800088a:	f7ff fea0 	bl	80005ce <writeReg>
 	writeReg(pnRFMainStruct, RX_ADDR_P5, (pnRFMainStruct->addrStruct.rxAddr5));
  800088e:	4b08      	ldr	r3, [pc, #32]	; (80008b0 <nRF_Init+0x1b8>)
  8000890:	6818      	ldr	r0, [r3, #0]
@@ -1218,7 +1219,7 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
  8000896:	f893 3023 	ldrb.w	r3, [r3, #35]	; 0x23
  800089a:	461a      	mov	r2, r3
  800089c:	210f      	movs	r1, #15
- 800089e:	f7ff fe7e 	bl	800059e <writeReg>
+ 800089e:	f7ff fe96 	bl	80005ce <writeReg>
 
 	return pnRFMainStruct;
  80008a2:	4b03      	ldr	r3, [pc, #12]	; (80008b0 <nRF_Init+0x1b8>)
@@ -1290,7 +1291,7 @@ int main(void)
 	regTmp = readReg(testStruct, CONFIG);
  80008ea:	2100      	movs	r1, #0
  80008ec:	6838      	ldr	r0, [r7, #0]
- 80008ee:	f7ff fe2b 	bl	8000548 <readReg>
+ 80008ee:	f7ff fe43 	bl	8000578 <readReg>
  80008f2:	4603      	mov	r3, r0
  80008f4:	461a      	mov	r2, r3
  80008f6:	4b0f      	ldr	r3, [pc, #60]	; (8000934 <main+0x80>)
@@ -1309,7 +1310,7 @@ int main(void)
  8000902:	b2db      	uxtb	r3, r3
  8000904:	4619      	mov	r1, r3
  8000906:	6838      	ldr	r0, [r7, #0]
- 8000908:	f7ff fe1e 	bl	8000548 <readReg>
+ 8000908:	f7ff fe36 	bl	8000578 <readReg>
  800090c:	4603      	mov	r3, r0
  800090e:	461a      	mov	r2, r3
  8000910:	4b08      	ldr	r3, [pc, #32]	; (8000934 <main+0x80>)

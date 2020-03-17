@@ -117,11 +117,11 @@ void writeRegExt(nrfStruct_t *nrfStruct, uint8_t addr, uint8_t *buf,
 /* Payload's functions */
 uint8_t readRxPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize);
 uint8_t writeTxPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize);
-uint8_t readRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize,
-		uint8_t width);
 uint8_t writeTxPayloadAck(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize);
 uint8_t writeTxPayloadNoAck(nrfStruct_t *nrfStruct, uint8_t *buf,
 		size_t bufSize);
+/* Read payload lenght when DPL enable */
+uint8_t readDynamicPayloadWidth(nrfStruct_t *nrfStruct);
 /* Flush functions */
 uint8_t flushTx(nrfStruct_t *nrfStruct);
 uint8_t flushRx(nrfStruct_t *nrfStruct);

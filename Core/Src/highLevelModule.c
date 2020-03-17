@@ -235,27 +235,17 @@ uint8_t writeTxPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
 	return OK_CODE;
 }
 
-uint8_t readRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize,
-		uint8_t width) {
-	if (bufSize < 1)
-		return ERR_CODE;	//invalid buffer size
-	if (width < 1)
-		return ERR_CODE;	//invaild number of bytes
-	if (bufSize > 32)
-		bufSize = 32;		//to big buffer size
-	if (width > 32) 		//to bi width of fifo to read
-		width = 32;
-	if (bufSize < width)
-		width = bufSize;
-
+uint8_t readDynamicPayloadWidth(nrfStruct_t *nrfStruct) {
 	uint8_t cmd = R_RX_PL_WID;	//set command mask
+	uint8_t width;
 	uint8_t *pCmd = &cmd;
+	uint8_t *pWidth = &width;
 
 	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 50);
-	HAL_SPI_Receive((nrfStruct->nRFspi), buf, width, SPI_TIMEOUT);//read payload
+	HAL_SPI_Receive((nrfStruct->nRFspi), pWidth, sizeof(width), SPI_TIMEOUT);//read payload
 	csnHigh(nrfStruct);
 	return OK_CODE;
 }
