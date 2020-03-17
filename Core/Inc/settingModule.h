@@ -1,6 +1,9 @@
 
 #include "highLevelModule.h"
 
+void receive(nrfStruct_t *nrfStruct);
+void transmit(nrfStruct_t *nrfStruct);
+
 
 /* Modes */
 void modeRX(nrfStruct_t *nrfStruct);
@@ -79,7 +82,7 @@ uint8_t getRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe);//TODO: to tests
 uint8_t setRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe, uint8_t width); //TODO: to tests
 
 /* TX and RX FIFO */
-uint8_t getkRxStatusFIFO(nrfStruct_t *nrfStruct); //TODO: to tests
+uint8_t getRxStatusFIFO(nrfStruct_t *nrfStruct); //TODO: to tests
 uint8_t getTxStatusFIFO(nrfStruct_t *nrfStruct);  //TODO: to tests
 uint8_t getTxReuse(nrfStruct_t *nrfStruct);       //TODO: to tests
 

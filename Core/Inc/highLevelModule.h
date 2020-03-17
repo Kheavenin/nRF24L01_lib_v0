@@ -96,6 +96,8 @@ nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,
 		GPIO_TypeDef *HAL_GPIO_CSN, uint16_t HAL_GPIO_Pin_CSN,
 		GPIO_TypeDef *HAL_GPIO_CE, uint16_t HAL_GPIO_Pin_CE);
 
+void delayUs(nrfStruct_t *nrfStruct, uint16_t time);
+
 /* CE snd CSN control funtions's */
 void csnLow(nrfStruct_t *nrfStruct);  //TODO: in future create macro
 void csnHigh(nrfStruct_t *nrfStruct); //TODO: in future create macro

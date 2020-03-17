@@ -7,10 +7,7 @@
 
 #include "highLevelModule.h"
 
-
-
-static void delayUs(nrfStruct_t *nrfStruct, uint16_t time);
-
+/* Static methods */
 static void settingStruct_Init(nrfStruct_t *nrfStruct);
 static void addressStruct_Init(nrfStruct_t *nrfStruct);
 static void fifoStruct_Init(nrfStruct_t *nrfStruct);
@@ -19,8 +16,6 @@ static void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
 		TIM_HandleTypeDef *HAL_TIMx, GPIO_TypeDef *HAL_GPIO_CSN,
 		uint16_t HAL_GPIO_Pin_CSN, GPIO_TypeDef *HAL_GPIO_CE,
 		uint16_t HAL_GPIO_Pin_CE);
-
-
 
 static void statusStrcut_Init(nrfStruct_t *nrfStruct) {
 	nrfStruct->statusStruct.dataReadIrq = 0;
@@ -111,6 +106,14 @@ static void hardware_Init(nrfStruct_t *nrfStruct, SPI_HandleTypeDef *HAL_SPIx,
 	nrfStruct->nRFpinCSN = HAL_GPIO_Pin_CSN;
 	nrfStruct->nRFportCE = HAL_GPIO_CE;
 	nrfStruct->nRFpinCE = HAL_GPIO_Pin_CE;
+}
+
+/* Micro sencods delay - necessary to SPI transmittion  */
+void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
+
+	__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);	//Set star value as 0
+	while (__HAL_TIM_GET_COUNTER(nrfStruct->nRFtim) < time)
+		;
 }
 
 /* CE snd CSN control funtions's */
@@ -389,13 +392,7 @@ void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	writeReg(nrfStruct, addr, tmp);
 }
 
-/* Micro sencods delay - necessary to SPI transmittion  */
-static void delayUs(nrfStruct_t *nrfStruct, uint16_t time) {
 
-	__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);	//Set star value as 0
-	while (__HAL_TIM_GET_COUNTER(nrfStruct->nRFtim) < time)
-		;
-}
 
 /* Main init function */
 nrfStruct_t* nRF_Init(SPI_HandleTypeDef *HAL_SPIx, TIM_HandleTypeDef *HAL_TIMx,

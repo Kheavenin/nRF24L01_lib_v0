@@ -1,7 +1,47 @@
 #include "settingModule.h"
 #include "highLevelModule.h"
 
-//	nrfStruct_t *nrfStruct
+void receive(nrfStruct_t *nrfStruct) {
+	if (!readBit(nrfStruct, CONFIG, bit1)) {	//Check state of module
+		pwrUp(nrfStruct);
+		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
+	}
+	flushRx(nrfStruct);			//clear (flush) RX FIFO buffer
+	if (getRxStatusFIFO(nrfStruct) == RX_FIFO_EMPTY) {
+		flushTx(nrfStruct);		//clear (flush) TX FIFO buffer
+		if (getTxStatusFIFO(nrfStruct) == TX_FIFO_MASK_EMPTY) {
+			uint8_t tmp = 1;	//variable for test
+		}
+	}
+
+	clearRX_DR(nrfStruct);	//clear interrupts flags
+	clearTX_DS(nrfStruct);
+	clearMAX_RT(nrfStruct);
+
+	//nRF in Standby-I
+	modeRX(nrfStruct);		//switch to RXX mode and set CE HIGH
+}
+
+void transmit(nrfStruct_t *nrfStruct) {
+	if (!readBit(nrfStruct, CONFIG, bit1)) {	//Check state of module
+		pwrUp(nrfStruct);
+		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
+	}
+	flushRx(nrfStruct);			//clear (flush) RX FIFO buffer
+	if (getRxStatusFIFO(nrfStruct) == RX_FIFO_EMPTY) {
+		flushTx(nrfStruct);		//clear (flush) TX FIFO buffer
+		if (getTxStatusFIFO(nrfStruct) == TX_FIFO_MASK_EMPTY) {
+			uint8_t tmp = 1;	//variable for test
+		}
+	}
+
+	clearRX_DR(nrfStruct);	//clear interrupts flags
+	clearTX_DS(nrfStruct);
+	clearMAX_RT(nrfStruct);
+
+	modeStandby(nrfStruct);
+}
+
 
 /**
  * @Brief	Switch radio module to Receiver (PRX) mode
@@ -227,6 +267,14 @@ void diableLockPLL(nrfStruct_t *nrfStruct)
 {
 	resetBit(nrfStruct, RF_SETUP, bit4);
 }
+/* RPD - for test use only */
+uint8_t checkRPD(nrfStruct_t *nrfStruct) {
+	if (readReg(nrfStruct, RPD))
+		return 1;
+	else
+		return 0;
+}
+
 
 void setRFpower(nrfStruct_t *nrfStruct, powerRF_t power)
 {
@@ -251,9 +299,6 @@ void setDataRate(nrfStruct_t *nrfStruct, dataRate_t rate)
 }
 
 /* Status */
-/**
- * @Brief check fill of TX FIFO 
- * */
 uint8_t getStatusFullTxFIFO(nrfStruct_t *nrfStruct)
 {
 	if (readBit(nrfStruct, STATUS, bit0)) {
@@ -304,14 +349,7 @@ uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 	return tmp;
 }
 
-/* RPD - for test use only */
-uint8_t checkRPD(nrfStruct_t *nrfStruct)
-{
-	if (readReg(nrfStruct, RPD))
-		return 1;
-	else
-		return 0;
-}
+
 
 /* Receive Address data pipe */
 /**

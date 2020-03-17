@@ -26,4 +26,5 @@ highLevelModule.c:375:9:readBit	24	static
 highLevelModule.c:380:6:resetBit	24	static
 highLevelModule.c:386:6:setBit	24	static
 highLevelModule.c:393:13:delayUs	16	static
-highLevelModule.c:400:14:nRF_Init	48	static
+highLevelModule.c:401:14:nRF_Init	48	static
+highLevelModule.c:456:6:received	16	static
