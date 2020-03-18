@@ -47,4 +47,4 @@ settingModule.c:564:6:enableDynamicPayloadLength	16	static
 settingModule.c:568:6:disableDynamicPayloadLength	16	static
 settingModule.c:573:6:enableAckPayload	16	static
 settingModule.c:577:6:disableAckPayload	16	static
-settingModule.c:585:6:enableDynamicAck	16	static
+settingModule.c:585:6:enableNoAckCommand	16	static

@@ -71,6 +71,8 @@ uint8_t writeBuf[TAB_SIZE] = { 'A', 'B', 'C', 'D', 'E' };
 
 uint8_t *pWriteBuf = writeBuf;
 uint8_t *pReadBuf = readBuf;
+
+uint8_t testTab[29];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -130,6 +132,17 @@ int main(void)
 	CE_Pin);	// create struct
 	regTmp = readReg(testStruct, CONFIG); 		// read value of CONFIG register
 
+	/* Check registers */
+	uint8_t var;
+	for (var = 0; var < 29; var++) {
+		if (var >= 0x0A || var <= 0x10)
+			readRegExt(testStruct, var, readBuf, sizeof(readBuf));
+		else
+			readReg(testStruct, var);
+	}
+
+
+
 	/* 1.1  Set role as RX */
 	modeRX(testStruct);
 	/* 1.2 Enable CRC and set coding */
@@ -170,13 +183,20 @@ int main(void)
 	enableAckPayload(testStruct);
 #endif
 
+	/** Seconde check registers */
+	for (var = 0; var < 29; var++) {
+		if (var >= 0x0A || var <= 0x10)
+			readRegExt(testStruct, var, readBuf, sizeof(readBuf));
+		else
+			readReg(testStruct, var);
+	}
 
 #endif
 
 	while (1) {
 #if 1
 		uint16_t i;
-		for (i = 0; i < 30; i++) {
+		for (i = 0; i < 29; i++) {
 			regTmp = readReg(testStruct, i);
 		}
 

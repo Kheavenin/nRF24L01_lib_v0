@@ -582,7 +582,7 @@ void disableAckPayload(nrfStruct_t *nrfStruct)
 /**
  * @Brief	Enable W_TX_PAYLOAD_NOACK command 
  * */
-void enableDynamicAck(nrfStruct_t *nrfStruct)
+void enableNoAckCommand(nrfStruct_t *nrfStruct)
 {
 	setBit(nrfStruct, FEATURE, EN_DYN_ACK);
 }
