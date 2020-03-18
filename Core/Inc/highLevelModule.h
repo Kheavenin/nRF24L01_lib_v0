@@ -138,19 +138,4 @@ void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
 void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif /* INC_HIGHLEVELMODULE_H_ */

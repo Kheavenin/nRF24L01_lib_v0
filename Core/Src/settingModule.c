@@ -219,13 +219,13 @@ uint8_t setAutoRetrDelay(nrfStruct_t *nrfStruct, uint8_t delay)
 {
 	if (delay > 0x0F)
 	{						//if delay in MSB format
-		delay = delay >> 8; //shift to LSB format
+		delay = delay >> 4; //shift to LSB format
 	}
 	if (delay >= 0x00 && delay <= 0x0F)
 	{
 		uint8_t tmp = readReg(nrfStruct, SETUP_RETR);
 		tmp = tmp & 0x0F;	//save LSB, reset MSB
-		tmp |= (delay << 8); //add tmp and delay
+		tmp |= (delay << 4); //add tmp and delay
 		writeReg(nrfStruct, SETUP_RETR, tmp);
 		nrfStruct->setStruct.ard = delay;
 		return OK_CODE;
@@ -347,8 +347,6 @@ uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 	return tmp;
 }
 
-
-
 /* Receive Address data pipe */
 /**
  * @Brief	Write receiver address of pipe
@@ -421,28 +419,17 @@ uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
 
 /* Transmit address data pipe */
 uint8_t setTransmitPipeAddress(nrfStruct_t *nrfStruct, uint8_t *addrBuf,
-		addressWidth_t addrBufSize)
+		size_t addrBufSize)
 {
-	size_t bufSize = 0x05;
-	switch (addrBufSize) {	//check addrBufSize
-	case shortWidth:
-		bufSize = 0x03;
-		break;
-	case mediumWidth:
-		bufSize = 0x04;
-		break;
-	case longWidth:
-		bufSize = 0x05;
-		break;
-	default:
+	if (((nrfStruct->addrStruct.addrWidth) + 2) != addrBufSize) {
 		return ERR_CODE;
-		break;
 	}
+
 	uint8_t i;
 	for (i = 0; i < addrBufSize; i++) {	//write to struct
 		nrfStruct->addrStruct.txAddr[i] = addrBuf[i];
 	}
-	writeRegExt(nrfStruct, TX_ADDR, addrBuf, bufSize);
+	writeRegExt(nrfStruct, TX_ADDR, addrBuf, addrBufSize);
 	return OK_CODE;
 }
 
@@ -451,7 +438,9 @@ uint8_t getRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe) {
 	if (checkPipe(pipe))
 	{
 		uint8_t addr = RX_PW_P0 + pipe;
-		return readReg(nrfStruct, addr);
+		uint8_t tmp = readReg(nrfStruct, addr);
+		nrfStruct->setStruct.pipePayLen[pipe] = tmp;
+		return tmp;
 	}
 	return ERR_CODE;
 }
@@ -465,7 +454,7 @@ uint8_t setRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe, uint8_t width)
 		}
 		uint8_t addr = RX_PW_P0 + pipe;
 		writeReg(nrfStruct, addr, width);
-		nrfStruct->addrStruct.addrWidth = width;
+		nrfStruct->setStruct.pipePayLen[pipe] = width;
 		return OK_CODE;
 	}
 	return ERR_CODE;
@@ -564,19 +553,24 @@ uint8_t disableDynamicPayloadLengthPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 void enableDynamicPayloadLength(nrfStruct_t *nrfStruct)
 {
 	setBit(nrfStruct, FEATURE, EN_DPL);
+	nrfStruct->setStruct.enableDPL = 1;
 }
 void disableDynamicPayloadLength(nrfStruct_t *nrfStruct)
 {
 	resetBit(nrfStruct, FEATURE, EN_DPL);
+	nrfStruct->setStruct.enableDPL = 0;
 }
 
 void enableAckPayload(nrfStruct_t *nrfStruct)
 {
 	setBit(nrfStruct, FEATURE, EN_ACK_PAY);
+	nrfStruct->setStruct.enableAckPay = 1;
+
 }
 void disableAckPayload(nrfStruct_t *nrfStruct)
 {
 	resetBit(nrfStruct, FEATURE, EN_ACK_PAY);
+	nrfStruct->setStruct.enableAckPay = 0;
 }
 
 /**

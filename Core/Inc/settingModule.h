@@ -72,7 +72,7 @@ uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
 
 /* Transmit address data pipe */
 uint8_t setTransmitPipeAddress(nrfStruct_t *nrfStruct, uint8_t *addrBuf,
-		addressWidth_t addrBufSize); //TODO: to tests
+		size_t addrBufSize); //TODO: to tests
 
 /* Payload width of each pipes */
 uint8_t getRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe);//TODO: to tests

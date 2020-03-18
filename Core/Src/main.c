@@ -135,13 +135,10 @@ int main(void)
 	/* Check registers */
 	uint8_t var;
 	for (var = 0; var < 29; var++) {
+		regTmp = readReg(testStruct, var);
 		if (var >= 0x0A || var <= 0x10)
 			readRegExt(testStruct, var, readBuf, sizeof(readBuf));
-		else
-			readReg(testStruct, var);
 	}
-
-
 
 	/* 1.1  Set role as RX */
 	modeRX(testStruct);
@@ -167,8 +164,8 @@ int main(void)
 	setRFpower(testStruct, RF_PWR_0dBm);
 	setDataRate(testStruct, RF_DataRate_250);
 	/* 8 Set RX address */
-	setReceivePipeAddress(testStruct, 0, TransmitAddress,
-			sizeof(TransmitAddress));
+	setReceivePipeAddress(testStruct, 0, ReceiveAddress,
+			sizeof(ReceiveAddress));
 	/* 9. Set TX address */
 	setTransmitPipeAddress(testStruct, TransmitAddress,
 			sizeof(TransmitAddress));
@@ -184,11 +181,10 @@ int main(void)
 #endif
 
 	/** Seconde check registers */
-	for (var = 0; var < 29; var++) {
+	for (var = 0; var < 30; var++) {
+		regTmp = readReg(testStruct, var);
 		if (var >= 0x0A || var <= 0x10)
 			readRegExt(testStruct, var, readBuf, sizeof(readBuf));
-		else
-			readReg(testStruct, var);
 	}
 
 #endif
