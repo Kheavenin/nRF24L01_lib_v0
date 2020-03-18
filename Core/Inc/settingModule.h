@@ -94,4 +94,4 @@ void disableDynamicPayloadLength(nrfStruct_t *nrfStruct); //TODO: to tests
 void enableAckPayload(nrfStruct_t *nrfStruct);  //TODO: to tests
 void disableAckPayload(nrfStruct_t *nrfStruct); //TODO: to tests
 
-void enableDynamicAck(nrfStruct_t *nrfStruct); //TODO: to tests
+void enableNoAckCommand(nrfStruct_t *nrfStruct); //TODO: to tests

@@ -29,7 +29,7 @@
 //#include "controleModule.h"
 //#include "settingModule.h"
 //#include "nRF24L01_test-lib.h"
-#include "highLevelModule.h"
+#include "settingModule.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,13 +39,14 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define TEST_ENABLE 0
+#define TEST_CONFIG 1
+#define TEST_STATIC_LENGTH 1
+#define TEST_DYNAMIC_LENGTH 1
+#define	TESTS_ACK_PAYLOAD 1
 
-#define TEST_0 1
-#define TEST_LIB 1
+#define TAB_SIZE 5
 
 
-#define addrBufSize 5
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -58,10 +59,18 @@
 /* USER CODE BEGIN PV */
 uint32_t testCounter = 0;
 uint32_t regTmp = 0;
-uint8_t addrRead[addrBufSize];
-uint8_t addrWrite[addrBufSize] = { 'A', 'B', 'C', 'D', 'E' };
-uint8_t *pAddrRead = addrRead;
-uint8_t *pAddrWrite = addrWrite;
+
+uint8_t TransmitAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
+uint8_t ReceiveAddress[TAB_SIZE] = { 'C', 'D', 'C', 'D', 'C' };
+
+uint8_t *pTxAddr = TransmitAddress;
+uint8_t *pRxAddr = ReceiveAddress;
+
+uint8_t readBuf[TAB_SIZE];
+uint8_t writeBuf[TAB_SIZE] = { 'A', 'B', 'C', 'D', 'E' };
+
+uint8_t *pWriteBuf = writeBuf;
+uint8_t *pReadBuf = readBuf;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,16 +123,58 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-#if 1
-
-	nrfStruct_t *testStruct;
+#if  TEST_CONFIG
+	/* 0. Create pointer and init structure. */
+	nrfStruct_t *testStruct;						// create pointer to struct
 	testStruct = nRF_Init(&hspi1, &htim1, CSN_GPIO_Port, CSN_Pin, CE_GPIO_Port,
-			CE_Pin);
-	regTmp = readReg(testStruct, CONFIG);
+	CE_Pin);	// create struct
+	regTmp = readReg(testStruct, CONFIG); 		// read value of CONFIG register
+
+	/* 1.1  Set role as RX */
+	modeRX(testStruct);
+	/* 1.2 Enable CRC and set coding */
+	enableCRC(testStruct);
+	setCRC(testStruct, CRC_16_bits);
+	/* 1.3 Enable/disable interrupts */
+	enableRXinterrupt(testStruct);
+	enableTXinterrupt(testStruct);
+
+	/* 2. Set ACK for RX pipe  */
+	enableAutoAckPipe(testStruct, 0);
+	/* 3. Set RX pipe */
+	enableRxAddr(testStruct, 0);
+	/* 4. Set RX/TX address width */
+	setAddrWidth(testStruct, longWidth);
+	/* 5. Set ARD and ARC */
+	setAutoRetrCount(testStruct, 3);
+	setAutoRetrDelay(testStruct, 1); //500us
+	/* 6. Set RF channel */
+	setChannel(testStruct, 64);
+	/* 7. Set RF power and Data Rate */
+	setRFpower(testStruct, RF_PWR_0dBm);
+	setDataRate(testStruct, RF_DataRate_250);
+	/* 8 Set RX address */
+	setReceivePipeAddress(testStruct, 0, TransmitAddress,
+			sizeof(TransmitAddress));
+	/* 9. Set TX address */
+	setTransmitPipeAddress(testStruct, TransmitAddress,
+			sizeof(TransmitAddress));
+#if TEST_STATIC_LENGTH
+	setRxPayloadWidth(testStruct, 0, 32);
+#endif
+#if TEST_DYNAMIC_LENGTH
+	enableDynamicPayloadLength(testStruct);
+	enableDynamicPayloadLengthPipe(testStruct, 0);
+#endif
+#if TESTS_ACK_PAYLOAD
+	enableAckPayload(testStruct);
+#endif
+
+
 #endif
 
 	while (1) {
-#if TEST_LIB
+#if 1
 		uint16_t i;
 		for (i = 0; i < 30; i++) {
 			regTmp = readReg(testStruct, i);
