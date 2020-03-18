@@ -1,89 +1,145 @@
 #include "settingModule.h"
+#include "highLevelModule.h"
 
+uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct) {
+	if (getPipeStatusRxFIFO(nrfStruct) == RX_FIFO_MASK_DATA)
+		return 1;
+	return 0;
+}
 
-
-
+/* To turn off RX/TX state of module use mode Standby */
 /**
  * @Brief	Switch radio module to Receiver (PRX) mode
  * @Retval	None
  */
-void modeRX()
-{
-	ceHigh(); //set high on CE line
-	setBit(CONFIG, bit0);
+void modeRX(nrfStruct_t *nrfStruct) {
+	if (!readBit(nrfStruct, CONFIG, bit1)) {	//Check state of module
+		pwrUp(nrfStruct);
+		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
+	}
+	flushRx(nrfStruct);			//clear (flush) RX FIFO buffer
+	if (getRxStatusFIFO(nrfStruct) == RX_FIFO_EMPTY) {
+		flushTx(nrfStruct);		//clear (flush) TX FIFO buffer
+		if (getTxStatusFIFO(nrfStruct) == TX_FIFO_MASK_EMPTY) {
+			uint8_t tmp = 1;	//variable for test
+		}
+	}
+
+	clearRX_DR(nrfStruct);	//clear interrupts flags
+	clearTX_DS(nrfStruct);
+	clearMAX_RT(nrfStruct);
+
+	//nRF in Standby-I
+	ceHigh(nrfStruct); //set high on CE line
+	setBit(nrfStruct, CONFIG, bit0);
 }
 
 /**
  *@Brief	Switch radio module to Transmitter (PTX) mode
  */
-void modeTX()
-{
-	ceHigh();
-	resetBit(CONFIG, bit0);
+void modeTX(nrfStruct_t *nrfStruct)
+ {
+	if (!readBit(nrfStruct, CONFIG, bit1)) {	//Check state of module
+		pwrUp(nrfStruct);
+		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
+	}
+	flushRx(nrfStruct);			//clear (flush) RX FIFO buffer
+	if (getRxStatusFIFO(nrfStruct) == RX_FIFO_EMPTY) {
+		flushTx(nrfStruct);		//clear (flush) TX FIFO buffer
+		if (getTxStatusFIFO(nrfStruct) == TX_FIFO_MASK_EMPTY) {
+			uint8_t tmp = 1;	//variable for test
+		}
+	}
+
+	clearRX_DR(nrfStruct);	//clear interrupts flags
+	clearTX_DS(nrfStruct);
+	clearMAX_RT(nrfStruct);
+
+	ceHigh(nrfStruct);
+	resetBit(nrfStruct, CONFIG, bit0);
 }
 
 /**
  * @Brief	Switch radio module to Standby-I mode
  */
-void modeStandby()
+void modeStandby(nrfStruct_t *nrfStruct)
 {
-	ceLow();
+	ceLow(nrfStruct);
+	resetBit(nrfStruct, CONFIG, bit0);
 }
 
 /* Interrupts functions */
-void disableRXinterrupt()
+void disableRXinterrupt(nrfStruct_t *nrfStruct)
 {
-	resetBit(CONFIG, bit6); //disable RX_IRQ in Config register
+	resetBit(nrfStruct, CONFIG, bit6); //disable RX_IRQ in Config register
+	nrfStruct->setStruct.enableRxIrq = 0;
 }
-void disableTXinterrupt()
+void disableTXinterrupt(nrfStruct_t *nrfStruct)
 {
-	resetBit(CONFIG, bit5);
+	resetBit(nrfStruct, CONFIG, bit5);
+	nrfStruct->setStruct.enableTxIrq = 0;
 }
-void disableRTinterrupt()
+void disableMaxRTinterrupt(nrfStruct_t *nrfStruct)
 {
-	resetBit(CONFIG, bit4);
-}
-
-void enableRXinterrupt()
-{
-	setBit(CONFIG, bit6);
-}
-void enableTXinterrupt()
-{
-	setBit(CONFIG, bit5);
-}
-void enableRTinterrupt()
-{
-	setBit(CONFIG, bit4);
+	resetBit(nrfStruct, CONFIG, bit4);
+	nrfStruct->setStruct.enableMaxRtIrq = 0;
 }
 
-void clearRX_DR()
+void enableRXinterrupt(nrfStruct_t *nrfStruct)
+{
+	setBit(nrfStruct, CONFIG, bit6);
+	nrfStruct->setStruct.enableRxIrq = 1;
+}
+void enableTXinterrupt(nrfStruct_t *nrfStruct)
+{
+	setBit(nrfStruct, CONFIG, bit5);
+	nrfStruct->setStruct.enableTxIrq = 1;
+}
+void enableRTinterrupt(nrfStruct_t *nrfStruct)
+{
+	setBit(nrfStruct, CONFIG, bit4);
+	nrfStruct->setStruct.enableMaxRtIrq = 1;
+}
+
+void clearRX_DR(nrfStruct_t *nrfStruct)
 { //clear irt bits in Status Register
-	setBit(STATUS, bit6);
+	setBit(nrfStruct, STATUS, bit6);
+	nrfStruct->statusStruct.dataReadIrq = 0;
 }
-void clearTX_DS()
+void clearTX_DS(nrfStruct_t *nrfStruct)
 {
-	setBit(STATUS, bit5);
+	setBit(nrfStruct, STATUS, bit5);
+	nrfStruct->statusStruct.dataSendIrq = 0;
 }
-void clearMAX_RT()
+void clearMAX_RT(nrfStruct_t *nrfStruct)
 {
-	setBit(STATUS, bit4);
+	setBit(nrfStruct, STATUS, bit4);
+	nrfStruct->statusStruct.maxRetr = 0;
 }
 
 /* CRC functions */
-void enableCRC()
+void enableCRC(nrfStruct_t *nrfStruct)
 {
-	setBit(CONFIG, bit3);
+	setBit(nrfStruct, CONFIG, bit3);
+	nrfStruct->setStruct.enableCRC = 1;
 }
-void setCRC(widthCRC_t w)
+
+void disableCRC(nrfStruct_t *nrfStruct) {
+	resetBit(nrfStruct, CONFIG, bit3);
+	nrfStruct->setStruct.enableCRC = 0;
+}
+
+void setCRC(nrfStruct_t *nrfStruct, widthCRC_t w)
 {
 	if (w)
 	{
-		setBit(CONFIG, bit2);
+		setBit(nrfStruct, CONFIG, bit2);
+		nrfStruct->setStruct.codingCRC = 1;
 	}
 	else
 	{
-		resetBit(CONFIG, bit2);
+		resetBit(nrfStruct, CONFIG, bit2);
+		nrfStruct->setStruct.codingCRC = 0;
 	}
 }
 
@@ -94,88 +150,96 @@ uint8_t checkPipe(uint8_t pipe)
 		return 1;
 	return 0;
 }
-uint8_t enableAutoAckPipe(uint8_t pipe)
+uint8_t enableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (checkPipe(pipe))
 	{
-		setBit(EN_AA, pipe);
+		setBit(nrfStruct, EN_AA, pipe);
+		nrfStruct->setStruct.pipeACK |= (1 << pipe);
 		return 1;
 	}
 	return 0;
 }
-uint8_t disableAutoAckPipe(uint8_t pipe)
+uint8_t disableAutoAckPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (checkPipe(pipe))
 	{
-		resetBit(EN_AA, pipe);
+		resetBit(nrfStruct, EN_AA, pipe);
+		nrfStruct->setStruct.pipeACK |= 0 << pipe;
 		return 1;
 	}
 	return 0;
 }
 
 /* RX addresses */
-uint8_t enableRxAddr(uint8_t pipe)
+uint8_t enableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (checkPipe(pipe))
 	{
-		setBit(EN_AA, pipe);
+		setBit(nrfStruct, EN_RXADDR, pipe);
+		nrfStruct->setStruct.pipeEn |= (1 << pipe);
 		return 1;
 	}
 	return 0;
 }
-uint8_t disableRxAddr(uint8_t pipe)
+uint8_t disableRxAddr(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (checkPipe(pipe))
 	{
-		resetBit(EN_AA, pipe);
+		resetBit(nrfStruct, EN_RXADDR, pipe);
+		nrfStruct->setStruct.pipeEn |= (0 << pipe);
 		return 1;
 	}
 	return 0;
 }
 
 /* Address Width */
-void setAddrWidth(addressWidth_t width)
+void setAddrWidth(nrfStruct_t *nrfStruct, addressWidth_t width)
 {
-	writeRegister(SETUP_AW, width);
+	writeReg(nrfStruct, SETUP_AW, width);
+	nrfStruct->addrStruct.addrWidth = width;
 }
 
 /* Setup retransmission */
-uint8_t setAutoRetrCount(uint8_t count)
+uint8_t setAutoRetrCount(nrfStruct_t *nrfStruct, uint8_t count)
 {
 	if (count >= 0x00 && count <= 0x0F)
-	{											//check count val
-		uint8_t tmp = readRegister(SETUP_RETR); //read reg. val
-		tmp = tmp & 0xF0;						// reset LSB and save MSB
-		tmp |= count;							//add tmp and count
-		writeRegister(SETUP_RETR, tmp);			//write to SETUP_RETR
+	{					//check count val
+		uint8_t tmp = readReg(nrfStruct, SETUP_RETR); 	//read reg. val
+		tmp = tmp & 0xF0;							// reset LSB and save MSB
+		tmp |= count;									//add tmp and count
+		writeReg(nrfStruct, SETUP_RETR, tmp);			//write to SETUP_RETR
+		nrfStruct->setStruct.arc = count;
 		return OK_CODE;
 	}
 	return ERR_CODE;
 }
 
-uint8_t setAutoRetrDelay(uint8_t delay)
+uint8_t setAutoRetrDelay(nrfStruct_t *nrfStruct, uint8_t delay)
 {
 	if (delay > 0x0F)
 	{						//if delay in MSB format
-		delay = delay >> 8; //shift to LSB format
+		delay = delay >> 4; //shift to LSB format
 	}
 	if (delay >= 0x00 && delay <= 0x0F)
 	{
-		uint8_t tmp = readRegister(SETUP_RETR);
+		uint8_t tmp = readReg(nrfStruct, SETUP_RETR);
 		tmp = tmp & 0x0F;	//save LSB, reset MSB
-		tmp |= (delay << 8); //add tmp and delay
-		writeRegister(SETUP_RETR, tmp);
+		tmp |= (delay << 4); //add tmp and delay
+		writeReg(nrfStruct, SETUP_RETR, tmp);
+		nrfStruct->setStruct.ard = delay;
 		return OK_CODE;
 	}
 	return ERR_CODE;
 }
 
 /* RF channel */
-uint8_t setChannel(uint8_t channel)
+uint8_t setChannel(nrfStruct_t *nrfStruct, uint8_t channel)
 {
 	if (channel >= 0 && channel <= 125)
 	{
-		writeRegister(RF_CH, channel); //Maximum channel limited to 125 by hardware
+		writeReg(nrfStruct, RF_CH, channel); //Maximum channel limited to 125 by hardware
+		nrfStruct->setStruct.channel = channel;
 		return OK_CODE;
 	}
 	return ERR_CODE;
@@ -185,90 +249,102 @@ uint8_t setChannel(uint8_t channel)
 /*
  * @Brief enableContCarrier and enableLockPLL should be use only to RF test
  */
-void enableContCarrier()
+void enableContCarrier(nrfStruct_t *nrfStruct)
 {
-	setBit(RF_SETUP, bit7);
+	setBit(nrfStruct, RF_SETUP, bit7);
 }
-void disableContCarrier()
+void disableContCarrier(nrfStruct_t *nrfStruct)
 {
-	resetBit(RF_SETUP, bit7);
+	resetBit(nrfStruct, RF_SETUP, bit7);
 }
-void enableLockPLL()
+void enableLockPLL(nrfStruct_t *nrfStruct)
 {
-	setBit(RF_SETUP, bit4);
+	setBit(nrfStruct, RF_SETUP, bit4);
 }
-void diableLockPLL()
+void diableLockPLL(nrfStruct_t *nrfStruct)
 {
-	resetBit(RF_SETUP, bit4);
+	resetBit(nrfStruct, RF_SETUP, bit4);
+}
+/* RPD - for test use only */
+uint8_t checkRPD(nrfStruct_t *nrfStruct) {
+	if (readReg(nrfStruct, RPD))
+		return 1;
+	else
+		return 0;
 }
 
-void setRFpower(powerRF_t power)
+
+void setRFpower(nrfStruct_t *nrfStruct, powerRF_t power)
 {
 	/*
 	if (power > RF_PWR_0dBm && power < RF_PWR_18dBm)
 	 return ERR_CODE;*/
-	uint8_t tmp = readRegister(RF_SETUP); //
+	uint8_t tmp = readReg(nrfStruct, RF_SETUP); //
 	tmp = tmp & 0xF8;					  //0xF8 - 1111 1000B reset 3 LSB
 	tmp = tmp | (power << 1);			  //combining tmp and shifted power
-	writeRegister(RF_SETUP, tmp);
-	/* return OK_CODE; */
+	writeReg(nrfStruct, RF_SETUP, tmp);
+	nrfStruct->setStruct.powerRF = power;
+
 }
 
-void setDataRate(dataRate_t rate)
+void setDataRate(nrfStruct_t *nrfStruct, dataRate_t rate)
 {
-	uint8_t tmp = readRegister(RF_SETUP); 	//
+	uint8_t tmp = readReg(nrfStruct, RF_SETUP); 	//
 	tmp = tmp & 0x06;//0x06 = 0000 0110B - reset data rate's bits - Also this line reset PLL_LOCK and CONT_WAVE bits
 	tmp = tmp | (rate << 3);			  //combining tmp and shifted data rate
-	writeRegister(RF_SETUP, tmp);
+	writeReg(nrfStruct, RF_SETUP, tmp);
+	nrfStruct->setStruct.dataRate = rate;
 }
 
 /* Status */
-/**
- * @Brief check fill of TX FIFO 
- * */
-uint8_t getStatusFullTxFIFO()
+uint8_t getStatusFullTxFIFO(nrfStruct_t *nrfStruct)
 {
-	if (readBit(STATUS, bit0))
-		return 0; //TX FIFO full
-	return 1;	 //Available locations in TX FIFO
+	if (readBit(nrfStruct, STATUS, bit0)) {
+		nrfStruct->statusStruct.txFull = 1;
+		return 1; //TX FIFO full
+	}
+	nrfStruct->statusStruct.txFull = 0;
+	return 0;	 //Available locations in TX FIFO
 }
 /**
  * @Brief	Check pipe number with data to read 
  * */
-uint8_t getPipeStatusRxFIFO()
+uint8_t getPipeStatusRxFIFO(nrfStruct_t *nrfStruct)
 { //Zmieniono na kody bledow
-	uint8_t tmp = readRegister(STATUS);
+	uint8_t tmp = readReg(nrfStruct, STATUS);
 	tmp &= 0x0E; //save only pipe number bits
 	tmp = tmp >> 1;
-	if (checkPipe(tmp))
+	if (checkPipe(tmp)) {
+		nrfStruct->statusStruct.pipeNumber = tmp;
 		return tmp;
-	if (tmp == 0x07) //RX FIFO empty
+	}
+	if (tmp == 0x07) { //RX FIFO empty
+		nrfStruct->statusStruct.pipeNumber = RX_FIFO_EMPTY;
 		return RX_FIFO_EMPTY;
-	if (tmp == 0x06)		   //110B - mean not used
+	}
+
+	if (tmp == 0x06) { //110B - mean not used
+		nrfStruct->statusStruct.pipeNumber = RX_FIFO_UNUSED;
 		return RX_FIFO_UNUSED; //return ERR
+	}
 	return ERR_CODE;
 }
 
 /* Transmit observe */
-uint8_t lostPacketsCount()
+uint8_t lostPacketsCount(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(OBSERVE_TX);
-	return (tmp >> 4);
+	uint8_t tmp = readReg(nrfStruct, OBSERVE_TX);
+	tmp = (tmp >> 4);
+	nrfStruct->statusStruct.packetsLost = tmp;
+	return tmp;
 }
 
-uint8_t retrPacketsCount()
+uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(OBSERVE_TX);
-	return (tmp & 0xF0);
-}
-
-/* RPD - for test use only */
-uint8_t checkRPD()
-{
-	if (readRegister(RPD))
-		return 1;
-	else
-		return 0;
+	uint8_t tmp = readReg(nrfStruct, OBSERVE_TX);
+	tmp = (tmp & 0xF0);
+	nrfStruct->statusStruct.packetsRetr = tmp;
+	return tmp;
 }
 
 /* Receive Address data pipe */
@@ -280,78 +356,136 @@ uint8_t checkRPD()
  * @Note	Remember that addresses registers for pipes from 2 to 5 are 1 byte only.
  * 			Also registers for pipe 0 and 1 can have size of from 3 to 5 bytes.
  */
-uint8_t setReceivePipeAddress(uint8_t pipe, uint8_t *addrBuf,
-							  size_t addrBufSize)
+uint8_t setReceivePipeAddress(nrfStruct_t *nrfStruct, uint8_t pipe,
+		uint8_t *addrBuf, size_t addrBufSize)
 {
-	if (!checkPipe(pipe))
-	{ //if checkPipe return 0 - end fun. by return 0.
+	if (!checkPipe(pipe)) { //if checkPipe return 0 - end fun. by return 0.
 		return ERR_CODE;
 	}
-	uint8_t addr = RX_ADDR_P0 + pipe; //if pipe = 0 -> write Receive address pipe 0
-	if (pipe >= 2 && pipe <= 5)
-	{
-		if (addrBufSize != 1)
-		{
+	size_t bufSize = 0x05;
+	if (pipe == 0 || pipe == 1) {	//if pipe 0 or 1 check bufer width
+		switch (addrBufSize) {	//check addrBufSize
+		case 3:
+			bufSize = 0x03;
+			break;
+		case 4:
+			bufSize = 0x04;
+			break;
+		case 5:
+			bufSize = 0x05;
+			break;
+		default:
 			return ERR_CODE;
+			break;
+		}
+		if (pipe == 0) {	//check pipe and write addr to struct
+			uint8_t i;
+			for (i = 0; i < addrBufSize; i++) {
+				nrfStruct->addrStruct.rxAddr0[i] = addrBuf[i];
+			}
+		}
+		if (pipe == 1) {
+			uint8_t i;
+			for (i = 0; i < addrBufSize; i++) {
+				nrfStruct->addrStruct.rxAddr1[i] = addrBuf[i];
+			}
+		}
+	} else {
+		if (addrBufSize == 1)
+			bufSize = 0x01;
+		switch (pipe) {	//check pipe and write addr to struct
+		case 2:
+			nrfStruct->addrStruct.rxAddr2 = *addrBuf;
+			break;
+		case 3:
+			nrfStruct->addrStruct.rxAddr3 = *addrBuf;
+			break;
+		case 4:
+			nrfStruct->addrStruct.rxAddr4 = *addrBuf;
+			break;
+		case 5:
+			nrfStruct->addrStruct.rxAddr5 = *addrBuf;
+			break;
+		default:
+			return ERR_CODE;
+			break;
 		}
 	}
-	multiWrite(addr, addrBuf, addrBufSize);
+	uint8_t addr = RX_ADDR_P0 + pipe; //if pipe = 0 -> write Receive address pipe 0
+	writeRegExt(nrfStruct, addr, addrBuf, bufSize);
+
 	return OK_CODE;
 }
 
 /* Transmit address data pipe */
-uint8_t setTransmitPipeAddress(uint8_t *addrBuf, size_t addrBufSize)
+uint8_t setTransmitPipeAddress(nrfStruct_t *nrfStruct, uint8_t *addrBuf,
+		size_t addrBufSize)
 {
-	if (addrBufSize != 5)
-	{
-		return ERR_CODE; //if addrBufSize isn't 5 bytes retun 0
+	if (((nrfStruct->addrStruct.addrWidth) + 2) != addrBufSize) {
+		return ERR_CODE;
 	}
-	multiWrite(TX_ADDR, addrBuf, addrBufSize);
+
+	uint8_t i;
+	for (i = 0; i < addrBufSize; i++) {	//write to struct
+		nrfStruct->addrStruct.txAddr[i] = addrBuf[i];
+	}
+	writeRegExt(nrfStruct, TX_ADDR, addrBuf, addrBufSize);
 	return OK_CODE;
 }
 
 /* RX Payload width */
-uint8_t getRxPayloadWidth(uint8_t pipe) {
+uint8_t getRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe) {
 	if (checkPipe(pipe))
 	{
 		uint8_t addr = RX_PW_P0 + pipe;
-		return readRegister(addr);
+		uint8_t tmp = readReg(nrfStruct, addr);
+		nrfStruct->setStruct.pipePayLen[pipe] = tmp;
+		return tmp;
 	}
-  return ERR_CODE;
+	return ERR_CODE;
 }
 
-uint8_t setRxPayload(uint8_t pipe, uint8_t width)
+uint8_t setRxPayloadWidth(nrfStruct_t *nrfStruct, uint8_t pipe, uint8_t width)
 {
 	if (checkPipe(pipe))
 	{
-		if (width < 1 && width > 32)
-		{ //check width correct value
-	  return ERR_CODE;
+		if (width < 1 && width > 32) { //check width correct value
+			return ERR_CODE;
 		}
-      uint8_t addr = RX_PW_P0 + pipe;
-		writeRegister(addr, width);
-		return 1;
+		uint8_t addr = RX_PW_P0 + pipe;
+		writeReg(nrfStruct, addr, width);
+		nrfStruct->setStruct.pipePayLen[pipe] = width;
+		return OK_CODE;
 	}
-  return ERR_CODE;
+	return ERR_CODE;
 }
 
 /* FIFO status */
 /**
  * @Brief	Return status of RX FIFO buffer by check bits in FIFO Status Register 
  * */
-uint8_t getRxStatusFIFO()
+uint8_t getRxStatusFIFO(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(FIFO_STATUS);
+	uint8_t tmp = readReg(nrfStruct, FIFO_STATUS);
 	if ((tmp & 0x03) == RX_FIFO_MASK_EMPTY)
 	{
+		nrfStruct->fifoStruct.rxEmpty = 1;
+		nrfStruct->fifoStruct.rxFull = 0;
+		nrfStruct->fifoStruct.rxRead = 0;
 		return RX_FIFO_MASK_EMPTY; //RX FIFO register buffer is empty
 	}
 	if ((tmp & 0x03) == RX_FIFO_MASK_FULL)
 	{
+		nrfStruct->fifoStruct.rxEmpty = 0;
+		nrfStruct->fifoStruct.rxFull = 1;
+		nrfStruct->fifoStruct.rxRead = 1;
 		return RX_FIFO_MASK_FULL; ////RX FIFO register buffer is full
 	}
 	if ((tmp & 0x03) == RX_FIFO_MASK_DATA)
 	{
+		nrfStruct->fifoStruct.rxEmpty = 0;
+		nrfStruct->fifoStruct.rxFull = 0;
+		nrfStruct->fifoStruct.rxRead = 1;
 		return RX_FIFO_MASK_DATA; //RX FIFO register buffer has some data but isn't full
 	}
 	return ERR_CODE;
@@ -359,9 +493,9 @@ uint8_t getRxStatusFIFO()
 /**
  * @Brief	Return status of TX FIFO buffer by check bits in FIFO Status Register 
  * */
-uint8_t getTxStatusFIFO()
+uint8_t getTxStatusFIFO(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readRegister(FIFO_STATUS);
+	uint8_t tmp = readReg(nrfStruct, FIFO_STATUS);
 	tmp = tmp >> 4;
 	if ((tmp & 0x03) == TX_FIFO_MASK_EMPTY)
 	{
@@ -382,9 +516,10 @@ uint8_t getTxStatusFIFO()
  * @Retval	TX_REUSE_USED mean that nRF24 module reuse to send again same package
  * 			TX_REUSE_UNUSED mena that nRF24 module doeasn't reuse to send again same package
  **/
-uint8_t getTxReuse()
+uint8_t getTxReuse(nrfStruct_t *nrfStruct)
 {
-	uint8_t tmp = readBit(FIFO_STATUS, TX_REUSE);
+	uint8_t tmp = readBit(nrfStruct, FIFO_STATUS, TX_REUSE);
+	nrfStruct->fifoStruct.txReUse = tmp;
 	if (tmp == 0x01)
 	{
 		return TX_REUSE_USED;
@@ -393,48 +528,55 @@ uint8_t getTxReuse()
 }
 
 /* Dynamic Payload Lenggth */
-uint8_t enableDynamicPayloadLengthPipe(uint8_t pipe)
+uint8_t enableDynamicPayloadLengthPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (!checkPipe(pipe))
 	{
 		return ERR_CODE;
 	}
-	setBit(DYNPD, pipe);
+	setBit(nrfStruct, DYNPD, pipe);
+	nrfStruct->setStruct.pipeDPL |= (1 << pipe);
 	return OK_CODE;
 }
 
-uint8_t disableDynamicPayloadLengthPipe(uint8_t pipe)
+uint8_t disableDynamicPayloadLengthPipe(nrfStruct_t *nrfStruct, uint8_t pipe)
 {
 	if (!checkPipe(pipe))
 	{
 		return ERR_CODE;
 	}
-	resetBit(DYNPD, pipe);
+	resetBit(nrfStruct, DYNPD, pipe);
+	nrfStruct->setStruct.pipeDPL |= (0 << pipe);
 	return OK_CODE;
 }
 /* Feature */
-void enableDynamicPayloadLength()
+void enableDynamicPayloadLength(nrfStruct_t *nrfStruct)
 {
-	setBit(FEATURE, EN_DPL);
+	setBit(nrfStruct, FEATURE, EN_DPL);
+	nrfStruct->setStruct.enableDPL = 1;
 }
-void disableDynamicPayloadLength()
+void disableDynamicPayloadLength(nrfStruct_t *nrfStruct)
 {
-	resetBit(FEATURE, EN_DPL);
+	resetBit(nrfStruct, FEATURE, EN_DPL);
+	nrfStruct->setStruct.enableDPL = 0;
 }
 
-void enableAckPayload()
+void enableAckPayload(nrfStruct_t *nrfStruct)
 {
-	setBit(FEATURE, EN_ACK_PAY);
+	setBit(nrfStruct, FEATURE, EN_ACK_PAY);
+	nrfStruct->setStruct.enableAckPay = 1;
+
 }
-void disableAckPayload()
+void disableAckPayload(nrfStruct_t *nrfStruct)
 {
-  resetBit (FEATURE, EN_ACK_PAY);
+	resetBit(nrfStruct, FEATURE, EN_ACK_PAY);
+	nrfStruct->setStruct.enableAckPay = 0;
 }
 
 /**
  * @Brief	Enable W_TX_PAYLOAD_NOACK command 
  * */
-void enableDynamicAck()
+void enableNoAckCommand(nrfStruct_t *nrfStruct)
 {
-	setBit(FEATURE, EN_DYN_ACK);
+	setBit(nrfStruct, FEATURE, EN_DYN_ACK);
 }

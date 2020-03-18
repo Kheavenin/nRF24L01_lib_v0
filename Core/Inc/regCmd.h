@@ -48,7 +48,6 @@
 /**
  * Deafult values of registers
  **/
-
 #define DF_CONFIG 0x08
 #define DF_EN_AA 0x3F //DEX - 63
 #define DF_RXADDR 0x03
@@ -60,14 +59,28 @@
 #define DF_OBSERVE_TX 0x00 //read only
 #define DF_RPD 0x00		   //read only
 
-#define DF_RX_ADDR_P0 0xE7E7E7E7E7
-#define DF_RX_ADDR_P1 0xC2C2C2C2C2
+#define DF_RX_ADDR_P0_0 0xE7
+#define DF_RX_ADDR_P0_1 0xE7
+#define DF_RX_ADDR_P0_2 0xE7
+#define DF_RX_ADDR_P0_3 0xE7
+#define DF_RX_ADDR_P0_4 0xE7
+
+#define DF_RX_ADDR_P1_0 0xC2
+#define DF_RX_ADDR_P1_1 0xC2
+#define DF_RX_ADDR_P1_2 0xC2
+#define DF_RX_ADDR_P1_3 0xC2
+#define DF_RX_ADDR_P1_4 0xC2
+
 #define DF_RX_ADDR_P2 0xC3
 #define DF_RX_ADDR_P3 0xC4
 #define DF_RX_ADDR_P4 0xC5
 #define DF_RX_ADDR_P5 0xC6
 
-#define DF_TX_ADDR 0xE7E7E7E7E7
+#define DF_TX_ADDR_0 0xE7
+#define DF_TX_ADDR_1 0xE7
+#define DF_TX_ADDR_2 0xE7
+#define DF_TX_ADDR_3 0xE7
+#define DF_TX_ADDR_4 0xE7
 
 #define DF_RX_PW_P0 0x00
 #define DF_RX_PW_P1 0x00
@@ -80,18 +93,7 @@
 #define DF_DYNPD 0x00
 #define DF_FEATURE 0x00
 
-/* Bit definitions */
-typedef enum
-{
-	bit7 = 7,
-	bit6 = 6,
-	bit5 = 5,
-	bit4 = 4,
-	bit3 = 3,
-	bit2 = 2,
-	bit1 = 1,
-	bit0 = 0
-} bitNum_t;
+
 
 /* Config register */
 #define MASK_RX_DR bit6
@@ -100,7 +102,7 @@ typedef enum
 #define EN_CRC bit3
 #define CRCO bit2
 #define PWR_UP bit1
-#define NPRIM_RX bit0
+#define PRIM_RX bit0
 
 /* RF setup register */
 #define CONT_WAVE bit7
@@ -154,6 +156,18 @@ typedef enum
 #define W_TX_PAYLOAD_NO_ACK 0xB0
 #define NOP 0xFF
 
+/* Bit definitions */
+typedef enum {
+	bit7 = 7,
+	bit6 = 6,
+	bit5 = 5,
+	bit4 = 4,
+	bit3 = 3,
+	bit2 = 2,
+	bit1 = 1,
+	bit0 = 0
+} bitNum_t;
+
 /* power enum typedef */
 typedef enum
 {
@@ -171,6 +185,7 @@ typedef enum
 	RF_DataRate_2M = 0x01
 } dataRate_t;
 
+/* CRC coding */
 typedef enum
 {
 	CRC_8_bits = 0,
@@ -186,7 +201,7 @@ typedef enum
 } addressWidth_t;
 
 /*
- * Funtions return codes
+ * Functions return codes
  */
 #define OK_CODE 0x01
 #define ERR_CODE 0xFF
@@ -204,3 +219,5 @@ typedef enum
 
 #define TX_REUSE_UNUSED 0x00
 #define TX_REUSE_USED 0x01
+
+#define SPI_TIMEOUT 10
