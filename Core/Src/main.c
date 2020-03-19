@@ -62,6 +62,10 @@
 uint32_t testCounter = 0;
 uint32_t regTmp = 0;
 
+static uint8_t rxPayloadWidthPipe0 = 0;
+uint8_t rxFifoStatus = 0;
+uint8_t txFifoStatus = 0;
+
 uint8_t TransmitAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
 uint8_t ReceiveAddress[TAB_SIZE] = { 'C', 'D', 'C', 'D', 'C' };
 
@@ -71,8 +75,7 @@ uint8_t TransmitData[BUF_SIZE];
 uint8_t readBuf[TAB_SIZE];
 uint8_t writeBuf[TAB_SIZE] = { 'A', 'B', 'C', 'D', 'E' };
 
-uint8_t *pWriteBuf = writeBuf;
-uint8_t *pReadBuf = readBuf;
+
 
 uint8_t testTab[29];
 /* USER CODE END PV */
@@ -97,7 +100,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	uint8_t j;
 	for (j = 0; j < BUF_SIZE; j++) {
-		TransmitData[j] = ('A' + 1);
+		TransmitData[j] = ('A' + j);
 	}
   /* USER CODE END 1 */
   
@@ -177,20 +180,21 @@ int main(void)
 	enableAckPayload(testStruct);
 	writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));
 #endif
-
 #endif
 
 	while (1) {
 #if TEST_RECEIVE
-		if (checkReceivedPayload(testStruct)) {
-			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
-			flushTx(testStruct);
-			writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));
+		if (1/*checkReceivedPayload(testStruct) */) {
+			rxPayloadWidthPipe0 = readDynamicPayloadWidth(testStruct);
+			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));//Read received data
+			rxFifoStatus = getRxStatusFIFO(testStruct);
+			txFifoStatus = getTxStatusFIFO(testStruct);
+			flushTx(testStruct);								//Clear TX FIFO
+			txFifoStatus = getTxStatusFIFO(testStruct);
+			writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));//Write new ACK payload
+			txFifoStatus = getTxStatusFIFO(testStruct);
 		}
-
 #endif
-
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
