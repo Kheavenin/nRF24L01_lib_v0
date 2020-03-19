@@ -246,8 +246,9 @@ uint8_t readDynamicPayloadWidth(nrfStruct_t *nrfStruct) {
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), pWidth, sizeof(width), SPI_TIMEOUT);//read payload
+
 	csnHigh(nrfStruct);
-	return OK_CODE;
+	return width;
 }
 
 uint8_t writeTxPayloadAck(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {

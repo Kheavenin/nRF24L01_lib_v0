@@ -44,8 +44,10 @@
 #define TEST_DYNAMIC_LENGTH 1
 #define	TESTS_ACK_PAYLOAD 1
 
-#define TAB_SIZE 5
+#define TEST_RECEIVE 1
 
+#define TAB_SIZE 5
+#define BUF_SIZE 32
 
 /* USER CODE END PD */
 
@@ -63,8 +65,8 @@ uint32_t regTmp = 0;
 uint8_t TransmitAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
 uint8_t ReceiveAddress[TAB_SIZE] = { 'C', 'D', 'C', 'D', 'C' };
 
-uint8_t *pTxAddr = TransmitAddress;
-uint8_t *pRxAddr = ReceiveAddress;
+uint8_t ReceiveData[BUF_SIZE];
+uint8_t TransmitData[BUF_SIZE];
 
 uint8_t readBuf[TAB_SIZE];
 uint8_t writeBuf[TAB_SIZE] = { 'A', 'B', 'C', 'D', 'E' };
@@ -93,7 +95,10 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	uint8_t j;
+	for (j = 0; j < BUF_SIZE; j++) {
+		TransmitData[j] = ('A' + 1);
+	}
   /* USER CODE END 1 */
   
 
@@ -131,14 +136,6 @@ int main(void)
 	testStruct = nRF_Init(&hspi1, &htim1, CSN_GPIO_Port, CSN_Pin, CE_GPIO_Port,
 	CE_Pin);	// create struct
 	regTmp = readReg(testStruct, CONFIG); 		// read value of CONFIG register
-
-	/* Check registers */
-	uint8_t var;
-	for (var = 0; var < 29; var++) {
-		regTmp = readReg(testStruct, var);
-		if (var >= 0x0A || var <= 0x10)
-			readRegExt(testStruct, var, readBuf, sizeof(readBuf));
-	}
 
 	/* 1.1  Set role as RX */
 	modeRX(testStruct);
@@ -178,22 +175,17 @@ int main(void)
 #endif
 #if TESTS_ACK_PAYLOAD
 	enableAckPayload(testStruct);
+	writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));
 #endif
-
-	/** Seconde check registers */
-	for (var = 0; var < 30; var++) {
-		regTmp = readReg(testStruct, var);
-		if (var >= 0x0A || var <= 0x10)
-			readRegExt(testStruct, var, readBuf, sizeof(readBuf));
-	}
 
 #endif
 
 	while (1) {
-#if 1
-		uint16_t i;
-		for (i = 0; i < 29; i++) {
-			regTmp = readReg(testStruct, i);
+#if TEST_RECEIVE
+		if (checkReceivedPayload(testStruct)) {
+			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
+			flushTx(testStruct);
+			writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));
 		}
 
 #endif
