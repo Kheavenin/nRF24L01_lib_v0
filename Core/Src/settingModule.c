@@ -499,14 +499,23 @@ uint8_t getTxStatusFIFO(nrfStruct_t *nrfStruct)
 	tmp = tmp >> 4;
 	if ((tmp & 0x03) == TX_FIFO_MASK_EMPTY)
 	{
+		nrfStruct->fifoStruct.txEmpty = 1;
+		nrfStruct->fifoStruct.txFull = 0;
+		nrfStruct->fifoStruct.txSend = 0;
 		return TX_FIFO_MASK_EMPTY;
 	}
 	if ((tmp & 0x03) == TX_FIFO_MASK_FULL)
 	{
+		nrfStruct->fifoStruct.txEmpty = 0;
+		nrfStruct->fifoStruct.txFull = 1;
+		nrfStruct->fifoStruct.txSend = 1;
 		return TX_FIFO_MASK_FULL;
 	}
 	if ((tmp & 0x03) == TX_FIFO_MASK_DATA)
 	{
+		nrfStruct->fifoStruct.txEmpty = 0;
+		nrfStruct->fifoStruct.txFull = 0;
+		nrfStruct->fifoStruct.txSend = 1;
 		return TX_FIFO_MASK_DATA;
 	}
 	return ERR_CODE;

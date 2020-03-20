@@ -75,8 +75,6 @@ uint8_t TransmitData[BUF_SIZE];
 uint8_t readBuf[TAB_SIZE];
 uint8_t writeBuf[TAB_SIZE] = { 'A', 'B', 'C', 'D', 'E' };
 
-
-
 uint8_t testTab[29];
 /* USER CODE END PV */
 
