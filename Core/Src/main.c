@@ -182,10 +182,11 @@ int main(void)
 
 	while (1) {
 		rxFifoStatus = getRxStatusFIFO(testStruct);
+		HAL_Delay(5);
 		if (checkReceivedPayload(testStruct)) {
 			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
 			rxFifoStatus = getRxStatusFIFO(testStruct);
-			HAL_Delay(1);
+			HAL_Delay(5);
 		}
 #if TEST_RECEIVE
 		rxFifoStatus = getRxStatusFIFO(testStruct);

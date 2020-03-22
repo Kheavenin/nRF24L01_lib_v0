@@ -297,13 +297,13 @@ uint8_t flushTx(nrfStruct_t *nrfStruct) {
 	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
-	delayUs(nrfStruct, 10);
+	csnHigh(nrfStruct);
+
 	if (!readBit(nrfStruct, FIFO_STATUS, bit4)) {	//check FIFO status
-		csnHigh(nrfStruct);
 		nrfStruct->fifoStruct.txEmpty = 0;
 		return ERR_CODE;
 	}
-	csnHigh(nrfStruct);
+
 	nrfStruct->fifoStruct.txEmpty = 1;
 	return OK_CODE;
 }
@@ -314,13 +314,13 @@ uint8_t flushRx(nrfStruct_t *nrfStruct) {
 	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
-	delayUs(nrfStruct, 10);
+	csnHigh(nrfStruct);
+
 	if (!readBit(nrfStruct, FIFO_STATUS, bit0)) {	//check FIFO status
-		csnHigh(nrfStruct);
 		nrfStruct->fifoStruct.rxEmpty = 0;
 		return ERR_CODE;
 	}
-	csnHigh(nrfStruct);
+
 	nrfStruct->fifoStruct.rxEmpty = 1;
 	return OK_CODE;
 }
