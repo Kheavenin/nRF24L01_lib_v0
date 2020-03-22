@@ -44,7 +44,7 @@
 #define TEST_DYNAMIC_LENGTH 1
 #define	TESTS_ACK_PAYLOAD 1
 
-#define TEST_RECEIVE 1
+#define TEST_RECEIVE 0
 
 #define TAB_SIZE 5
 #define BUF_SIZE 32
@@ -67,7 +67,7 @@ uint8_t rxFifoStatus = 0;
 uint8_t txFifoStatus = 0;
 
 uint8_t TransmitAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
-uint8_t ReceiveAddress[TAB_SIZE] = { 'C', 'D', 'C', 'D', 'C' };
+uint8_t ReceiveAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
 
 uint8_t ReceiveData[BUF_SIZE];
 uint8_t TransmitData[BUF_SIZE];
@@ -154,12 +154,12 @@ int main(void)
 	/* 4. Set RX/TX address width */
 	setAddrWidth(testStruct, longWidth);
 	/* 5. Set ARD and ARC */
-	setAutoRetrCount(testStruct, 3);
-	setAutoRetrDelay(testStruct, 1); //500us
+	setAutoRetrCount(testStruct, 4);
+	setAutoRetrDelay(testStruct, 3); //500us
 	/* 6. Set RF channel */
-	setChannel(testStruct, 64);
+	setChannel(testStruct, 2);
 	/* 7. Set RF power and Data Rate */
-	setRFpower(testStruct, RF_PWR_0dBm);
+	setRFpower(testStruct, RF_PWR_6dBm);
 	setDataRate(testStruct, RF_DataRate_250);
 	/* 8 Set RX address */
 	setReceivePipeAddress(testStruct, 0, ReceiveAddress,
@@ -181,8 +181,16 @@ int main(void)
 #endif
 
 	while (1) {
+		rxFifoStatus = getRxStatusFIFO(testStruct);
+		if (checkReceivedPayload(testStruct)) {
+			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
+			rxFifoStatus = getRxStatusFIFO(testStruct);
+			HAL_Delay(1);
+		}
 #if TEST_RECEIVE
-		if (1/*checkReceivedPayload(testStruct) */) {
+		rxFifoStatus = getRxStatusFIFO(testStruct);
+		txFifoStatus = getTxStatusFIFO(testStruct);
+		if (checkReceivedPayload(testStruct)) {
 			rxPayloadWidthPipe0 = readDynamicPayloadWidth(testStruct);
 			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));//Read received data
 			rxFifoStatus = getRxStatusFIFO(testStruct);

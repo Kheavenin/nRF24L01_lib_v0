@@ -374,13 +374,13 @@ uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 
 void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readReg(nrfStruct, addr);
-	tmp &= 0 << bit;		//zmieniono OR na AND
+	tmp &= ~(1 << bit);		//zmieniono OR na AND
 	writeReg(nrfStruct, addr, tmp);
 }
 
 void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readReg(nrfStruct, addr);
-	tmp |= 1 << bit;
+	tmp |= (1 << bit);
 	writeReg(nrfStruct, addr, tmp);
 }
 

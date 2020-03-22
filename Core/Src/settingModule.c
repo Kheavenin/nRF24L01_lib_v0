@@ -1,6 +1,8 @@
 #include "settingModule.h"
 #include "highLevelModule.h"
 
+extern uint8_t regTmp;
+
 uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct) {
 	if (getPipeStatusRxFIFO(nrfStruct) == RX_FIFO_MASK_DATA)
 		return 1;
@@ -13,6 +15,7 @@ uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct) {
  * @Retval	None
  */
 void modeRX(nrfStruct_t *nrfStruct) {
+	regTmp = readReg(nrfStruct, CONFIG);
 	if (!readBit(nrfStruct, CONFIG, bit1)) {	//Check state of module
 		pwrUp(nrfStruct);
 		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
@@ -24,14 +27,15 @@ void modeRX(nrfStruct_t *nrfStruct) {
 			uint8_t tmp = 1;	//variable for test
 		}
 	}
-
+	regTmp = readReg(nrfStruct, CONFIG);
 	clearRX_DR(nrfStruct);	//clear interrupts flags
 	clearTX_DS(nrfStruct);
 	clearMAX_RT(nrfStruct);
-
+	regTmp = readReg(nrfStruct, CONFIG);
 	//nRF in Standby-I
 	ceHigh(nrfStruct); //set high on CE line
 	setBit(nrfStruct, CONFIG, bit0);
+	regTmp = readReg(nrfStruct, CONFIG);
 }
 
 /**
