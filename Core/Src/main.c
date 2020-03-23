@@ -24,18 +24,14 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//#include "controleModule.h"
-//#include "settingModule.h"
-//#include "nRF24L01_test-lib.h"
+#include <string.h>
 #include "settingModule.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-//void DelayUs(uint16_t time);
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -60,7 +56,7 @@
 
 /* USER CODE BEGIN PV */
 uint32_t testCounter = 0;
-uint32_t regTmp = 0;
+uint8_t regTmp = 0;
 
 static uint8_t rxPayloadWidthPipe0 = 0;
 uint8_t rxFifoStatus = 0;
@@ -131,11 +127,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 #if  TEST_CONFIG
 	/* 0. Create pointer and init structure. */
+	sendString("nRF24L01+ struct init\r\n", &huart2);
 	nrfStruct_t *testStruct;						// create pointer to struct
 	testStruct = nRF_Init(&hspi1, &htim1, CSN_GPIO_Port, CSN_Pin, CE_GPIO_Port,
 	CE_Pin);	// create struct
 	regTmp = readReg(testStruct, CONFIG); 		// read value of CONFIG register
-
+	sendString("nRF24L01+ struct init done\n Start init config\r\n", &huart2);
 	/* 1.1  Set role as RX */
 	modeRX(testStruct);
 	regTmp = readReg(testStruct, CONFIG);
@@ -178,6 +175,7 @@ int main(void)
 #if TEST_STATIC_LENGTH
 	setRxPayloadWidth(testStruct, 0, BUF_SIZE);
 	regTmp = readReg(testStruct, RX_PW_P0);
+	sendString("nRF24L01+ init done\r\n", &huart2);
 #endif
 #if TEST_DYNAMIC_LENGTH
 	enableDynamicPayloadLength(testStruct);
@@ -192,14 +190,30 @@ int main(void)
 	while (1) {
 		if (checkRPD(testStruct)) {
 			regTmp = checkRPD(testStruct);
+			sendString("RPD register value: ", &huart2);
+			HAL_UART_Transmit(&huart2, &regTmp, sizeof(regTmp), 1000);
+			sendString("\r\n", &huart2);
+
+			rxFifoStatus = getRxStatusFIFO(testStruct);
+			sendString("RX FIFO status: ", &huart2);
+			HAL_UART_Transmit(&huart2, &rxFifoStatus, sizeof(rxFifoStatus),
+					1000);
+			sendString("\r\n", &huart2);
 		}
-		rxFifoStatus = getRxStatusFIFO(testStruct);
-		HAL_Delay(5);
 		if (checkReceivedPayload(testStruct)) {
 			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
+			sendString("RX FIFO payload: ", &huart2);
+			HAL_UART_Transmit(&huart2, ReceiveData, sizeof(ReceiveData),
+					1000);
+			sendString("\n", &huart2);
+
 			rxFifoStatus = getRxStatusFIFO(testStruct);
-			HAL_Delay(5);
+			sendString("RX FIFO status after receive: ", &huart2);
+			HAL_UART_Transmit(&huart2, &rxFifoStatus, sizeof(rxFifoStatus),
+					1000);
+			sendString("\r\n", &huart2);
 		}
+		
 #if TEST_RECEIVE
 		rxFifoStatus = getRxStatusFIFO(testStruct);
 		txFifoStatus = getTxStatusFIFO(testStruct);
