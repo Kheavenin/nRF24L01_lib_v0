@@ -72,17 +72,18 @@ uint8_t ReceiveAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
 uint8_t ReceiveData[BUF_SIZE];
 uint8_t TransmitData[BUF_SIZE];
 
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void sendString(char *str, UART_HandleTypeDef *husart);
 /* USER CODE END 0 */
 
 /**
@@ -259,7 +260,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void sendString(char *str, UART_HandleTypeDef *husart) {
+	HAL_UART_Transmit(husart, (uint8_t*) str, strlen(str),
+			1000);
+}
 
 
 
