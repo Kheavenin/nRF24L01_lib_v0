@@ -42,7 +42,7 @@
 #define TEST_DYNAMIC_LENGTH 0
 #define	TESTS_ACK_PAYLOAD 1
 
-#define TEST_RECEIVE 0
+#define TEST_RECEIVE 1
 
 #define TAB_SIZE 5
 #define BUF_SIZE 10
@@ -196,34 +196,32 @@ int main(void)
 					&huart2);
 		}
 		if (checkReceivedPayload(testStruct, 0) == 1) {
-			rxFifoStatus = getRxStatusFIFO(testStruct);
-			sendString("RX FIFO status BEFORE read: ", &huart2);
-			tmp = rxFifoStatus + 48;
-			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
-			sendString("		\r\n", &huart2);
 
-
-			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
-			sendString("RX FIFO payload: ", &huart2);
-			HAL_UART_Transmit(&huart2, ReceiveData, 10,
-					1000);
-			sendString("		\r\n", &huart2);
-
-			rxFifoStatus = getRxStatusFIFO(testStruct);
-			sendString("RX FIFO status AFTER read: ", &huart2);
-			tmp = rxFifoStatus + 48;
-			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
-			sendString("		\r\n", &huart2);
-			clearRX_DR(testStruct);
 		}
 #if TEST_RECEIVE
 		rxFifoStatus = getRxStatusFIFO(testStruct);
 		txFifoStatus = getTxStatusFIFO(testStruct);
-		if (checkReceivedPayload(testStruct)) {
-			rxPayloadWidthPipe0 = readDynamicPayloadWidth(testStruct);
-			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));//Read received data
+		if (checkReceivedPayload(testStruct, 0) == 1) {
+			/* Check fifo status */
 			rxFifoStatus = getRxStatusFIFO(testStruct);
-			txFifoStatus = getTxStatusFIFO(testStruct);
+			sendString("RX FIFO status BEFORE read: ", &huart2);
+			tmp = rxFifoStatus + 48;
+			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
+			sendString(" \r\n", &huart2);
+			/* read payload */
+			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
+			sendString("RX FIFO payload: ", &huart2);
+			HAL_UART_Transmit(&huart2, ReceiveData, 10,
+					1000);
+			sendString(" \r\n", &huart2);
+			/* Check fifo status */
+			rxFifoStatus = getRxStatusFIFO(testStruct);
+			sendString("RX FIFO status AFTER read: ", &huart2);
+			tmp = rxFifoStatus + 48;
+			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
+			sendString(" \r\n", &huart2);
+			clearRX_DR(testStruct);
+			/* Write new payload */
 			flushTx(testStruct);								//Clear TX FIFO
 			txFifoStatus = getTxStatusFIFO(testStruct);
 			writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));//Write new ACK payload
