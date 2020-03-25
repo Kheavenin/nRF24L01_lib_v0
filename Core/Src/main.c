@@ -40,7 +40,7 @@
 #define TEST_CONFIG 1
 #define TEST_STATIC_LENGTH 1
 #define TEST_DYNAMIC_LENGTH 0
-#define	TESTS_ACK_PAYLOAD 0
+#define	TESTS_ACK_PAYLOAD 1
 
 #define TEST_RECEIVE 0
 
@@ -189,7 +189,7 @@ int main(void)
 #endif
 
 	while (1) {
-		HAL_Delay(0);
+		HAL_Delay(1000);
 		if (getRX_DR(testStruct)) {
 			sendString(
 					"\r\n\r\nRX_DS read as HIGH.  \r\nPayload to read.  \r\n",
