@@ -171,10 +171,12 @@ int main(void)
 	setTransmitPipeAddress(testStruct, TransmitAddress,
 			sizeof(TransmitAddress));
 	readRegExt(testStruct, TX_ADDR, ReceiveData, 5);
+	regTmp = readReg(testStruct, CONFIG);
 #if TEST_STATIC_LENGTH
 	setRxPayloadWidth(testStruct, 0, BUF_SIZE);
 	regTmp = readReg(testStruct, RX_PW_P0);
 	sendString("nRF24L01+ init done\r\n", &huart2);
+	regTmp = readReg(testStruct, CONFIG);
 #endif
 #if TEST_DYNAMIC_LENGTH
 	enableDynamicPayloadLength(testStruct);
