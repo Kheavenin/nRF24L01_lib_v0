@@ -16,12 +16,11 @@ uint8_t sendPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
 }
 
 uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct, uint8_t pipe) {
-	if (getRX_DR(nrfStruct)) {
-		if (getPipeStatusRxFIFO(nrfStruct) == pipe) {
+	if (getPipeStatusRxFIFO(nrfStruct) == pipe) {
+		if (getRX_DR(nrfStruct)) {
 			clearRX_DR(nrfStruct);
-			return 1;
 		}
-		clearRX_DR(nrfStruct);
+		return 1;
 	}
 	return 0;
 }
@@ -128,11 +127,13 @@ void clearMAX_RT(nrfStruct_t *nrfStruct)
 }
 
 uint8_t getRX_DR(nrfStruct_t *nrfStruct) {
-	return readBit(nrfStruct, STATUS, bit6);
+	nrfStruct->statusStruct.dataReadIrq = readBit(nrfStruct, STATUS, bit6);
+	return (nrfStruct->statusStruct.dataReadIrq);
 }
 
 uint8_t getTX_DS(nrfStruct_t *nrfStruct) {
-	return readBit(nrfStruct, STATUS, bit5);
+	nrfStruct->statusStruct.dataSendIrq = readBit(nrfStruct, STATUS, bit5);
+	return (nrfStruct->statusStruct.dataSendIrq);
 }
 
 /* CRC functions */

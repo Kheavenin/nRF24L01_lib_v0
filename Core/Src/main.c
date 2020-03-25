@@ -189,31 +189,32 @@ int main(void)
 #endif
 
 	while (1) {
-		HAL_Delay(1);
-
-		if (readBit(testStruct, STATUS, RX_DR))
-			sendString("\r\n\r\nRX_DS read as HIGH. \r\nPayload to read.\r\n",
+		HAL_Delay(500);
+		regTmp = readReg(testStruct, STATUS);
+		if (getRX_DR(testStruct)) {
+			sendString(
+					"\r\n\r\nRX_DS read as HIGH.		\r\nPayload to read.		\r\n",
 					&huart2);
-
+		}
 		if (checkReceivedPayload(testStruct, 0) == 1) {
 			rxFifoStatus = getRxStatusFIFO(testStruct);
-			sendString("RX FIFO status before read: ", &huart2);
+			sendString("RX FIFO status BEFORE read: ", &huart2);
 			tmp = rxFifoStatus + 48;
 			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
-			sendString("\r\n", &huart2);
+			sendString("		\r\n", &huart2);
 
 
 			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
 			sendString("RX FIFO payload: ", &huart2);
 			HAL_UART_Transmit(&huart2, ReceiveData, 10,
 					1000);
-			sendString("   \r\n", &huart2);
+			sendString("		\r\n", &huart2);
 
 			rxFifoStatus = getRxStatusFIFO(testStruct);
-			sendString("RX FIFO status after read: ", &huart2);
+			sendString("RX FIFO status AFTER read: ", &huart2);
 			tmp = rxFifoStatus + 48;
 			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
-			sendString("\r\n", &huart2);
+			sendString("		\r\n", &huart2);
 		}
 		
 #if TEST_RECEIVE
