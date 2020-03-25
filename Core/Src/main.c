@@ -189,11 +189,10 @@ int main(void)
 #endif
 
 	while (1) {
-		HAL_Delay(500);
-		regTmp = readReg(testStruct, STATUS);
+		HAL_Delay(0);
 		if (getRX_DR(testStruct)) {
 			sendString(
-					"\r\n\r\nRX_DS read as HIGH.		\r\nPayload to read.		\r\n",
+					"\r\n\r\nRX_DS read as HIGH.  \r\nPayload to read.  \r\n",
 					&huart2);
 		}
 		if (checkReceivedPayload(testStruct, 0) == 1) {
@@ -215,8 +214,8 @@ int main(void)
 			tmp = rxFifoStatus + 48;
 			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
 			sendString("		\r\n", &huart2);
+			clearRX_DR(testStruct);
 		}
-		
 #if TEST_RECEIVE
 		rxFifoStatus = getRxStatusFIFO(testStruct);
 		txFifoStatus = getTxStatusFIFO(testStruct);
