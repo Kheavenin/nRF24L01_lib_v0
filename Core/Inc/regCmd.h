@@ -221,3 +221,4 @@ typedef enum
 #define TX_REUSE_USED 0x01
 
 #define SPI_TIMEOUT 10
+#define RX_TX_SETTING_TIME 130

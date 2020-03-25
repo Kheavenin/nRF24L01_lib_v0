@@ -1,11 +1,28 @@
 #include "settingModule.h"
 #include "highLevelModule.h"
 
-extern uint8_t regTmp;
+uint8_t sendPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
+	clearTX_DS(nrfStruct);
+	if (writeTxPayload(nrfStruct, buf, bufSize)) {
+		__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);		//set 0 for counter
+		while (!readBit(nrfStruct, STATUS, TX_DS)) {	//check interrupt's flag
+			if (__HAL_TIM_GET_COUNTER(nrfStruct->nRFtim) > RX_TX_SETTING_TIME) {//if timeout was exceed return 0
+				return 0;
+			}
+		}
+		return OK_CODE;
+	}
+	return 0;
+}
 
-uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct) {
-	if (getPipeStatusRxFIFO(nrfStruct) == RX_FIFO_MASK_DATA)
-		return 1;
+uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct, uint8_t pipe) {
+	if (getRX_DR(nrfStruct)) {
+		if (getPipeStatusRxFIFO(nrfStruct) == pipe) {
+			clearRX_DR(nrfStruct);
+			return 1;
+		}
+		clearRX_DR(nrfStruct);
+	}
 	return 0;
 }
 
@@ -28,6 +45,7 @@ void modeRX(nrfStruct_t *nrfStruct) {
 	//nRF in Standby-I
 	ceHigh(nrfStruct); //set high on CE line
 	setBit(nrfStruct, CONFIG, bit0);
+	delayUs(nrfStruct, RX_TX_SETTING_TIME);
 }
 
 /**
@@ -48,6 +66,7 @@ void modeTX(nrfStruct_t *nrfStruct)
 
 	ceHigh(nrfStruct);
 	resetBit(nrfStruct, CONFIG, bit0);
+	delayUs(nrfStruct, RX_TX_SETTING_TIME);
 }
 
 /**
@@ -106,6 +125,14 @@ void clearMAX_RT(nrfStruct_t *nrfStruct)
 {
 	setBit(nrfStruct, STATUS, bit4);
 	nrfStruct->statusStruct.maxRetr = 0;
+}
+
+uint8_t getRX_DR(nrfStruct_t *nrfStruct) {
+	return readBit(nrfStruct, STATUS, bit6);
+}
+
+uint8_t getTX_DS(nrfStruct_t *nrfStruct) {
+	return readBit(nrfStruct, STATUS, bit5);
 }
 
 /* CRC functions */
