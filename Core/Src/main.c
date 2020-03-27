@@ -200,7 +200,22 @@ int main(void)
 		HAL_Delay(1500);
 		if (checkReceivedPayload(testStruct, pipe0) == 1) {
 			rxPayloadWidthPipe0 = readDynamicPayloadWidth(testStruct);
+
+			rxFifoStatus = getRX_DR(testStruct);
+			sendString("\r\nRX_DR BEFORE read: ", &huart2);
+			tmp = rxFifoStatus + 48;
+			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
+
 			readRxPayload(testStruct, ReceiveData, rxPayloadWidthPipe0);
+			sendString("\r\nPayload read. \r\n", &huart2);
+
+			rxFifoStatus = getRX_DR(testStruct);
+			sendString("RX_DR AFTER read: ", &huart2);
+			tmp = rxFifoStatus + 48;
+			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
+			sendString("\r\n", &huart2);
+
+
 			clearRX_DR(testStruct);
 			clearTX_DS(testStruct);
 		}
@@ -219,7 +234,7 @@ int main(void)
 			rxFifoStatus = getRX_DR(testStruct);
 			sendString("\r\nRX_DR BEFORE read: ", &huart2);
 			tmp = rxFifoStatus + 48;
-			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
+			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
 
 			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
 			sendString("\r\nPayload read. \r\n", &huart2);
@@ -262,10 +277,6 @@ int main(void)
 				clearTX_DS(testStruct);
 			}
 #endif
-
-		//End of while
-		}
-
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
