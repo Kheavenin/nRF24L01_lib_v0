@@ -46,7 +46,7 @@
 
 
 #define TAB_SIZE 5
-#define BUF_SIZE 10
+#define BUF_SIZE 32
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -59,9 +59,9 @@
 /* USER CODE BEGIN PV */
 uint32_t testCounter = 100;
 uint8_t regTmp = 0;
+uint8_t tmp = 0;
 
 uint8_t rxFifoStatus = 0;
-uint8_t tmp = 0;
 uint8_t txFifoStatus = 0;
 
 uint8_t TransmitAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
@@ -69,6 +69,8 @@ uint8_t ReceiveAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
 
 uint8_t ReceiveData[BUF_SIZE];
 uint8_t TransmitData[BUF_SIZE];
+
+const uint8_t pipe0 = 0;
 
 #if TEST_DYNAMIC_LENGTH
 static uint8_t rxPayloadWidthPipe0 = 0;
@@ -148,10 +150,10 @@ int main(void)
 	enableTXinterrupt(testStruct);
 	regTmp = readReg(testStruct, CONFIG);
 	/* 2. Set ACK for RX pipe  */
-	enableAutoAckPipe(testStruct, 0);
+	enableAutoAckPipe(testStruct, pipe0);
 	regTmp = readReg(testStruct, EN_AA);
 	/* 3. Set RX pipe */
-	enableRxAddr(testStruct, 0);
+	enableRxAddr(testStruct, pipe0);
 	regTmp = readReg(testStruct, EN_RXADDR);
 	/* 4. Set RX/TX address width */
 	setAddrWidth(testStruct, longWidth);
@@ -168,7 +170,7 @@ int main(void)
 	setDataRate(testStruct, RF_DataRate_250);
 	regTmp = readReg(testStruct, RF_SETUP);
 	/* 8 Set RX address */
-	setReceivePipeAddress(testStruct, 0, ReceiveAddress,
+	setReceivePipeAddress(testStruct, pipe0, ReceiveAddress,
 			sizeof(ReceiveAddress));
 	readRegExt(testStruct, RX_ADDR_P0, ReceiveData, 5);
 	/* 9. Set TX address */
@@ -177,14 +179,14 @@ int main(void)
 	readRegExt(testStruct, TX_ADDR, ReceiveData, 5);
 	regTmp = readReg(testStruct, CONFIG);
 #if TEST_STATIC_LENGTH
-	setRxPayloadWidth(testStruct, 0, BUF_SIZE);
+	setRxPayloadWidth(testStruct, pipe0, BUF_SIZE);
 	regTmp = readReg(testStruct, RX_PW_P0);
 	sendString("nRF24L01+ init done\r\n", &huart2);
 	regTmp = readReg(testStruct, CONFIG);
 #endif
 #if TEST_DYNAMIC_LENGTH
 	enableDynamicPayloadLength(testStruct);
-	enableDynamicPayloadLengthPipe(testStruct, 0);
+	enableDynamicPayloadLengthPipe(testStruct, pipe0);
 #endif
 #if TEST_ACK_PAYLOAD
 	enableAckPayload(testStruct);
@@ -196,8 +198,11 @@ int main(void)
 //Begin of while
 #if TEST_DYNAMIC_LENGTH
 		HAL_Delay(1500);
-		if (checkReceivedPayload(testStruct, 0) == 1) {
-			rxPayloadWidthPipe0 = readDynamicPayloadWidth(nrfStruct);
+		if (checkReceivedPayload(testStruct, pipe0) == 1) {
+			rxPayloadWidthPipe0 = readDynamicPayloadWidth(testStruct);
+			readRxPayload(testStruct, ReceiveData, rxPayloadWidthPipe0);
+			clearRX_DR(testStruct);
+			clearTX_DS(testStruct);
 		}
 
 
