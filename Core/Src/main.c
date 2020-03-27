@@ -207,10 +207,11 @@ int main(void)
 			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
 
 			readRxPayload(testStruct, ReceiveData, rxPayloadWidthPipe0);
-			sendString("\r\nPayload read. \r\n", &huart2);
+			sendString("\r\nPayload read: \r\n", &huart2);
+			sendString((char*) ReceiveData, &huart2);
 
 			rxFifoStatus = getRX_DR(testStruct);
-			sendString("RX_DR AFTER read: ", &huart2);
+			sendString(" \r\nRX_DR AFTER read: ", &huart2);
 			tmp = rxFifoStatus + 48;
 			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
 			sendString("\r\n", &huart2);
