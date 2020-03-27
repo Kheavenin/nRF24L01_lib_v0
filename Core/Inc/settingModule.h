@@ -1,7 +1,8 @@
 
 #include "highLevelModule.h"
 
-uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct, uint8_t pip);
+uint8_t sendPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize);
+uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct, uint8_t pipe);
 /* Modes */
 void modeRX(nrfStruct_t *nrfStruct);
 void modeTX(nrfStruct_t *nrfStruct);
@@ -19,9 +20,12 @@ void enableRTinterrupt(nrfStruct_t *nrfStruct); //dont mask data retransmition i
 void clearRX_DR(nrfStruct_t *nrfStruct); //clear irt bits in Status Register
 void clearTX_DS(nrfStruct_t *nrfStruct);
 void clearMAX_RT(nrfStruct_t *nrfStruct);
+void clearIrqFlags(nrfStruct_t *nrfStruct);
 
 uint8_t getRX_DR(nrfStruct_t *nrfStruct);
 uint8_t getTX_DS(nrfStruct_t *nrfStruct);
+uint8_t getMAX_RT(nrfStruct_t *nrfStruct);
+
 
 /* CRC */
 void enableCRC(nrfStruct_t *nrfStruct);

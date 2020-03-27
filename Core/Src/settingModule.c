@@ -1,16 +1,25 @@
 #include "settingModule.h"
 #include "highLevelModule.h"
 
+extern uint8_t txFifoStatus;
 uint8_t sendPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
-	clearTX_DS(nrfStruct);
+
+	if (HAL_GPIO_ReadPin(CSN_GPIO_Port, CSN_Pin)) {
+		ceLow(nrfStruct);
+	}
+	if (getStatusFullTxFIFO(nrfStruct)) {
+		flushTx(nrfStruct);
+	}
+	if (getTX_DS(nrfStruct)) {
+		clearTX_DS(nrfStruct);
+	}
 	if (writeTxPayload(nrfStruct, buf, bufSize)) {
-		__HAL_TIM_SET_COUNTER((nrfStruct->nRFtim), 0);		//set 0 for counter
-		while (!readBit(nrfStruct, STATUS, TX_DS)) {	//check interrupt's flag
-			if (__HAL_TIM_GET_COUNTER(nrfStruct->nRFtim) > RX_TX_SETTING_TIME) {//if timeout was exceed return 0
-				return 0;
-			}
+		ceHigh(nrfStruct);
+		delayUs(nrfStruct, CE_HIGH_TIME);
+		ceLow(nrfStruct);
+		if (getTX_DS(nrfStruct)) {
+			return OK_CODE;
 		}
-		return OK_CODE;
 	}
 	return 0;
 }
@@ -125,6 +134,12 @@ void clearMAX_RT(nrfStruct_t *nrfStruct)
 	setBit(nrfStruct, STATUS, bit4);
 	nrfStruct->statusStruct.maxRetr = 0;
 }
+void clearIrqFlags(nrfStruct_t *nrfStruct) {
+	writeReg(nrfStruct, STATUS, 0x70);
+	nrfStruct->statusStruct.dataReadIrq = 0;
+	nrfStruct->statusStruct.dataSendIrq = 0;
+	nrfStruct->statusStruct.maxRetr = 0;
+}
 
 uint8_t getRX_DR(nrfStruct_t *nrfStruct) {
 	nrfStruct->statusStruct.dataReadIrq = readBit(nrfStruct, STATUS, bit6);
@@ -136,6 +151,10 @@ uint8_t getTX_DS(nrfStruct_t *nrfStruct) {
 	return (nrfStruct->statusStruct.dataSendIrq);
 }
 
+	uint8_t getMAX_RT(nrfStruct_t *nrfStruct) {
+		nrfStruct->statusStruct.maxRetr = readBit(nrfStruct, STATUS, bit4);
+		return (nrfStruct->statusStruct.maxRetr);
+	}
 /* CRC functions */
 void enableCRC(nrfStruct_t *nrfStruct)
 {
