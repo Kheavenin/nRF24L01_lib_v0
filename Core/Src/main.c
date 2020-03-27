@@ -39,10 +39,11 @@
 /* USER CODE BEGIN PD */
 #define TEST_CONFIG 1
 #define TEST_STATIC_LENGTH 1
-#define TEST_DYNAMIC_LENGTH 0
-#define	TESTS_ACK_PAYLOAD 1
+#define TEST_DYNAMIC_LENGTH 1
+#define	TEST_ACK_PAYLOAD 0
 
 #define TEST_RECEIVE 1
+
 
 #define TAB_SIZE 5
 #define BUF_SIZE 10
@@ -56,10 +57,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint32_t testCounter = 0;
+uint32_t testCounter = 100;
 uint8_t regTmp = 0;
 
-static uint8_t rxPayloadWidthPipe0 = 0;
 uint8_t rxFifoStatus = 0;
 uint8_t tmp = 0;
 uint8_t txFifoStatus = 0;
@@ -70,7 +70,12 @@ uint8_t ReceiveAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
 uint8_t ReceiveData[BUF_SIZE];
 uint8_t TransmitData[BUF_SIZE];
 
-char string;
+#if TEST_DYNAMIC_LENGTH
+
+static uint8_t rxPayloadWidthPipe0 = 0;
+#endif
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -154,7 +159,7 @@ int main(void)
 	regTmp = readReg(testStruct, SETUP_AW);
 	/* 5. Set ARD and ARC */
 	setAutoRetrCount(testStruct, 4);
-	setAutoRetrDelay(testStruct, 3); //500us
+	setAutoRetrDelay(testStruct, 1); //500us
 	regTmp = readReg(testStruct, SETUP_RETR);
 	/* 6. Set RF channel */
 	setChannel(testStruct, 2);
@@ -182,52 +187,79 @@ int main(void)
 	enableDynamicPayloadLength(testStruct);
 	enableDynamicPayloadLengthPipe(testStruct, 0);
 #endif
-#if TESTS_ACK_PAYLOAD
+#if TEST_ACK_PAYLOAD
 	enableAckPayload(testStruct);
 	writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));
 #endif
 #endif
 
 	while (1) {
-		HAL_Delay(1000);
-		if (getRX_DR(testStruct)) {
-			sendString(
-					"\r\n\r\nRX_DS read as HIGH.  \r\nPayload to read.  \r\n",
-					&huart2);
-		}
-		if (checkReceivedPayload(testStruct, 0) == 1) {
 
+#if TEST_DYNAMIC_LENGTH
+
+
+
+
+#endif
+
+#if TEST_ACK_PAYLOAD
+		HAL_Delay(1);
+		if (getRX_DR(testStruct)) {
+			sendString("\r\nRX_DR read as HIGH.\r\n", &huart2);
 		}
-#if TEST_RECEIVE
-		rxFifoStatus = getRxStatusFIFO(testStruct);
-		txFifoStatus = getTxStatusFIFO(testStruct);
+			//delayUs(testStruct, RX_TX_SETTING_TIME);
 		if (checkReceivedPayload(testStruct, 0) == 1) {
-			/* Check fifo status */
-			rxFifoStatus = getRxStatusFIFO(testStruct);
-			sendString("RX FIFO status BEFORE read: ", &huart2);
+			/* Read RX DR */
+			rxFifoStatus = getRX_DR(testStruct);
+			sendString("\r\nRX_DR BEFORE read: ", &huart2);
 			tmp = rxFifoStatus + 48;
 			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
-			sendString(" \r\n", &huart2);
-			/* read payload */
+
 			readRxPayload(testStruct, ReceiveData, sizeof(ReceiveData));
+			sendString("\r\nPayload read. \r\n", &huart2);
+//
+			/*
 			sendString("RX FIFO payload: ", &huart2);
 			HAL_UART_Transmit(&huart2, ReceiveData, 10,
 					1000);
 			sendString(" \r\n", &huart2);
-			/* Check fifo status */
-			rxFifoStatus = getRxStatusFIFO(testStruct);
-			sendString("RX FIFO status AFTER read: ", &huart2);
+			 */
+			rxFifoStatus = getRX_DR(testStruct);
+			sendString("RX_DR AFTER read: ", &huart2);
 			tmp = rxFifoStatus + 48;
 			HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
-			sendString(" \r\n", &huart2);
-			clearRX_DR(testStruct);
-			/* Write new payload */
-			flushTx(testStruct);								//Clear TX FIFO
-			txFifoStatus = getTxStatusFIFO(testStruct);
-			writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));//Write new ACK payload
-			txFifoStatus = getTxStatusFIFO(testStruct);
-		}
+			sendString("\r\n", &huart2);
+			}
+			if (getTX_DS(testStruct)) {
+				sendString(
+						"\r\nTX_DS read as HIGH.  \r\nPayload to send.  \r\n",
+						&huart2);
+				txFifoStatus = getTxStatusFIFO(testStruct);
+				sendString("\nTX FIFO status BEFORE write: ", &huart2);
+				tmp = txFifoStatus + 48;
+				HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
+				sendString("\r\n", &huart2);
+				if (getTxStatusFIFO(testStruct) == TX_FIFO_MASK_FULL) {
+					flushTx(testStruct);
+				}
+				writeTxPayloadAck(testStruct, TransmitData,
+						sizeof(TransmitData)); //Write new ACK payload
+
+				txFifoStatus = getTxStatusFIFO(testStruct);
+				sendString("TX FIFO status AFTER write: ", &huart2);
+				tmp = txFifoStatus + 48;
+				HAL_UART_Transmit(&huart2, &tmp, 1, 1000);
+				sendString(" \r\n", &huart2);
+			}
+			if (getRX_DR(testStruct) && getTX_DS(testStruct)) {
+				clearRX_DR(testStruct);
+				clearTX_DS(testStruct);
+			}
 #endif
+
+		//End of while
+		}
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
