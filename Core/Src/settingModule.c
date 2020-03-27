@@ -366,6 +366,10 @@ uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 	return tmp;
 }
 
+void clearlostPacketsCount(nrfStruct_t *nrfStruct) {
+	uint8_t tmp = readReg(nrfStruct, RF_CH);
+	writeReg(nrfStruct, RF_CH, tmp);
+}
 /* Receive Address data pipe */
 /**
  * @Brief	Write receiver address of pipe

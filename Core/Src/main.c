@@ -71,7 +71,6 @@ uint8_t ReceiveData[BUF_SIZE];
 uint8_t TransmitData[BUF_SIZE];
 
 #if TEST_DYNAMIC_LENGTH
-
 static uint8_t rxPayloadWidthPipe0 = 0;
 #endif
 
@@ -194,10 +193,12 @@ int main(void)
 #endif
 
 	while (1) {
-
+//Begin of while
 #if TEST_DYNAMIC_LENGTH
-
-
+		HAL_Delay(1500);
+		if (checkReceivedPayload(testStruct, 0) == 1) {
+			rxPayloadWidthPipe0 = readDynamicPayloadWidth(nrfStruct);
+		}
 
 
 #endif
