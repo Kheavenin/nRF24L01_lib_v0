@@ -181,7 +181,6 @@ int main(void)
 #endif
 
 	while (1) {
-//Begin of while
 #if TEST_DYNAMIC_LENGTH
 		HAL_Delay(0);
 		if (checkReceivedPayload(testStruct, pipe0) == 1) {
@@ -208,6 +207,10 @@ int main(void)
 			counter++;
 			if (counter == 32)
 				counter = 0;
+
+			for (j = 0; j < BUF_SIZE; j++) {
+				ReceiveData[j] = 0;
+			}
 
 			for (j = 0; j < BUF_SIZE; j++) {
 				TransmitData[j] = 0;
