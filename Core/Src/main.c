@@ -57,7 +57,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint32_t counter = 0;
+uint8_t counter = 0;
 uint8_t regTmp = 0;
 uint8_t tmp = 0;
 uint8_t j;
@@ -154,7 +154,7 @@ int main(void)
 	setAddrWidth(testStruct, longWidth);
 	/* 5. Set ARD and ARC */
 	setAutoRetrCount(testStruct, 4);
-	setAutoRetrDelay(testStruct, 1); //500us
+	setAutoRetrDelay(testStruct, 5); //
 	/* 6. Set RF channel */
 	setChannel(testStruct, 2);
 	/* 7. Set RF power and Data Rate */
@@ -183,40 +183,43 @@ int main(void)
 	while (1) {
 //Begin of while
 #if TEST_DYNAMIC_LENGTH
-		HAL_Delay(1000);
+		HAL_Delay(0);
 		if (checkReceivedPayload(testStruct, pipe0) == 1) {
 			rxPayloadWidthPipe0 = readDynamicPayloadWidth(testStruct);
-
+			/*
 			rxFifoStatus = getRX_DR(testStruct);
 			sendString("\r\nRX_DR BEFORE read: ", &huart2);
 			tmp = rxFifoStatus + 48;
 			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
-
+			 */
 			readRxPayload(testStruct, ReceiveData, rxPayloadWidthPipe0);
+
 			sendString("\r\nPayload read: \r\n", &huart2);
 			sendString((char*) ReceiveData, &huart2);
-
+			/*
 			rxFifoStatus = getRX_DR(testStruct);
 			sendString(" \r\nRX_DR AFTER read: ", &huart2);
 			tmp = rxFifoStatus + 48;
 			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
-			sendString("\r\n", &huart2);
+			 sendString("\r\n", &huart2);
+			 */
 #if TEST_ACK_PAYLOAD
 			/* prepare data to send */
-			if (counter == 31)
+			counter++;
+			if (counter == 32)
 				counter = 0;
+
 			for (j = 0; j < BUF_SIZE; j++) {
 				TransmitData[j] = 0;
 			}
 			for (j = 0; j < counter; j++) {
 				TransmitData[j] = ('A' + j);
 			}
-			TransmitData[counter + 1] = counter;
-			/* flush TX fifo if it's full */
-			if (getStatusFullTxFIFO(testStruct))
-				flushTx(testStruct);
-			writeTxPayloadAck(testStruct, TransmitData, (counter + 1));	//write data to send
 
+			//		if (getStatusFullTxFIFO(testStruct))/* flush TX fifo if it's full */
+				flushTx(testStruct);
+			writeTxPayloadAck(testStruct, TransmitData, counter); //write data to send
+			sendString("\r\nWrote ACK payload. \r\n", &huart2);
 			clearRX_DR(testStruct);
 			clearTX_DS(testStruct);
 #endif
