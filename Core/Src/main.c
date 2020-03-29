@@ -22,19 +22,17 @@
 #include "main.h"
 #include "spi.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-//#include "controleModule.h"
-//#include "settingModule.h"
-//#include "nRF24L01_test-lib.h"
+#include <string.h>
+#include <stdio.h>
 #include "settingModule.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-//void DelayUs(uint16_t time);
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -42,11 +40,13 @@
 #define TEST_CONFIG 1
 #define TEST_STATIC_LENGTH 1
 #define TEST_DYNAMIC_LENGTH 1
-#define	TESTS_ACK_PAYLOAD 1
+#define	TEST_ACK_PAYLOAD 1
+
+#define TEST_RECEIVE 1
+
 
 #define TAB_SIZE 5
-
-
+#define BUF_SIZE 32
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -57,33 +57,42 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint32_t testCounter = 0;
-uint32_t regTmp = 0;
+uint8_t counter = 0;
+uint8_t regTmp = 0;
+uint8_t tmp = 0;
+uint8_t j;
+
+uint8_t rxFifoStatus = 0;
+uint8_t txFifoStatus = 0;
 
 uint8_t TransmitAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
-uint8_t ReceiveAddress[TAB_SIZE] = { 'C', 'D', 'C', 'D', 'C' };
+uint8_t ReceiveAddress[TAB_SIZE] = { 'A', 'B', 'A', 'B', 'A' };
 
-uint8_t *pTxAddr = TransmitAddress;
-uint8_t *pRxAddr = ReceiveAddress;
+uint8_t ReceiveData[BUF_SIZE];
+uint8_t TransmitData[BUF_SIZE];
 
-uint8_t readBuf[TAB_SIZE];
-uint8_t writeBuf[TAB_SIZE] = { 'A', 'B', 'C', 'D', 'E' };
+const uint8_t pipe0 = 0;
 
-uint8_t *pWriteBuf = writeBuf;
-uint8_t *pReadBuf = readBuf;
+#if TEST_DYNAMIC_LENGTH
+static uint8_t rxPayloadWidthPipe0 = 0;
+#endif
 
-uint8_t testTab[29];
+#if TEST_ACK_PAYLOAD
+static uint8_t txPayloadWidthPipe0 = 0;
+#endif
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void sendString(char *str, UART_HandleTypeDef *husart);
 /* USER CODE END 0 */
 
 /**
@@ -93,7 +102,6 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
   
 
@@ -117,29 +125,19 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_TIM1_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start(&htim1);
   /* USER CODE END 2 */
- 
- 
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 #if  TEST_CONFIG
 	/* 0. Create pointer and init structure. */
+	sendString("nRF24L01+ struct init\r\n", &huart2);
 	nrfStruct_t *testStruct;						// create pointer to struct
 	testStruct = nRF_Init(&hspi1, &htim1, CSN_GPIO_Port, CSN_Pin, CE_GPIO_Port,
 	CE_Pin);	// create struct
-	regTmp = readReg(testStruct, CONFIG); 		// read value of CONFIG register
-
-	/* Check registers */
-	uint8_t var;
-	for (var = 0; var < 29; var++) {
-		regTmp = readReg(testStruct, var);
-		if (var >= 0x0A || var <= 0x10)
-			readRegExt(testStruct, var, readBuf, sizeof(readBuf));
-	}
-
+	sendString("nRF24L01+ struct init done\r\nStart init config\r\n", &huart2);
 	/* 1.1  Set role as RX */
 	modeRX(testStruct);
 	/* 1.2 Enable CRC and set coding */
@@ -148,54 +146,87 @@ int main(void)
 	/* 1.3 Enable/disable interrupts */
 	enableRXinterrupt(testStruct);
 	enableTXinterrupt(testStruct);
-
 	/* 2. Set ACK for RX pipe  */
-	enableAutoAckPipe(testStruct, 0);
+	enableAutoAckPipe(testStruct, pipe0);
 	/* 3. Set RX pipe */
-	enableRxAddr(testStruct, 0);
+	enableRxAddr(testStruct, pipe0);
 	/* 4. Set RX/TX address width */
 	setAddrWidth(testStruct, longWidth);
 	/* 5. Set ARD and ARC */
-	setAutoRetrCount(testStruct, 3);
-	setAutoRetrDelay(testStruct, 1); //500us
+	setAutoRetrCount(testStruct, 4);
+	setAutoRetrDelay(testStruct, 5); //
 	/* 6. Set RF channel */
-	setChannel(testStruct, 64);
+	setChannel(testStruct, 2);
 	/* 7. Set RF power and Data Rate */
-	setRFpower(testStruct, RF_PWR_0dBm);
+	setRFpower(testStruct, RF_PWR_6dBm);
 	setDataRate(testStruct, RF_DataRate_250);
 	/* 8 Set RX address */
-	setReceivePipeAddress(testStruct, 0, ReceiveAddress,
+	setReceivePipeAddress(testStruct, pipe0, ReceiveAddress,
 			sizeof(ReceiveAddress));
 	/* 9. Set TX address */
 	setTransmitPipeAddress(testStruct, TransmitAddress,
 			sizeof(TransmitAddress));
 #if TEST_STATIC_LENGTH
-	setRxPayloadWidth(testStruct, 0, 32);
+	setRxPayloadWidth(testStruct, pipe0, BUF_SIZE);
+	sendString("nRF24L01+ init done\r\n", &huart2);
 #endif
 #if TEST_DYNAMIC_LENGTH
 	enableDynamicPayloadLength(testStruct);
-	enableDynamicPayloadLengthPipe(testStruct, 0);
+	enableDynamicPayloadLengthPipe(testStruct, pipe0);
 #endif
-#if TESTS_ACK_PAYLOAD
+#if TEST_ACK_PAYLOAD
 	enableAckPayload(testStruct);
+	writeTxPayloadAck(testStruct, TransmitData, sizeof(TransmitData));
 #endif
-
-	/** Seconde check registers */
-	for (var = 0; var < 30; var++) {
-		regTmp = readReg(testStruct, var);
-		if (var >= 0x0A || var <= 0x10)
-			readRegExt(testStruct, var, readBuf, sizeof(readBuf));
-	}
-
 #endif
 
 	while (1) {
-#if 1
-		uint16_t i;
-		for (i = 0; i < 29; i++) {
-			regTmp = readReg(testStruct, i);
-		}
+#if TEST_DYNAMIC_LENGTH
+		HAL_Delay(0);
+		if (checkReceivedPayload(testStruct, pipe0) == 1) {
+			rxPayloadWidthPipe0 = readDynamicPayloadWidth(testStruct);
+			/*
+			rxFifoStatus = getRX_DR(testStruct);
+			sendString("\r\nRX_DR BEFORE read: ", &huart2);
+			tmp = rxFifoStatus + 48;
+			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
+			 */
+			readRxPayload(testStruct, ReceiveData, rxPayloadWidthPipe0);
 
+			sendString("\r\nPayload read: \r\n", &huart2);
+			sendString((char*) ReceiveData, &huart2);
+			/*
+			rxFifoStatus = getRX_DR(testStruct);
+			sendString(" \r\nRX_DR AFTER read: ", &huart2);
+			tmp = rxFifoStatus + 48;
+			HAL_UART_Transmit(&huart2, &tmp, 1, 10);
+			 sendString("\r\n", &huart2);
+			 */
+#if TEST_ACK_PAYLOAD
+			/* prepare data to send */
+			counter++;
+			if (counter == 32)
+				counter = 0;
+
+			for (j = 0; j < BUF_SIZE; j++) {
+				ReceiveData[j] = 0;
+			}
+
+			for (j = 0; j < BUF_SIZE; j++) {
+				TransmitData[j] = 0;
+			}
+			for (j = 0; j < counter; j++) {
+				TransmitData[j] = ('A' + j);
+			}
+
+			//		if (getStatusFullTxFIFO(testStruct))/* flush TX fifo if it's full */
+				flushTx(testStruct);
+			writeTxPayloadAck(testStruct, TransmitData, counter); //write data to send
+			sendString("\r\nWrote ACK payload. \r\n", &huart2);
+			clearRX_DR(testStruct);
+			clearTX_DS(testStruct);
+#endif
+		}
 #endif
 
 
@@ -245,7 +276,10 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void sendString(char *str, UART_HandleTypeDef *husart) {
+	HAL_UART_Transmit(husart, (uint8_t*) str, strlen(str),
+			1000);
+}
 
 
 

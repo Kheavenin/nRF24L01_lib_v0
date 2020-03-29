@@ -1,9 +1,36 @@
 #include "settingModule.h"
 #include "highLevelModule.h"
 
-uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct) {
-	if (getPipeStatusRxFIFO(nrfStruct) == RX_FIFO_MASK_DATA)
+extern uint8_t txFifoStatus;
+uint8_t sendPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
+
+	if (HAL_GPIO_ReadPin(CSN_GPIO_Port, CSN_Pin)) {
+		ceLow(nrfStruct);
+	}
+	if (getStatusFullTxFIFO(nrfStruct)) {
+		flushTx(nrfStruct);
+	}
+	if (getTX_DS(nrfStruct)) {
+		clearTX_DS(nrfStruct);
+	}
+	if (writeTxPayload(nrfStruct, buf, bufSize)) {
+		ceHigh(nrfStruct);
+		delayUs(nrfStruct, CE_HIGH_TIME);
+		ceLow(nrfStruct);
+		if (getTX_DS(nrfStruct)) {
+			return OK_CODE;
+		}
+	}
+	return 0;
+}
+
+uint8_t checkReceivedPayload(nrfStruct_t *nrfStruct, uint8_t pipe) {
+	if (getPipeStatusRxFIFO(nrfStruct) == pipe) {
+		if (getRX_DR(nrfStruct)) {
+			clearRX_DR(nrfStruct);
+		}
 		return 1;
+	}
 	return 0;
 }
 
@@ -18,20 +45,15 @@ void modeRX(nrfStruct_t *nrfStruct) {
 		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
 	}
 	flushRx(nrfStruct);			//clear (flush) RX FIFO buffer
-	if (getRxStatusFIFO(nrfStruct) == RX_FIFO_EMPTY) {
-		flushTx(nrfStruct);		//clear (flush) TX FIFO buffer
-		if (getTxStatusFIFO(nrfStruct) == TX_FIFO_MASK_EMPTY) {
-			uint8_t tmp = 1;	//variable for test
-		}
-	}
+	flushTx(nrfStruct);		//clear (flush) TX FIFO buffer
 
 	clearRX_DR(nrfStruct);	//clear interrupts flags
 	clearTX_DS(nrfStruct);
 	clearMAX_RT(nrfStruct);
-
 	//nRF in Standby-I
 	ceHigh(nrfStruct); //set high on CE line
 	setBit(nrfStruct, CONFIG, bit0);
+	delayUs(nrfStruct, RX_TX_SETTING_TIME);
 }
 
 /**
@@ -44,12 +66,7 @@ void modeTX(nrfStruct_t *nrfStruct)
 		delayUs(nrfStruct, 1500);	//wait 1.5ms fo nRF24L01+ stand up
 	}
 	flushRx(nrfStruct);			//clear (flush) RX FIFO buffer
-	if (getRxStatusFIFO(nrfStruct) == RX_FIFO_EMPTY) {
-		flushTx(nrfStruct);		//clear (flush) TX FIFO buffer
-		if (getTxStatusFIFO(nrfStruct) == TX_FIFO_MASK_EMPTY) {
-			uint8_t tmp = 1;	//variable for test
-		}
-	}
+	flushTx(nrfStruct);		//clear (flush) TX FIFO buffer
 
 	clearRX_DR(nrfStruct);	//clear interrupts flags
 	clearTX_DS(nrfStruct);
@@ -57,6 +74,7 @@ void modeTX(nrfStruct_t *nrfStruct)
 
 	ceHigh(nrfStruct);
 	resetBit(nrfStruct, CONFIG, bit0);
+	delayUs(nrfStruct, RX_TX_SETTING_TIME);
 }
 
 /**
@@ -116,7 +134,27 @@ void clearMAX_RT(nrfStruct_t *nrfStruct)
 	setBit(nrfStruct, STATUS, bit4);
 	nrfStruct->statusStruct.maxRetr = 0;
 }
+void clearIrqFlags(nrfStruct_t *nrfStruct) {
+	writeReg(nrfStruct, STATUS, 0x70);
+	nrfStruct->statusStruct.dataReadIrq = 0;
+	nrfStruct->statusStruct.dataSendIrq = 0;
+	nrfStruct->statusStruct.maxRetr = 0;
+}
 
+uint8_t getRX_DR(nrfStruct_t *nrfStruct) {
+	nrfStruct->statusStruct.dataReadIrq = readBit(nrfStruct, STATUS, bit6);
+	return (nrfStruct->statusStruct.dataReadIrq);
+}
+
+uint8_t getTX_DS(nrfStruct_t *nrfStruct) {
+	nrfStruct->statusStruct.dataSendIrq = readBit(nrfStruct, STATUS, bit5);
+	return (nrfStruct->statusStruct.dataSendIrq);
+}
+
+	uint8_t getMAX_RT(nrfStruct_t *nrfStruct) {
+		nrfStruct->statusStruct.maxRetr = readBit(nrfStruct, STATUS, bit4);
+		return (nrfStruct->statusStruct.maxRetr);
+	}
 /* CRC functions */
 void enableCRC(nrfStruct_t *nrfStruct)
 {
@@ -347,6 +385,10 @@ uint8_t retrPacketsCount(nrfStruct_t *nrfStruct)
 	return tmp;
 }
 
+void clearlostPacketsCount(nrfStruct_t *nrfStruct) {
+	uint8_t tmp = readReg(nrfStruct, RF_CH);
+	writeReg(nrfStruct, RF_CH, tmp);
+}
 /* Receive Address data pipe */
 /**
  * @Brief	Write receiver address of pipe
@@ -499,14 +541,23 @@ uint8_t getTxStatusFIFO(nrfStruct_t *nrfStruct)
 	tmp = tmp >> 4;
 	if ((tmp & 0x03) == TX_FIFO_MASK_EMPTY)
 	{
+		nrfStruct->fifoStruct.txEmpty = 1;
+		nrfStruct->fifoStruct.txFull = 0;
+		nrfStruct->fifoStruct.txSend = 0;
 		return TX_FIFO_MASK_EMPTY;
 	}
 	if ((tmp & 0x03) == TX_FIFO_MASK_FULL)
 	{
+		nrfStruct->fifoStruct.txEmpty = 0;
+		nrfStruct->fifoStruct.txFull = 1;
+		nrfStruct->fifoStruct.txSend = 1;
 		return TX_FIFO_MASK_FULL;
 	}
 	if ((tmp & 0x03) == TX_FIFO_MASK_DATA)
 	{
+		nrfStruct->fifoStruct.txEmpty = 0;
+		nrfStruct->fifoStruct.txFull = 0;
+		nrfStruct->fifoStruct.txSend = 1;
 		return TX_FIFO_MASK_DATA;
 	}
 	return ERR_CODE;

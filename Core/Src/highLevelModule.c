@@ -246,8 +246,9 @@ uint8_t readDynamicPayloadWidth(nrfStruct_t *nrfStruct) {
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
 	delayUs(nrfStruct, 50);
 	HAL_SPI_Receive((nrfStruct->nRFspi), pWidth, sizeof(width), SPI_TIMEOUT);//read payload
+
 	csnHigh(nrfStruct);
-	return OK_CODE;
+	return width;
 }
 
 uint8_t writeTxPayloadAck(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
@@ -296,13 +297,13 @@ uint8_t flushTx(nrfStruct_t *nrfStruct) {
 	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
-	delayUs(nrfStruct, 10);
+	csnHigh(nrfStruct);
+
 	if (!readBit(nrfStruct, FIFO_STATUS, bit4)) {	//check FIFO status
-		csnHigh(nrfStruct);
 		nrfStruct->fifoStruct.txEmpty = 0;
 		return ERR_CODE;
 	}
-	csnHigh(nrfStruct);
+
 	nrfStruct->fifoStruct.txEmpty = 1;
 	return OK_CODE;
 }
@@ -313,13 +314,13 @@ uint8_t flushRx(nrfStruct_t *nrfStruct) {
 	csnLow(nrfStruct);
 
 	HAL_SPI_Transmit((nrfStruct->nRFspi), pCmd, sizeof(cmd), SPI_TIMEOUT);//send command
-	delayUs(nrfStruct, 10);
+	csnHigh(nrfStruct);
+
 	if (!readBit(nrfStruct, FIFO_STATUS, bit0)) {	//check FIFO status
-		csnHigh(nrfStruct);
 		nrfStruct->fifoStruct.rxEmpty = 0;
 		return ERR_CODE;
 	}
-	csnHigh(nrfStruct);
+
 	nrfStruct->fifoStruct.rxEmpty = 1;
 	return OK_CODE;
 }
@@ -373,13 +374,13 @@ uint8_t readBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 
 void resetBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readReg(nrfStruct, addr);
-	tmp &= 0 << bit;		//zmieniono OR na AND
+	tmp &= ~(1 << bit);		//zmieniono OR na AND
 	writeReg(nrfStruct, addr, tmp);
 }
 
 void setBit(nrfStruct_t *nrfStruct, uint8_t addr, bitNum_t bit) {
 	uint8_t tmp = readReg(nrfStruct, addr);
-	tmp |= 1 << bit;
+	tmp |= (1 << bit);
 	writeReg(nrfStruct, addr, tmp);
 }
 
