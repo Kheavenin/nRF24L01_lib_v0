@@ -1,7 +1,7 @@
 #include "settingModule.h"
 #include "highLevelModule.h"
 
-extern uint8_t txFifoStatus;
+
 uint8_t sendPayload(nrfStruct_t *nrfStruct, uint8_t *buf, size_t bufSize) {
 
 	if (HAL_GPIO_ReadPin(CSN_GPIO_Port, CSN_Pin)) {
