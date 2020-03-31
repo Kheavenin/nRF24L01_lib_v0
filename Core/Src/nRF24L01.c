@@ -1,3 +1,16 @@
+/**
+ * @Autor: Khevenin
+ * @Name: nRf24L01 library
+ * @Version: v1.00 - first release
+ *
+ * Source file for nRF24L01+ library
+ * Include functions.
+ *
+ * Before use read "ReadMe" file included to repo.
+ */
+
+
+
 #include "nRF24L01.h"
 
 /* Static methods */

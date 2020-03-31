@@ -1,10 +1,17 @@
 /**
  * @Autor: Khevenin
- * Structures, init structures 
- * Register list of nRF24L01+ and deafult value of registers.
- * All addresses are 8 bits.
+ * @Name: nRf24L01 library
+ * @Version: v1.00 - first release
+ *
+ * Header file for nRF24L01+ library
+ * Include register definitions, default value, constant value,
+ * typedefs, structures and functions definitions
+ *
+ * Before use read "ReadMe" file included to repo.
 */
 
+/* Necessary includes files */
+#include <main.h>
 #include <stdint.h>
 #include <stddef.h>
 
