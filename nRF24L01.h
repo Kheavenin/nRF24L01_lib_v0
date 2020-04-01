@@ -1,5 +1,5 @@
 /**
- * @Autor: Khevenin
+ * @Autor: Wojciech Bernat
  * @Name: nRf24L01 library
  * @Version: v1.00 - first release
  *

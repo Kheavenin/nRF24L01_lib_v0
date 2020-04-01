@@ -1,5 +1,5 @@
 /**
-	* @Autor: Khevenin
+	* @Autor: Wojciech Bernat
 	* Configuration example for nRF24L01+ library
 */
 
